@@ -1362,14 +1362,15 @@ _b_: browse packages _q_: quit
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  (custom-set-faces
-  '(symbol-overlay-face-1 ((t (:background "#fbf1c7"       :foreground "black"))))
-  '(symbol-overlay-face-2 ((t (:background "medium orchid" :foreground "black"))))
-  '(symbol-overlay-face-3 ((t (:background "#98971a"       :foreground "black"))))
-  '(symbol-overlay-face-4 ((t (:background "#d79921"       :foreground "black"))))
-  '(symbol-overlay-face-5 ((t (:background "#458588"       :foreground "black"))))
-  '(symbol-overlay-face-6 ((t (:background "#b16286"       :foreground "black"))))
-  '(symbol-overlay-face-7 ((t (:background "#689d6a"       :foreground "black"))))
-  '(symbol-overlay-face-8 ((t (:background "#7c6f64"       :foreground "black"))))
+  '(symbol-overlay-face-1 ((t (:background "#689d6a"       :foreground "black"))))
+  '(symbol-overlay-face-2 ((t (:background "#b08588"       :foreground "black"))))
+  '(symbol-overlay-face-3 ((t (:background "#7c6f64"       :foreground "black"))))
+  '(symbol-overlay-face-3 ((t (:background "#5c6f64"       :foreground "black"))))
+  '(symbol-overlay-face-4 ((t (:background "#98971a"       :foreground "black"))))
+  '(symbol-overlay-face-5 ((t (:background "#016286"       :foreground "black"))))
+  '(symbol-overlay-face-6 ((t (:background "#d79921"       :foreground "black"))))
+  '(symbol-overlay-face-7 ((t (:background "medium orchid" :foreground "black"))))
+  '(symbol-overlay-face-8 ((t (:background "#fbe107"       :foreground "black"))))
   )
 )
 
@@ -1501,73 +1502,92 @@ _b_: browse packages _q_: quit
   "Start symbol-overlay-transient-state."
   (interactive)
   (symbol-overlay-put)
-  ;; (spacemacs/symbol-overlay-transient-state/body)
-;; Call the body in the "spacemacs/symbol-overlay-transient-state" hydra.
-;; The heads for the associated hydra are:
-;; "b":    ‘symbol-overlay-switch-backward’,
-;; "c":    ‘symbol-overlay-save-symbol’,
-;; "d":    ‘symbol-overlay-jump-to-definition’,
-;; "e":    ‘symbol-overlay-echo-mark’,
-;; "f":    ‘symbol-overlay-switch-forward’,
-;; "n":    ‘symbol-overlay-jump-next’,
-;; "N":    ‘symbol-overlay-jump-prev’,
-;; "o":    ‘symbol-overlay-put’,
-;; "O":    ‘symbol-overlay-remove-all’,
-;; "p":    ‘symbol-overlay-jump-prev’,
-;; "r":    ‘symbol-overlay-query-replace’,
-;; "R":    ‘symbol-overlay-rename’,
-;; "s":    ‘symbol-overlay-isearch-literally’,
-;; "t":    ‘symbol-overlay-toggle-in-scope’,
-;; "z":    ‘recenter-top-bottom’,
-;; "q":    nil
+  (efs/symbol-overlay-transient)
   )
 
 (use-package symbol-overlay
   :demand t
-  ;; :after transient
+  :after transient
   :config
-  ;; TODO: Make transient state for this
-  ;; FIXME: Maybe define-transient-command has been changed to define-transient-suffix? See below
-  ;; (define-transient-command symbol-overlay-transient ()
-  ;;                           "Symbol Overlay transient"
-  ;;                           ["Symbol Overlay"
-  ;;                            ["Overlays"
-  ;;                             ("." "Add/Remove at point" symbol-overlay-put)
-  ;;                             ("k" "Remove All" symbol-overlay-remove-all)
-  ;;                             ]
-  ;;                            ["Move to Symbol"
-  ;;                             ("n" "Next" symbol-overlay-switch-forward)
-  ;;                             ("p" "Previous" symbol-overlay-switch-backward)
-  ;;                             ]
-  ;;                            ["Other"
-  ;;                             ("m" "Highlight symbol-at-point" symbol-overlay-mode)
-  ;;                             ]
-  ;;                            ]
-  ;;                           )
-  ;; (global-set-key (kbd "s-.") 'symbol-overlay-transient)
-
-        ;; ("b" symbol-overlay-switch-backward)
-        ;; ("c" symbol-overlay-save-symbol)
-        ;; ("d" symbol-overlay-jump-to-definition)
-        ;; ("e" symbol-overlay-echo-mark)
-        ;; ("f" symbol-overlay-switch-forward)
-        ;; ("n" symbol-overlay-jump-next)
-        ;; ("N" symbol-overlay-jump-prev)
-        ;; ("o" symbol-overlay-put)
-        ;; ("O" symbol-overlay-remove-all)
-        ;; ("p" symbol-overlay-jump-prev)
-        ;; ("r" symbol-overlay-query-replace)
-        ;; ("R" symbol-overlay-rename)
-        ;; ("s" symbol-overlay-isearch-literally)
-        ;; ("t" symbol-overlay-toggle-in-scope)
-        ;; ("z" recenter-top-bottom)
-        ;; ("q" nil :exit t)))))
-
-
+  ;; Make transient state
+  (transient-define-suffix efs--so-suffix-print-args (the-prefix-arg)
+    "Report the PREFIX-ARG, prefix's scope, and infix values."
+    :transient 'transient--do-call
+    (interactive "P")
+    (let ((args (transient-args (oref transient-current-prefix command)))
+          (scope (oref transient-current-prefix scope)))
+      (message "prefix-arg: %s \nprefix's scope value: %s \ntransient-args: %s"
+               the-prefix-arg scope args)))
+  (transient-define-infix efs--so-random-init-infix ()
+    "Switch on and off."
+    :argument "--switch"
+    :shortarg "-s" ; will be used for :key when key is not set
+    :description "switch"
+    :init-value (lambda (obj)
+                  (oset obj value
+                        (eq 0 (random 2))))) ; write t with 50% probability
+  (transient-define-argument efs--so-symbol-face-2 ()
+    "This is a specialized infix for only selecting one of several values."
+    :class 'transient-switches
+    :argument-format "--%s-snowcone"
+    :argument-regexp "\\(--\\(grape\\|orange\\|cherry\\|lime\\)-snowcone\\)"
+    :choices '("grape" "orange" "cherry" "lime"))
+  (transient-define-argument efs--so-symbol-face ()
+    "This is a specialized infix for only selecting one of several values."
+    :argument "face="
+    :class 'transient-option
+    :choices '("face1" "face2" "face3" "face4"))
+  (transient-define-suffix efs--so-jump-next ()
+    "Next symbol"
+    :description "next symbol"
+    :transient t ;; Do not quit transient state
+    (interactive)
+    (symbol-overlay-jump-next)
+    )
+  (transient-define-suffix efs--so-jump-prev ()
+    "Previous symbol"
+    :description "previous symbol"
+    ;; :description '(lambda ()
+    ;;                    (concat
+    ;;                     "set sentence: "
+    ;;                     (propertize
+    ;;                      (format "%s" "XYZ")
+    ;;                      'face 'transient-argument)))
+    :transient t ;; Do not quit transient state
+    ;; :key "p"
+    (interactive)
+    (symbol-overlay-jump-prev)
+    )
+  (transient-define-prefix efs/symbol-overlay-transient ()
+    "Symbol overlay transient state"
+    ;; :transient-suffix 'transient--do-stay ;; Do not quit transient state automatically
+    ["Symbol overlay transient state"
+     :class transient-columns
+     ["Symbol navigation"
+      ("n" efs--so-jump-next)
+      ("N" efs--so-jump-prev)]
+     ["All symbols"
+      ("f" symbol-overlay-switch-forward :transient t :description "switch symbol forward")
+      ("F" symbol-overlay-switch-backward :transient t :description "switch symbol backwards")
+      ("o" symbol-overlay-put :transient t :description "toggle overlay") ;; TODO: Select random face when calling this
+      ("O" symbol-overlay-remove-all :transient t :description "remove all overlays")]
+     ["Scope"
+      ("t" symbol-overlay-toggle-in-scope :transient t :description "scope")
+      ("z" recenter-top-bottom :transient t :description "recenter")]
+     ["Actions"
+      ;; ("p" "print arguments" efs--so-suffix-print-args)
+      ;; ("u" "symbol face" efs--so-symbol-face)
+      ;; ("x" "xxx" efs--so-random-init-infix) 
+      ;; ("-y" "yyy" efs--so-random-init-infix) 
+      ("r" symbol-overlay-query-replace :transient t :description "query-replace")
+      ("R" symbol-overlay-rename :transient t :description "rename")
+      ("s" symbol-overlay-isearch-literally :transient t :description "isearch")
+      ("q" transient-quit-all :description "quit")]
+     ;; TODO: Bind navigation keys h/j/k/l to quit but do not show them in transient
+     ])
 
   ;; Override symbol-overlay-map that will normally interfer with evil keys
   (let ((map (make-sparse-keymap)))
-    ;; (define-key map (kbd "o") 'symbol-overlay-put)
     (setq symbol-overlay-map map))
 
   ;; Global keys
@@ -1578,162 +1598,126 @@ _b_: browse packages _q_: quit
    )
   )
 
-
-
 (require 'cl-lib) ;; TODO: Still needed?
 (use-package transient
   :demand t
   :config
+  ;; ;; NOTE: Example how to set up transient:
+  ;; (transient-define-suffix pmx-show-prefix ()
+  ;;     "Show the prefix that invoked this suffix"
+  ;;     :description "prefix"
+  ;;     (interactive)
+  ;;     (message "Current prefix key: %s" transient-current-prefix))
 
-  (transient-define-suffix efs/so-jump-next ()
-    "Next symbol"
-    :description "next symbol"
-    (interactive)
-    (symbol-overlay-jump-next)
-    )
+  ;;   (transient-define-suffix pmx-show-command ()
+  ;;     "Show this command"
+  ;;     :description "current command"
+  ;;     (interactive)
+  ;;     (message "Current command: %s" transient-current-command))
 
-  (transient-define-prefix symbol-overlay-transient ()
-    "Symbol overlay transient state"
-    :transient-suffix 'transient--do-stay ;; Do not quit transient state automatically
-    :info-manual "Symbol overlay transient state"
-    [:class transient-columns
-            ["Others"
-             ("p" symbol-overlay-jump-prev)
-             ("n" efs/so-jump-next)]
-            ;; ["More"
-            ;;  ("f" pmx-affirmative)
-            ;;  ("y" pmx-yep-nope)
-            ;;  ("a" pmx-abc)
-            ;;  ("l" pmx-set-lisp-variable)
-            ;;  ("w" pmx-show-lisp-variable)]
-            ;; ["Drilldown"
-            ;;  ("d" "drilldown" pmx-nested-transient)]
-            ])
+  ;;   (transient-define-suffix pmx-show-suffixes ()
+  ;;     "Show the current suffixes"
+  ;;     :description "suffixes"
+  ;;     (interactive)
+  ;;     (message "Current suffixes: %s" (cl-mapcar
+  ;;                                      (lambda (obj)
+  ;;                                        (oref obj description))
+  ;;                                      transient-current-suffixes)))
 
+  ;;   (transient-define-suffix pmx-show-args ()
+  ;;     "Show current infix args"
+  ;;     :description "infix args"
+  ;;     (interactive)
+  ;;     (message "Current infix args: %s" (transient-args transient-current-command)))
 
-  ;; NOTE: Example how to set up transient:
-  (transient-define-suffix pmx-show-prefix ()
-      "Show the prefix that invoked this suffix"
-      :description "prefix"
-      (interactive)
-      (message "Current prefix key: %s" transient-current-prefix))
+  ;;   (transient-define-suffix pmx-send-message ()
+  ;;     "Send message to minibuffer"
+  ;;     :description "send message"
+  ;;     :transient t
+  ;;     (interactive)
+  ;;     (message "Message sent at %s. Happy?" (shell-command-to-string "echo -n $(date)")))
 
-    (transient-define-suffix pmx-show-command ()
-      "Show this command"
-      :description "current command"
-      (interactive)
-      (message "Current command: %s" transient-current-command))
+  ;;   (transient-define-argument pmx-affirmative ()
+  ;;     "Are we affirmative?"
+  ;;     :description "affirmative"
+  ;;     :argument "affirmative")
 
-    (transient-define-suffix pmx-show-suffixes ()
-      "Show the current suffixes"
-      :description "suffixes"
-      (interactive)
-      (message "Current suffixes: %s" (cl-mapcar
-                                       (lambda (obj)
-                                         (oref obj description))
-                                       transient-current-suffixes)))
+  ;;   (transient-define-argument pmx-yep-nope ()
+  ;;     "Is it yep or is it nope?"
+  ;;     :description "yep or nope"
+  ;;     :class 'transient-option
+  ;;     :shortarg "-y"
+  ;;     :argument "--yepnope="
+  ;;     :choices '("yep" "nope"))
 
-    (transient-define-suffix pmx-show-args ()
-      "Show current infix args"
-      :description "infix args"
-      (interactive)
-      (message "Current infix args: %s" (transient-args transient-current-command)))
+  ;;   (transient-define-argument pmx-abc ()
+  ;;     "Which letters do you like?"
+  ;;     :description "abc"
+  ;;     :class 'transient-option
+  ;;     :shortarg "-a"
+  ;;     :argument "--abc="
+  ;;     :choices '("A" "B" "C"))
 
-    (transient-define-suffix pmx-send-message ()
-      "Send message to minibuffer"
-      :description "send message"
-      :transient t
-      (interactive)
-      (message "Message sent at %s. Happy?" (shell-command-to-string "echo -n $(date)")))
+  ;;   (defvar pmx--variable "A string" "A variable brought to you by pmx")
 
-    (transient-define-argument pmx-affirmative ()
-      "Are we affirmative?"
-      :description "affirmative"
-      :argument "affirmative")
+  ;;   (transient-define-argument pmx-set-lisp-variable ()
+  ;;     "Set a lisp variable, pmx--variable.  Won't show up in infix arguments."
+  ;;     :description "set pmx--variable"
+  ;;     :class 'transient-lisp-variable
+  ;;     :shortarg "-l"
+  ;;     :variable 'pmx--variable
+  ;;     :argument "--letters=")
 
-    (transient-define-argument pmx-yep-nope ()
-      "Is it yep or is it nope?"
-      :description "yep or nope"
-      :class 'transient-option
-      :shortarg "-y"
-      :argument "--yepnope="
-      :choices '("yep" "nope"))
+  ;;   (transient-define-suffix pmx-show-lisp-variable ()
+  ;;     "Access pmx--variable"
+  ;;     :description "show pmx--variable"
+  ;;     (interactive)
+  ;;     (message "Current value of pmx--variable: %s" pmx--variable))
 
-    (transient-define-argument pmx-abc ()
-      "Which letters do you like?"
-      :description "abc"
-      :class 'transient-option
-      :shortarg "-a"
-      :argument "--abc="
-      :choices '("A" "B" "C"))
+  ;;   (transient-define-suffix pmx-dynamic-suffix ()
+  ;;     "Description depends on pmx--variable"
+  ;;     :if-not '(lambda () (string-equal pmx--variable "abc"))
+  ;;     :description '(lambda () (format "pmx %s" pmx--variable))
+  ;;     (interactive)
+  ;;     (message "Current value of pmx--variable: %s" pmx--variable))
 
-    (defvar pmx--variable "A string" "A variable brought to you by pmx")
+  ;;   (transient-define-prefix pmx-nested-transient ()
+  ;;     "Some subcommands, like tree menus from the land of mice"
+  ;;     ["Switches"
+  ;;      ("-s" "another switch" ("-x" "--conflicting"))]
+  ;;     ["Sub Command Introspection"
+  ;;      ("i" pmx-show-args)
+  ;;      ("p" pmx-show-prefix)
+  ;;      ("s" pmx-show-suffixes)
+  ;;      ("c" pmx-show-command)]
+  ;;     ["Dynamic Commands"
+  ;;      ("d" pmx-dynamic-suffix)])
 
-    (transient-define-argument pmx-set-lisp-variable ()
-      "Set a lisp variable, pmx--variable.  Won't show up in infix arguments."
-      :description "set pmx--variable"
-      :class 'transient-lisp-variable
-      :shortarg "-l"
-      :variable 'pmx--variable
-      :argument "--letters=")
+  ;;   (transient-define-prefix pmx-transient-toy ()
+  ;;     "Figure out how to use transient's API properly"
+  ;;     [:class transient-columns
+  ;;      ["Things"
+  ;;       ("-w" "switch"  ("-w" "--switch"))]
+  ;;      ["Others"
+  ;;       ("i" pmx-show-args)
+  ;;       ("p" pmx-show-prefix)
+  ;;       ("s" pmx-show-suffixes)
+  ;;       ("c" pmx-show-command)
+  ;;       ("m" pmx-send-message)]
+  ;;      ["More"
+  ;;       ("f" pmx-affirmative)
+  ;;       ("y" pmx-yep-nope)
+  ;;       ("a" pmx-abc)
+  ;;       ("l" pmx-set-lisp-variable)
+  ;;       ("w" pmx-show-lisp-variable)]
+  ;;      ["Drilldown"
+  ;;       ("d" "drilldown" pmx-nested-transient)]])
 
-    (transient-define-suffix pmx-show-lisp-variable ()
-      "Access pmx--variable"
-      :description "show pmx--variable"
-      (interactive)
-      (message "Current value of pmx--variable: %s" pmx--variable))
-
-    (transient-define-suffix pmx-dynamic-suffix ()
-      "Description depends on pmx--variable"
-      :if-not '(lambda () (string-equal pmx--variable "abc"))
-      :description '(lambda () (format "pmx %s" pmx--variable))
-      (interactive)
-      (message "Current value of pmx--variable: %s" pmx--variable))
-
-    (transient-define-prefix pmx-nested-transient ()
-      "Some subcommands, like tree menus from the land of mice"
-      ["Switches"
-       ("-s" "another switch" ("-x" "--conflicting"))]
-      ["Sub Command Introspection"
-       ("i" pmx-show-args)
-       ("p" pmx-show-prefix)
-       ("s" pmx-show-suffixes)
-       ("c" pmx-show-command)]
-      ["Dynamic Commands"
-       ("d" pmx-dynamic-suffix)])
-
-    (transient-define-prefix pmx-transient-toy ()
-      "Figure out how to use transient's API properly"
-      [:class transient-columns
-       ["Things"
-        ("-w" "switch"  ("-w" "--switch"))]
-       ["Others"
-        ("i" pmx-show-args)
-        ("p" pmx-show-prefix)
-        ("s" pmx-show-suffixes)
-        ("c" pmx-show-command)
-        ("m" pmx-send-message)]
-       ["More"
-        ("f" pmx-affirmative)
-        ("y" pmx-yep-nope)
-        ("a" pmx-abc)
-        ("l" pmx-set-lisp-variable)
-        ("w" pmx-show-lisp-variable)]
-       ["Drilldown"
-        ("d" "drilldown" pmx-nested-transient)]])
-
-    (global-set-key (kbd "M-o") 'pmx-transient-toy)
+  ;;   (global-set-key (kbd "M-o") 'pmx-transient-toy)
 )
-
-
-(use-package lispy
-  :hook ((emacs-lisp-mode . lispy-mode)
-         (lisp-mode . lispy-mode)
-         (scheme-mode . lispy-mode)))
 
 (use-package lispyville
   :hook (lispy-mode . lispyville-mode))
-
 
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
