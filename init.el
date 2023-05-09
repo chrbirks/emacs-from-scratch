@@ -263,7 +263,7 @@ _b_: browse packages _q_: quit
 ;; Snippets settings
 ; Add custom snippets dir
 ; TODO: chezmoi template
-(setq yas-snippet-dirs '("/home/cbs/.config/emacs/snippets" "/home/cbs/etc/spacemacs.d/private/snippets/" "/home/cbs/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
+(setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
 
 (use-package no-littering
   :demand t
@@ -776,7 +776,7 @@ _b_: browse packages _q_: quit
 
 ;; Load corfu extensions
 (with-eval-after-load 'corfu
-  (add-to-list 'load-path "/home/cbs/.config/scratch-emacs/elpaca/repos/corfu/extensions/")
+  (add-to-list 'load-path "~/.config/scratch-emacs/elpaca/repos/corfu/extensions/")
   ;; corfu-info: Get the corfu-info-documentation and corfu-info-location functions
   (require 'corfu-info)
   ;; corfu-history: Sort candidates by their history position
