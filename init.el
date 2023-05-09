@@ -333,12 +333,7 @@ _b_: browse packages _q_: quit
   :config
   (spacemacs-leader
    "s e" '(evil-iedit-state/iedit-mode :which-key "iedit-mode at point")
-   )
-  )
-
-;; Window configuration
-(setq switch-to-buffer-obey-display-actions t)
-(setq switch-to-buffer-in-dedicated-window 'pop) ; Opening buffer in dedicated window causes it to pop up somewhere else instead of an error
+   ))
 
 (if (version<= emacs-version "28")
     ;; Use undo-tree for Emacs version earlier than 28
@@ -663,8 +658,6 @@ _b_: browse packages _q_: quit
   ;; Tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
-
-  (recentf-mode 1)
 
   :config
   ;; Use `consult-completion-in-region' if Vertico is enabled.
