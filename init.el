@@ -278,7 +278,7 @@ _b_: browse packages _q_: quit
   (setq evil-want-fine-undo nil)
   :config
   (evil-mode 1)
-  ;; (evil-set-undo-system 'undo-tree)
+  (evil-set-undo-system 'undo-redo) ;; undo-redo works independent of vundo and undo-tree
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
