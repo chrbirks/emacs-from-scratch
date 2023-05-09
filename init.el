@@ -161,6 +161,8 @@ _b_: browse packages _q_: quit
  ;; use-dialog-box nil
  ;; Fix undo in commands affecting the mark.
  mark-even-if-inactive nil
+ ;; Disable mouse acceleration
+ mouse-wheel-progressive-speed nil
  )
 
 (set-charset-priority 'unicode)
