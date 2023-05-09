@@ -1252,6 +1252,7 @@ _b_: browse packages _q_: quit
   :config
   (spacemacs-leader
    "c l" '(evilnc-comment-or-uncomment-lines :which-key "comment-or-uncomment-lines")
+   "c p" '(evilnc-comment-or-uncomment-paragraphs :which-key "comment-or-uncomment-paragraph")
    "c y" '(evilnc-copy-and-comment-lines :which-key "copy-and-comment-lines")
    )
   )
