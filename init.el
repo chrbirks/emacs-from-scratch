@@ -193,8 +193,6 @@ _b_: browse packages _q_: quit
    global-hl-line-mode t
    ;; Disable tildes in fringe
    global-vi-tilde-fringe-mode nil
-   ;; Escape sequence
-   evil-escape-key-sequence "fd"
    ;; Increase max number of flycheck errors
    flycheck-checker-error-threshold 1000
    ;; Compress files when access them via TRAMP
@@ -321,6 +319,14 @@ _b_: browse packages _q_: quit
    "j j" '(evil-avy-goto-char-timer :which-key "jump to char")
    "j l" '(evil-avy-goto-line :which-key "jump to line")
    "j w" '(evil-avy-goto-word-or-subword-1 :which-key "jump to word")))
+
+(use-package evil-escape
+  :demand t
+  :init
+  (setq evil-escape-key-sequence "fd"
+        evil-escape-delay 0.15)
+  :config
+  (evil-escape-mode))
 
 (use-package evil-iedit-state
   :after evil
