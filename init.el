@@ -1130,6 +1130,12 @@ _b_: browse packages _q_: quit
         )
   )
 
+(use-package tree-sitter
+  :ensure t
+  :defer t)
+(use-package tree-sitter-langs
+  :ensure t
+  :defer t)
 
 
 ;; (defun efs/lsp-mode-setup ()
@@ -1280,6 +1286,10 @@ _b_: browse packages _q_: quit
   :defer t
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package ialign
+  :ensure t
+  :after pcre2el
+  :defer t)
 
 (use-package winum
   :demand t
@@ -1699,17 +1709,6 @@ _b_: browse packages _q_: quit
   :after evil
   :config
   (global-evil-surround-mode 1)
-  ;; '(evil-surround-pairs-alist
-  ;;   '((41 "(" . ")")
-  ;;     (93 "[" . "]")
-  ;;     (125 "{" . "}")
-  ;;     (35 "#{" . "}")
-  ;;     (98 "(" . ")")
-  ;;     (66 "{" . "}")
-  ;;     (62 "<" . ">")
-  ;;     (116 . evil-surround-read-tag)
-  ;;     (60 . evil-surround-read-tag)
-  ;;     (102 . evil-surround-function)))
   )
 
 (use-package treemacs
@@ -1762,69 +1761,10 @@ _b_: browse packages _q_: quit
 ;; Must be last?
 (elpaca-process-queues)
 
+;; TODO: consult-yank-from-kill-ring should show line shifts
+;; TODO: all-the-icons connecting to githubusercontent
 ;; TODO: occur in embark
 ;; TODO: eglot
-
-;; TODO: treesitter
-                  ;; tree-sitter-syntax-highlight-enable t
-                  ;; tree-sitter-indent t
-                  ;; tree-sitter-fold-indicators-enable t
-                  ;; tree-sitter-fold-enable t) ; If you use a dotspacemacs-editing-style other than 'vim or a dotspacemacs-folding-method other than 'evil it's likely that you'll find the integration with ts-fold wanting ; FIXME 01-02-22: causes lagginess when ts-fold-indicators-mode is enabled in C buffer
-
-;; TODO:     (org :variables
-          ;; org-roam-v2-ack t ; Suppress v2 migration warning
-          ;; org-enable-sticky-header nil; t
-          ;; org-enable-notifications t
-          ;; org-enable-github-support t
-          ;; org-enable-trello-support nil
-          ;; org-enable-jira-support t ; add your authentication credentials to ~/.authinfo.gpg or ~/.authinfo: machine yourcompany.atlassian.net login you@example.com password yourPassword port 443
-          ;; org-enable-modern-support t
-          ;; jiralib-url "https://fiberblaze.atlassian.net:443"
-          ;; org-src-tab-acts-natively nil ;; Prevent completion at point starting when inserting new lines with 'o' in source block
-          ;; org-hide-leading-stars t ; Do not show symbol before headlines when they are subheadlines
-          ;; org-enable-org-brain-support t
-          ;; org-enable-roam-support t
-          ;; org-enable-roam-ui t
-          ;; org-enable-roam-protocol t)
-
-;; TODO
-                                      ;; ialign ;; visual align-regexp
-                                      ;; pcre2el ;; Required for PCRE mode in ialign
-                                      ;; ; doom-themes
-                                      ;; ; solaire-mode
-                                      ;; posframe
-                                      ;; hydra
-                                      ;; major-mode-hydra
-                                      ;; ; lsp-java
-                                      ;; lsp-docker
-                                      ;; deadgrep
-                                      ;; monky
-                                      ;; vterm
-                                      ;; company-fuzzy
-                                      ;; emacsql
-                                      ;; emacsql-sqlite
-                                      ;; ;; tree-sitter packages superseeded by layer?
-                                      ;; ; tree-sitter
-                                      ;; tree-sitter-langs
-                                      ;; helm-tree-sitter
-                                      ;; treesit-auto
-                                      ;; ; evil-textobj-tree-sitter
-                                      ;; ;; Org related
-                                      ;; ; org-fancy-priorities
-                                      ;; ; deft
-                                      ;; (org-roam-ui :variables ;; Superseeds org-roam-server that only supports Org-Roam v1
-                                      ;;              org-roam-ui-sync-theme t
-                                      ;;              org-roam-ui-follow t
-                                      ;;              org-roam-ui-update-on-save t
-                                      ;;              org-roam-ui-open-on-start t)
-                                      ;; svg-tag-mode ; For replacing keywords such as TODOs etc. with svg images
-                                      ;; ;; Guix related
-                                      ;; ; guix ; Run 'M-x guix-help' for more info
-                                      ;; ; geiser ; Required to use the guix package
-                                      ;; ; geiser-guile ; Required to use the guix package
-                                      ;; ;; verilog-ext and vhdl-ext required packages
-                                      ;; ag
-                                      ;; outshine
-                                      ;; apheleia
-                                      ;; eglot
-                                      ;; ripgrep
+;; TODO: matching parenthesies
+;; TODO: Try replacing most :demand with :ensure
+;; TODO: Rewrite elpaca hydra to transient
