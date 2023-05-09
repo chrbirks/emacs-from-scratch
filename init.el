@@ -945,7 +945,7 @@ _b_: browse packages _q_: quit
   (visual-line-mode 1))
 
 (use-package org
-  :defer t
+  :demand t
   ;; :pin org
   :commands (org-capture org-agenda)
   :hook (org-mode . efs/org-mode-setup)
@@ -969,55 +969,24 @@ _b_: browse packages _q_: quit
                            "~/org/projects/misc-TODOs.org"
                            )
         )
+  ;; Set the TODo item states and customize their face
+  (setq org-todo-keywords
+        '(;; Sequence for TASKS
+          (sequence "TODO(t@/!)" "DOING(o@/!)" "WAITING(w@/!)" "|" "CANCELED(x@/!)" "DONE(d@/!)")
+          ;; ;; Sequence for EVENTS
+          ;; (sequence "VISIT(v@/!)" "|" "DIDNOTGO(z@/!)" "MEETING(m@/!)" "VISITED(y@/!)")
+          ;; ;; Sequence for tasks for time-tracking. Add note with time when entering the state (@) and record only time when leaving the state (!)
+          ;; (sequence "BACKLOG(b@/!)" "POSTPONED(p@/!)" "WAITING(w@/!)" "DOING(d@/!)" "|" "REVIEW(r@/!)" "DONE(c@/!)")
+          ))
+  ;; Define function deadgrep-org
+  (defun deadgrep-org ()
+    "Search files in org-directory"
+    (interactive)
+    ;; Set deadgrep search root to org-directory
+    (setq deadgrep-project-root-overrides `(("~/" . ,org-directory)))
 
-  ;; ;; Configure custom agenda views
-  ;; (setq org-agenda-custom-commands
-  ;;  '(("d" "Dashboard"
-  ;;    ((agenda "" ((org-deadline-warning-days 7)))
-  ;;     (todo "NEXT"
-  ;;       ((org-agenda-overriding-header "Next Tasks")))
-  ;;     (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
-
-  ;;   ("n" "Next Tasks"
-  ;;    ((todo "NEXT"
-  ;;       ((org-agenda-overriding-header "Next Tasks")))))
-
-  ;;   ("W" "Work Tasks" tags-todo "+work-email")
-
-  ;;   ;; Low-effort next actions
-  ;;   ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-  ;;    ((org-agenda-overriding-header "Low Effort Tasks")
-  ;;     (org-agenda-max-todos 20)
-  ;;     (org-agenda-files org-agenda-files)))
-
-  ;;   ("w" "Workflow Status"
-  ;;    ((todo "WAIT"
-  ;;           ((org-agenda-overriding-header "Waiting on External")
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "REVIEW"
-  ;;           ((org-agenda-overriding-header "In Review")
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "PLAN"
-  ;;           ((org-agenda-overriding-header "In Planning")
-  ;;            (org-agenda-todo-list-sublevels nil)
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "BACKLOG"
-  ;;           ((org-agenda-overriding-header "Project Backlog")
-  ;;            (org-agenda-todo-list-sublevels nil)
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "READY"
-  ;;           ((org-agenda-overriding-header "Ready for Work")
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "ACTIVE"
-  ;;           ((org-agenda-overriding-header "Active Projects")
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "COMPLETED"
-  ;;           ((org-agenda-overriding-header "Completed Projects")
-  ;;            (org-agenda-files org-agenda-files)))
-  ;;     (todo "CANC"
-  ;;           ((org-agenda-overriding-header "Cancelled Projects")
-  ;;            (org-agenda-files org-agenda-files)))))))
-
+    (call-interactively #'deadgrep deadgrep-project-root-overrides)
+    )
   ;; Define Org (not roam) capture templates
   (setq org-capture-templates
         '(("t" "TODO" entry
@@ -1029,10 +998,22 @@ _b_: browse packages _q_: quit
            (file "~/org/projects/weibel/TODOs.org")
            (file "~/.config/emacs/org-templates/weibel-todo.org")
            :empty-lines-before 1
-           :unnarrowed nil)
-          )
-        )
-)
+           :unnarrowed nil)))
+  (spacemacs-leader
+   "a o" '(:ignore t :which-key "org")
+   "a o r" '(:ignore t :which-key "roam")
+   "a o r d" '(:ignore t :which-key "dailies")
+   "a o r d t" '(org-roam-dailies-goto-today :which-key "goto today")
+   "a o r d d" '(org-roam-dailies-goto-date :which-key "goto date")
+   )
+  )
+
+(use-package org-roam-ui
+  :ensure t
+  :after org
+  :config
+  (spacemacs-leader
+   "a o r u" '(org-roam-ui-open :which-key "org-roam-ui-open")))
 
 (use-package org-projectile
   :after org
@@ -1051,17 +1032,63 @@ _b_: browse packages _q_: quit
     (concat "~/org/projects/" (file-name-nondirectory (directory-file-name project-path)) "/TODOs.org"))
   )
 
-;; ;; Old Org config - replaced by org-modern below
-;; ;; (use-package org-config
-;; ;;   :load-path "~/.config/emacs/packages/" ; $XDG_CONFIG_HOME cannot be expanded here for some reason
-;; ;;   )
-;; (use-package org-modern-config
-;;   :elpaca nil
-;;   :after org
-;;   :load-path "~/.config/emacs/packages/" ; $XDG_CONFIG_HOME cannot be expanded here for some reason
-;;   :init
-;;   (setq org-modern-config--use-svg-tags nil)
-;;     )
+;; For replacing keywords such as TODOs etc. with svg images
+(use-package svg-tag-mode
+  :ensure t
+  :defer t)
+
+(use-package org-modern
+  :ensure t
+  :after org
+  :config
+  (setq org-auto-align-tags nil
+        org-tags-column 0
+        org-catch-invisible-edits 'show-and-error
+        org-special-ctrl-a/e t
+        org-insert-heading-respect-content t
+        org-export-backends '(ascii html icalendar latex md odt confluence)
+        ;; Org styling, hide markup, etc.
+        org-hide-emphasis-markers t
+        org-pretty-entities t
+        org-ellipsis "…" ; " ⛛"
+        org-use-sub-superscripts nil ; Disable underscore-to-subscript beautifying
+        ;; Agenda styling
+        org-agenda-block-separator ?─
+        org-agenda-start-with-log-mode t
+        org-agenda-time-grid
+        '((daily today require-timed)
+          (800 1000 1200 1400 1600 1800 2000)
+          " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+        org-agenda-current-time-string
+        "⭠ now ─────────────────────────────────────────────────")
+  ;; Add frame borders and window dividers
+  (dolist (face '(window-divider
+                  window-divider-first-pixel
+                  window-divider-last-pixel))
+    (face-spec-reset-face face)
+    (set-face-foreground face (face-attribute 'default :background)))
+  (set-face-background 'fringe (face-attribute 'default :background))
+
+  ;; Set faces for TOD0 keywords
+  (if nil
+      ;; If true
+      (progn ;; If true
+        (use-package svg-tag-mode-config :load-path "~/.config/emacs/packages/")
+        (add-hook 'org-mode-hook 'svg-tag-mode))
+    ;; If false/nil
+    (setq org-modern-todo-faces
+          '(
+            ("TODO"     :foreground "#b7742f" :background "#292b2e" :weight bold)
+            ("DOING"    :foreground "yellow"  :background "#292b2e" :weight bold)
+            ("WAITING"  :foreground "yellow"  :background "#292b2e" :weight normal)
+            ("CANCELED" :foreground "#686868" :background "#292b2e" :weight bold)
+            ("DONE"     :foreground "#686868" :background "#292b2e" :weight bold)
+            ))
+    )
+  ;; Enable org-modern globally
+  (global-org-modern-mode)
+  (add-hook 'org-mode-hook 'org-modern-mode)
+  (add-hook 'org-agenda-finilize-hook #'org-modern-agenda))
 
 (use-package org-roam
   :after org
@@ -1102,21 +1129,6 @@ _b_: browse packages _q_: quit
           )
         )
   )
-
-(use-package org-bullets
-  :defer t
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-
-
-(with-eval-after-load 'org
-  ;; This is needed as of Org 9.2
-  (require 'org-tempo)
-
-  (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("py" . "src python")))
 
 
 
