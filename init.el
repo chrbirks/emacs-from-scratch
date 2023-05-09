@@ -1230,6 +1230,14 @@ _b_: browse packages _q_: quit
    )
   )
 
+(use-package git-gutter
+  :ensure t
+  :init
+  :config (global-git-gutter-mode +1)
+  (set-face-background 'git-gutter:modified "#4f97d7") ;; spacemacs blue
+  (set-face-background 'git-gutter:added "#67b11d") ;; spacemacs green
+  (set-face-background 'git-gutter:deleted "#f2241f") ;; spacemacs red
+)
 (use-package evil-nerd-commenter
   :after evil
   :config
@@ -1276,7 +1284,11 @@ _b_: browse packages _q_: quit
 
 (custom-set-variables
  '(tab-width 3)
- )
+ '(git-gutter:modified-sign " ") ;; One colored space (multiple characters would be ok)
+ '(git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
+ '(git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
+ '(git-gutter:lighter " GG");; Set git-gutter name in the modeline
+)
 
 (custom-set-faces
  ;; Set face for persp-mode modeline for when open buffer is not in current perspective
@@ -1723,8 +1735,6 @@ _b_: browse packages _q_: quit
 
 ;; TODO: occur in embark
 ;; TODO: eglot
-;; TODO: TAB should indent in lisp-mode
-;; TODO: Make recentf remember between emacs sessions
 
 ;; TODO: treesitter
                   ;; tree-sitter-syntax-highlight-enable t
