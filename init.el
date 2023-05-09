@@ -172,7 +172,7 @@ _b_: browse packages _q_: quit
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
 ;; Fix eln-cache path to work with native comp. Compiler otherwise stores output files in Chemacs config folder
-(when (< emacs-major-version 29)
+(when (> emacs-major-version 28)
   (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
 
 ;; The default is 800 kilobytes.  Measured in bytes.
