@@ -722,6 +722,12 @@ _b_: browse packages _q_: quit
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
 
+  (defun efs--consult-line-symbol-at-point ()
+    "Call `consult-line' with the symbol under cursor as the initial search argument."
+    (interactive)
+    (let ((initial (thing-at-point 'symbol)))
+      (consult-line initial)))
+
   ;; Global keybindings
   (spacemacs-leader
    "b b" '(consult-buffer :which-key "switch buffer") ; TODO: How to sort dirs, files, *-buffers, etc.
@@ -735,7 +741,8 @@ _b_: browse packages _q_: quit
    "r r" '(consult-register :which-key "select register")
 
    "s s" '(consult-line :which-key "seach buffer")
-   "s S" '(consult-line-multi :which-key "seach all buffers") ; TODO: Do not search virtual buffers
+   "s S" '(efs--consult-line-symbol-at-point :which-key "search buffer at point")
+   ;; "s S" '(consult-line-multi :which-key "seach all buffers") ; TODO: Do not search virtual buffers
    "s p" '(consult-ripgrep :which-key "search project")
    "s r" '(rg-menu :which-key "ripgrep-menu")
    "s d" '(deadgrep :which-key "deadgrep")
