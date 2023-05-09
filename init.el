@@ -97,7 +97,7 @@ _b_: browse packages _q_: quit
    "SPC" 'execute-extended-command
    "'" '(vterm-toggle :which-key "vterm toggle")
 
-   "TAB" '(indent-for-tab-command :which-key "indent-for-tab-command") ;; FIXME: Gets overridden by evil key
+   "TAB" '(indent-for-tab-command :which-key "indent-for-tab-command")
 
    "a" '(:ignore t :which-key "applications")
    "a k" 'hydra-elpaca-helper/body
@@ -216,23 +216,6 @@ _b_: browse packages _q_: quit
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
 
-;; Helper functions for snippets templates
-;; Format:          \sum_{}^{}
-;; Snippet example: \sum_{$1}^{$2} ${3:$$(yas-delete-if-empty)}
-(defun yas-delete-if-empty ()
-  (save-excursion
-    (when (re-search-backward "\\\\sum\\(_{}\\)^{.+}" (line-beginning-position) t)
-      (replace-match "" t t nil 1))))
-
-;; Snippets settings
-; Add custom snippets dir
-; TODO: chezmoi template
-(setq yas-snippet-dirs '("/home/cbs/.config/emacs/snippets" "/home/cbs/etc/spacemacs.d/private/snippets/" "/home/cbs/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
-
-(use-package no-littering
-  :demand t
-  :defer nil)
-
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)        ; Disable visible scrollbar
@@ -264,6 +247,28 @@ _b_: browse packages _q_: quit
 ;; Set the variable pitch face
 ;; TODO: Something else than mono
 (set-face-attribute 'variable-pitch nil :font "MesloLGS Nerd Font Mono" :height efs/default-variable-font-size :weight 'regular)
+
+;; Helper functions for snippets templates
+;; Format:          \sum_{}^{}
+;; Snippet example: \sum_{$1}^{$2} ${3:$$(yas-delete-if-empty)}
+(defun yas-delete-if-empty ()
+  (save-excursion
+    (when (re-search-backward "\\\\sum\\(_{}\\)^{.+}" (line-beginning-position) t)
+      (replace-match "" t t nil 1))))
+
+;; Window configuration
+(setq switch-to-buffer-obey-display-actions t)
+(setq switch-to-buffer-in-dedicated-window 'pop) ; Opening buffer in dedicated window causes it to pop up somewhere else instead of an error
+
+;; Snippets settings
+; Add custom snippets dir
+; TODO: chezmoi template
+(setq yas-snippet-dirs '("/home/cbs/.config/emacs/snippets" "/home/cbs/etc/spacemacs.d/private/snippets/" "/home/cbs/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
+
+(use-package no-littering
+  :demand t
+  :defer nil)
+
 
 (use-package evil
   :demand t
@@ -315,8 +320,7 @@ _b_: browse packages _q_: quit
   (spacemacs-leader
    "j j" '(evil-avy-goto-char-timer :which-key "jump to char")
    "j l" '(evil-avy-goto-line :which-key "jump to line")
-   "j w" '(evil-avy-goto-word-or-subword-1 :which-key "jump to word")
-   ))
+   "j w" '(evil-avy-goto-word-or-subword-1 :which-key "jump to word")))
 
 (use-package evil-iedit-state
   :after evil
@@ -359,7 +363,6 @@ _b_: browse packages _q_: quit
     )
 )
 
-
 ;; Remote access via TRAMP
 (require 'tramp)
 (setq tramp-default-method "sshx"
@@ -381,7 +384,13 @@ _b_: browse packages _q_: quit
 
 (use-package spacemacs-theme
   :defer t
-  :init (load-theme 'spacemacs-dark t))
+  :init
+  (load-theme 'spacemacs-dark t)
+  :config
+  ;; Do not use a different background color for comments.
+  (setq spacemacs-theme-comment-bg nil)
+  ;; Comments should appear in italics.
+  (setq spacemacs-theme-comment-italic t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -553,93 +562,11 @@ _b_: browse packages _q_: quit
 (use-package wgrep)
 (use-package deadgrep)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (use-package ivy
-;;   :diminish
-;;   :bind (
-;;          :map ivy-minibuffer-map
-;;          ("TAB" . ivy-alt-done)
-;;          ("C-l" . ivy-alt-done)
-;;          ("C-j" . ivy-next-line)
-;;          ("C-k" . ivy-previous-line)
-;;          :map ivy-switch-buffer-map
-;;          ("C-k" . ivy-previous-line)
-;;          ("C-l" . ivy-done)
-;;          ("C-d" . ivy-switch-buffer-kill)
-;;          :map ivy-reverse-i-search-map
-;;          ("C-k" . ivy-previous-line)
-;;          ("C-d" . ivy-reverse-i-search-kill))
-;;   :config
-;;   (ivy-mode 1)
-;;   (setq ivy-display-style 'fancy)
-;;   (setq ivy-use-virtual-buffers t) ; Include virtual buffers in the completion list
-;;   (setq ivy-count-format "(%d/%d) ") ; Show the current and total number of candidates
-;;   (setq ivy-format-function #'ivy-format-function-line) ; Display each candidate on a new line
-;;   (setq ivy-on-del-error-function #'ignore) ; Do not quit minibuffer when pressing backspace
-;;   (setq ivy-height 20)
-;;   (setq ivy-height-alist '((counsel-evil-registers . 5)
-;;                            (counsel-yank-pop . 5)
-;;                            (counsel-git-log . 4)))
-;;   ;; Replace the default transformer with the custom one
-;;   ;; (setq ivy-switch-buffer-transformer #'my-ivy-switch-buffer-transformer)
-
-;;   ;; Bind keys
-;;   (spacemacs-leader
-;;    "s s" '(swiper :which-key "swiper")
-;;    "s S" '(swiper :which-key "swiper-all")
-;;    )
-;;   )
-
-;; ;; (defun my-ivy-switch-buffer-transformer (buffer_name)
-;; ;;   "Display the buffer name along with the file location in `counsel-switch-buffer'."
-;; ;;   (let ((buffer (get-buffer buffer_name)))
-;; ;;     (if (and buffer (buffer-file-name buffer))
-;; ;;         (format "%s (%s)" buffer_name (abbreviate-file-name (buffer-file-name buffer)))
-;; ;;       buffer_name)))
-
-;; (use-package ivy-rich
-;;   :after ivy
-;;   :init
-;;   (ivy-rich-mode 1))
-
-;; (use-package counsel
-;;   ;; :bind (("C-M-j" . 'counsel-switch-buffer)
-;;   ;;        :map minibuffer-local-map
-;;   ;;        ("C-r" . 'counsel-minibuffer-history))
-;;   :custom
-;;   (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
-;;   :config
-;;   (setq counsel-switch-buffer-preview-virtual-buffers t)
-;;   (counsel-mode 1)
-;;   ;; Global keybindings
-;;   (spacemacs-leader
-;;    "SPC" '(counsel-M-x :which-key "M-x")
-;;    "b b" '(counsel-switch-buffer :which-key "switch buffer")
-;;    "b i" '(counsel-ibuffer :which-key "switch ibuffer")
-;;    "b n" '(switch-to-next-buffer :which-key "next buffer")
-;;    "b p" '(switch-to-prev-buffer :which-key "previous buffer")
-;;    "f f" '(counsel-find-file :which-key "find file")
-;;    "f r" '(counsel-recentf :which-key "recent files")
-;;    "p f" '(counsel-projectile-find-file :which-key "find file")
-;;    "p s" '(counsel-projectile-rg :which-key "search project")
-;;    )
-;;   )
-
-;; (use-package ivy-prescient
-;;   :after counsel
-;;   :custom
-;;   (ivy-prescient-enable-filtering nil)
-;;   :config
-;;   ;; Uncomment the following line to have sorting remembered across sessions!
-;;   ;(prescient-persist-mode 1)
-;;   (ivy-prescient-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Vertico completion framework
 (use-package vertico
-  :init
-  (vertico-mode)
+  :init (vertico-mode)
   :config
   (setq vertico-count 15)
   (setq verico-resize t)
@@ -783,10 +710,9 @@ _b_: browse packages _q_: quit
   ;; Global keybindings
   (spacemacs-leader
    "b b" '(consult-buffer :which-key "switch buffer") ; TODO: How to sort dirs, files, *-buffers, etc.
-   "b p" '(consult-project-buffer :which-key "switch project buffer")
+   "b P" '(consult-project-buffer :which-key "switch project buffer")
    ; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
    ; ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-   ;; "b i" '(counsel-ibuffer :which-key "switch ibuffer")
 
    "f r" '(consult-recent-file :which-key "recent files")
    "r y" '(consult-yank-from-kill-ring :which-key "yank kill-ring")
@@ -807,15 +733,9 @@ _b_: browse packages _q_: quit
    "t m" '(consult-minor-mode-menu :which-key "enable/disable minor-mode")
    )
   )
-;; (global-set-key (kbd "C-x b") 'consult-buffer)
-;; (global-set-key (kbd "M-x") 'consult-M-x)
-;; (global-set-key (kbd "C-x C-f") 'consult-find)
-;; (global-set-key (kbd "C-x C-r") 'consult-recent-file)
-;; (global-set-key (kbd "C-c k") 'consult-ripgrep)
 
 (use-package corfu
   :demand t
-  ;; :load-path "/home/cbs/.config/scratch-emacs/elpaca/repos/corfu/extensions/*.el" ;; To enable corfu-info.el and other extensions
   :bind
   (:map corfu-map
         ("C-c C-g" . #'corfu-quit)
@@ -855,7 +775,6 @@ _b_: browse packages _q_: quit
   (setq corfu-popupinfo-delay '(1.0 . 0.2))
   (setq corfu-popupinfo-max-height 30)
  )
-
 
 ;; Cape - Completion At Point Extensions
 (defun efs/cape-capf-setup-verilog ()
@@ -1122,8 +1041,6 @@ _b_: browse packages _q_: quit
 ;;   (setq org-modern-config--use-svg-tags nil)
 ;;     )
 
-
-
 (use-package org-roam
   :after org
   :config
@@ -1361,7 +1278,7 @@ _b_: browse packages _q_: quit
  ;; Use more faded colors for symbol-overlay
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- (custom-set-faces
+ ;; (custom-set-faces
   '(symbol-overlay-face-1 ((t (:background "#689d6a"       :foreground "black"))))
   '(symbol-overlay-face-2 ((t (:background "#b08588"       :foreground "black"))))
   '(symbol-overlay-face-3 ((t (:background "#7c6f64"       :foreground "black"))))
@@ -1371,7 +1288,7 @@ _b_: browse packages _q_: quit
   '(symbol-overlay-face-6 ((t (:background "#d79921"       :foreground "black"))))
   '(symbol-overlay-face-7 ((t (:background "medium orchid" :foreground "black"))))
   '(symbol-overlay-face-8 ((t (:background "#fbe107"       :foreground "black"))))
-  )
+  ;; )
 )
 
 ;; FIXME: Buffers are shared between all perspectives
@@ -1598,7 +1515,6 @@ _b_: browse packages _q_: quit
    )
   )
 
-(require 'cl-lib) ;; TODO: Still needed?
 (use-package transient
   :demand t
   :config
