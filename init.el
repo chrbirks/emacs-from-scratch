@@ -563,6 +563,20 @@ _b_: browse packages _q_: quit
 (use-package wgrep)
 (use-package deadgrep)
 
+(use-package recentf
+  :elpaca nil ;; recentf is a native package
+  :demand t
+  :init
+  (run-at-time nil (* 5 60) 'recentf-save-list) ;; Save recent files every 5 minutes
+  :config
+  (setq recentf-save-file (expand-file-name "var/recentf-save.el" user-emacs-directory)
+        ;; recentf-auto-cleanup 'never
+        recentf-max-menu-items 25
+        recentf-max-saved-items 25)
+  (add-to-list 'recentf-exclude ".*/\\.config/emacs-from-scratch/var/persp-mode/.*")
+  (add-to-list 'recentf-exclude ".*/\\.config/emacs-from-scratch/var/treemacs/persist\\.org$")
+  (recentf-mode 1)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Vertico completion framework
