@@ -1825,11 +1825,11 @@ _b_: browse packages _q_: quit
 ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
 (use-package flycheck
   :ensure t
-  :config
-  ; FIXME: Try removing these since they are part of lsp-mode
+  ;; :config
+  ;; ; FIXME: Try removing these since they are part of lsp-mode
   ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
-  (setq 'flycheck-global-modes t)
+  ;; ;; (setq 'flycheck-global-modes t)
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
