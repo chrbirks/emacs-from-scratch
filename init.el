@@ -1364,35 +1364,14 @@ _b_: browse packages _q_: quit
   (defun efs/current-layout-name ()
     "Get name of the current perspective."
     (safe-persp-name (get-frame-persp)))
-
   (defun efs/layouts-ts-kill ()
     "Kill current perspective"
     (interactive)
     (persp-kill (efs/current-layout-name)))
-
-;;   (defun spacemacs/layout-switch-by-pos (pos)
-;;     "Switch to perspective of position POS.
-;; If POS has no layout, create layout with auto-generated name. Otherwise,
-;; ask the user if a new layout should be created."
-;;     (let ((persp-to-switch
-;;            (nth pos (persp-names-current-frame-fast-ordered))))
-;;       (if persp-to-switch
-;;           (persp-switch persp-to-switch)
-;;         (let ((persp-reset-windows-on-nil-window-conf t)
-;;               (generated-name (and dotspacemacs-auto-generate-layout-names
-;;                                    (spacemacs//generate-layout-name pos))))
-;;           (if generated-name
-;;               (persp-switch generated-name) ; select an existing layout
-;;             (persp-switch nil)              ; create a new layout
-;;             (spacemacs/home-delete-other-windows))))))
-
-;;   (defun spacemacs/layout-switch-to (pos)
-;;     "Switch to perspective but ask for POS.
-;; If POS has no layout, create layout with auto-generated name. Otherwise,
-;; ask the user if a new layout should be created."
-;;     (interactive "NLayout to switch to/create: ")
-;;     (spacemacs/layout-switch-by-posos (1- pos)))
-
+  (defun efs/save-persp-state ()
+    (interactive)
+    (persp-save-state-to-file persp-auto-save-fname))
+  (run-with-timer 0 (* 5 60) 'efs/save-persp-state) ;; Save perspective every 5 minutes
   ;; (add-hook 'kill-emacs-hook #'persp-state-save)
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
@@ -1402,11 +1381,10 @@ _b_: browse packages _q_: quit
         persp-add-buffer-on-after-change-major-mode t
         persp-sort 'created
         persp-show-modestring t
-        persp-auto-save-opt 4
+        persp-auto-save-opt 2
+        persp-auto-save-num-of-backups 5
         persp-auto-save-persps-to-their-file-before-kill 'persp-file
         persp-kill-foreign-buffer-behaviour 'kill)
-  ;; (define-key evil-normal-state-map (kbd "gt") 'persp-next)
-  ;; (define-key evil-normal-state-map (kbd "gT") 'persp-prev)
   (with-eval-after-load "vterm"
     (persp-def-auto-persp "vterm"
                           :parameters '((dont-save-to-file . t))
