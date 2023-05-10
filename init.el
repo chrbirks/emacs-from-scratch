@@ -409,13 +409,12 @@ _b_: browse packages _q_: quit
   ;; (spaceline-helm-mode) ; Special minor-mode for Helm
   ;; (spaceline-info-mode) ; Special minor-mode for info+
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) ; Color according to evil state
-  (setq powerline-height 18)
+  (setq powerline-height 12)
+  (setq powerline-text-scale-factor 1.1)
   (setq powerline-default-separator 'arrow)
   (setq spaceline-workspace-numbers-unicode t) ; Get unicode numbers when using window-numbering-mode
   (setq spaceline-window-numbers-unicode t) ; Get unicode numbers when using eyebrowse-mode
 )
-
-;; TODO: Try doom-modeline instead
 
 ;; (use-package spaceline-all-the-icons
 ;;   :demand t
@@ -425,6 +424,7 @@ _b_: browse packages _q_: quit
 ;;   (setq spaceline-all-the-icons-file-name-highlight t)
 ;;   (setq spaceline-all-the-icons-highlight-file-name t)
 ;;   (setq spaceline-all-the-icons-window-number-always-visible t)
+;;   (setq spaceline-all-the-icons-clock-always-visible nil)
 ;;   (spaceline-all-the-icons--setup-git-ahead)
 ;;   (spaceline-toggle-all-the-icons-dedicated-on)
 ;;   (spaceline-toggle-all-the-icons-fullscreen-on)
@@ -1330,6 +1330,10 @@ _b_: browse packages _q_: quit
  '(git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
  '(git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
  '(git-gutter:lighter " GG");; Set git-gutter name in the modeline
+ '(spaceline-all-the-icons-icon-set-eyebrowse-slot 'circle)
+ '(spaceline-all-the-icons-icon-set-git-ahead 'commit)
+ '(spaceline-all-the-icons-icon-set-modified 'circle)
+ '(spaceline-all-the-icons-icon-set-window-numbering 'circle)
 )
 
 (custom-set-faces
