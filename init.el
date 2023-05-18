@@ -1,9 +1,7 @@
 ;; -*- lexical-binding: t -*-
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Package management
 ;; elpaca
-
 (defvar elpaca-installer-version 0.4)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
@@ -158,7 +156,7 @@ _b_: browse packages _q_: quit
  ;; Never ding at me, ever.
  ring-bell-function 'ignore
  ;; Prompts should go in the minibuffer, not in a GUI.
- ;; use-dialog-box nil
+ use-dialog-box nil
  ;; Fix undo in commands affecting the mark.
  mark-even-if-inactive nil
  ;; Disable mouse acceleration
@@ -207,12 +205,6 @@ _b_: browse packages _q_: quit
 ;; Set row/column window size at startup
 (if (window-system) (set-frame-size (selected-frame) 140 82))
 
-;; This helps to clear the clutter and increases reproducibility of the config
-;; (let
-;;     ((customization-file (expand-file-name "custom.el" user-emacs-directory)))
-;;   (when (file-exists-p customization-file)
-;;     (setq custom-file customization-file)
-;;     (load custom-file 'noerror)))
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))
 
@@ -245,8 +237,7 @@ _b_: browse packages _q_: quit
 (set-face-attribute 'fixed-pitch nil :font "MesloLGS Nerd Font Mono" :height efs/default-font-size)
 
 ;; Set the variable pitch face
-;; TODO: Something else than mono
-(set-face-attribute 'variable-pitch nil :font "MesloLGS Nerd Font Mono" :height efs/default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Fira Code Nerd Font" :height efs/default-variable-font-size :weight 'regular)
 
 ;; Helper functions for snippets templates
 ;; Format:          \sum_{}^{}
@@ -268,7 +259,6 @@ _b_: browse packages _q_: quit
 (use-package no-littering
   :demand t
   :defer nil)
-
 
 (use-package evil
   :demand t
@@ -452,8 +442,6 @@ _b_: browse packages _q_: quit
       (setq toggle-maximized-buffer-prev-config (current-window-configuration))
       (delete-other-windows) ;; Maybe use treemacs-delete-other-windows
       (setq toggle-maximized-buffer-state t))))
-
-;; TODO: Add maximized indicator to modeline
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; nano-sidebar
@@ -736,8 +724,6 @@ _b_: browse packages _q_: quit
    "b b" '(consult-buffer :which-key "switch buffer") ; TODO: How to sort dirs, files, *-buffers, etc.
    "b B" '(persp-switch-to-buffer :which-key "switch persp buffer")
    "b P" '(consult-project-buffer :which-key "switch project buffer")
-   ; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-   ; ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
 
    "f r" '(consult-recent-file :which-key "recent files")
    "r y" '(consult-yank-from-kill-ring :which-key "yank kill-ring")
@@ -784,24 +770,25 @@ _b_: browse packages _q_: quit
   :init
   (global-corfu-mode)
   ;; (require 'corfu-info)
+  :config
+  ;; Load corfu extensions
+  (with-eval-after-load 'corfu
+    (add-to-list 'load-path "~/.config/scratch-emacs/elpaca/repos/corfu/extensions/")
+    ;; corfu-info: Get the corfu-info-documentation and corfu-info-location functions
+    (require 'corfu-info)
+    ;; corfu-history: Sort candidates by their history position
+    (require 'corfu-history)
+    (corfu-history-mode 1)
+    (savehist-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)
+    ;; corfu-popupinfo
+    (require 'corfu-popupinfo)
+    (corfu-popupinfo-mode 1)
+    (setq corfu-popupinfo-delay '(1.0 . 0.2))
+    (setq corfu-popupinfo-max-height 30)
+    )
 )
 
-;; Load corfu extensions
-(with-eval-after-load 'corfu
-  (add-to-list 'load-path "~/.config/scratch-emacs/elpaca/repos/corfu/extensions/")
-  ;; corfu-info: Get the corfu-info-documentation and corfu-info-location functions
-  (require 'corfu-info)
-  ;; corfu-history: Sort candidates by their history position
-  (require 'corfu-history)
-  (corfu-history-mode 1)
-  (savehist-mode 1)
-  (add-to-list 'savehist-additional-variables 'corfu-history)
-  ;; corfu-popupinfo
-  (require 'corfu-popupinfo)
-  (corfu-popupinfo-mode 1)
-  (setq corfu-popupinfo-delay '(1.0 . 0.2))
-  (setq corfu-popupinfo-max-height 30)
- )
 
 ;; Cape - Completion At Point Extensions
 (defun efs/cape-capf-setup-verilog ()
@@ -945,7 +932,7 @@ _b_: browse packages _q_: quit
 
 
 (defun efs/org-mode-setup ()
-  (org-indent-mode)
+  (org-indent-mode 0)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 
@@ -1138,6 +1125,7 @@ _b_: browse packages _q_: quit
 (use-package tree-sitter
   :ensure t
   :defer t)
+
 (use-package tree-sitter-langs
   :ensure t
   :defer t)
@@ -2085,19 +2073,6 @@ _b_: browse packages _q_: quit
 ;; )
 ;; (add-hook 'vhdl-mode-hook #'vhdl-ext-mode)
 
-;; Must be last?
+;; Must be last
 (elpaca-process-queues)
 
-;; TODO: consult-yank-from-kill-ring should show line shifts
-;; TODO: all-the-icons connecting to githubusercontent
-;; TODO: occur in embark
-;; TODO: eglot
-;; TODO: matching parenthesies
-;; TODO: Try replacing most :demand with :ensure
-;; TODO: Rewrite elpaca hydra to transient
-;; TODO: org: too much indentation
-;; TODO: org: bullet points/stars are black and not blue/green
-;; TODO: overlay transient: show number of grep-highlight-matches
-;; TODO: keybindings: map C-x r t
-;; TODO: 'x' and 'd' should not copy to kill ring
-;; TODO: make powerline black/white maybe
