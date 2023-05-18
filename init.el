@@ -282,6 +282,17 @@ _b_: browse packages _q_: quit
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
+  ;; Overwrite evil-delete-char to not add char to kill ring
+  (defun efs--evil-delete-char (count &optional kill)
+    "Delete the next COUNT chars.
+If KILL is non-nil, also add the text to the kill ring.
+COUNT defaults to 1, and KILL defaults to nil."
+    (interactive "p\nP")
+    (let ((beg (point))
+          (end (min (point-max) (+ (point) count))))
+      (delete-region beg end)))
+  (evil-define-key 'normal 'global "x" 'efs--evil-delete-char) ;; Map "x" to efs--evil-delete-char
+
   ;; Set cursor based on evil state
   (setq evil-normal-state-cursor '(box "DarkGoldenrod2")
         evil-insert-state-cursor '((bar . 2) "chartreuse3")
