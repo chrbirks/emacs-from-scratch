@@ -106,8 +106,8 @@ _b_: browse packages _q_: quit
    "a o c" 'org-capture
 
    "b" '(:ignore t :which-key "buffers")
-   "b n" '(next-buffer :which-key "next buffer")
-   "b p" '(previous-buffer :which-key "previous buffer")
+   "b p" '(switch-to-prev-buffer :which-key "previous buffer")
+   "b n" '(switch-to-next-buffer :which-key "next buffer")
    "b d" 'kill-this-buffer
 
    "c" '(:ignore t :which-key "comments")
@@ -734,6 +734,7 @@ _b_: browse packages _q_: quit
   ;; Global keybindings
   (spacemacs-leader
    "b b" '(consult-buffer :which-key "switch buffer") ; TODO: How to sort dirs, files, *-buffers, etc.
+   "b B" '(persp-switch-to-buffer :which-key "switch persp buffer")
    "b P" '(consult-project-buffer :which-key "switch project buffer")
    ; ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
    ; ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
