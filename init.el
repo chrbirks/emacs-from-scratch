@@ -1358,10 +1358,10 @@ _b_: browse packages _q_: quit
   (set-face-background 'git-gutter:modified "#4f97d7") ;; spacemacs blue
   (set-face-background 'git-gutter:added "#67b11d") ;; spacemacs green
   (set-face-background 'git-gutter:deleted "#f2241f") ;; spacemacs red
-  (git-gutter:modified-sign " ") ;; One colored space (multiple characters would be ok)
-  (git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
-  (git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
-  (git-gutter:lighter " GG") ;; Set git-gutter name in the modeline
+  (setq git-gutter:modified-sign " ") ;; One colored space (multiple characters would be ok)
+  (setq git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
+  (setq git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
+  (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
 )
 (use-package evil-nerd-commenter
   :after evil
