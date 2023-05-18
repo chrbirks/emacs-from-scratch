@@ -763,6 +763,7 @@ _b_: browse packages _q_: quit
   :demand t
   :bind
   (:map corfu-map
+        ("RET" . #'newline) ;; Prevent enter from completing candidates
         ("C-c C-g" . #'corfu-quit)
         ("C-c C-d" . #'corfu-info-documentation) ;; Requires the corfu-info.el extension. See below use-package.
         ("C-c C-l" . #'corfu-info-location) ;; Requires the corfu-info.el extension. See below use-package.
