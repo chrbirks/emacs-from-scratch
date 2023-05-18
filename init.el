@@ -161,6 +161,7 @@ _b_: browse packages _q_: quit
  mark-even-if-inactive nil
  ;; Disable mouse acceleration
  mouse-wheel-progressive-speed nil
+ tab-width 2
  )
 
 (set-charset-priority 'unicode)
@@ -419,6 +420,10 @@ _b_: browse packages _q_: quit
 ;;   (spaceline-toggle-all-the-icons-dedicated-on)
 ;;   (spaceline-toggle-all-the-icons-fullscreen-on)
 ;;   (spaceline-toggle-all-the-icons-buffer-position-on)
+;;   (spaceline-all-the-icons-icon-set-eyebrowse-slot 'circle)
+;;   (spaceline-all-the-icons-icon-set-git-ahead 'commit)
+;;   (spaceline-all-the-icons-icon-set-modified 'circle)
+;;   (spaceline-all-the-icons-icon-set-window-numbering 'circle)
 ;;   (spaceline-all-the-icons-theme)
 ;;   )
 
@@ -1344,10 +1349,15 @@ _b_: browse packages _q_: quit
 (use-package git-gutter
   :ensure t
   :init
-  :config (global-git-gutter-mode +1)
+  :config 
+  (global-git-gutter-mode +1)
   (set-face-background 'git-gutter:modified "#4f97d7") ;; spacemacs blue
   (set-face-background 'git-gutter:added "#67b11d") ;; spacemacs green
   (set-face-background 'git-gutter:deleted "#f2241f") ;; spacemacs red
+  (git-gutter:modified-sign " ") ;; One colored space (multiple characters would be ok)
+  (git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
+  (git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
+  (git-gutter:lighter " GG") ;; Set git-gutter name in the modeline
 )
 (use-package evil-nerd-commenter
   :after evil
@@ -1397,18 +1407,6 @@ _b_: browse packages _q_: quit
 ;; Highlight tabs ;; FIXME: Does not work
 (setq whitespace-style '(face tabs))
 (whitespace-mode)
-
-(custom-set-variables
- '(tab-width 3)
- '(git-gutter:modified-sign " ") ;; One colored space (multiple characters would be ok)
- '(git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
- '(git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
- '(git-gutter:lighter " GG");; Set git-gutter name in the modeline
- '(spaceline-all-the-icons-icon-set-eyebrowse-slot 'circle)
- '(spaceline-all-the-icons-icon-set-git-ahead 'commit)
- '(spaceline-all-the-icons-icon-set-modified 'circle)
- '(spaceline-all-the-icons-icon-set-window-numbering 'circle)
-)
 
 (custom-set-faces
  ;; Set face for persp-mode modeline for when open buffer is not in current perspective
