@@ -667,6 +667,11 @@ _b_: browse packages _q_: quit
   (advice-add #'register-preview :override #'consult-register-window)
 
   :config
+  ;; Select which buffers to mark as hidden buffers
+  (setq consult-buffer-filter
+        '("\\` " "\\`\\*Completions\\*\\'" "\\`\\*Flymake log\\*\\'" "\\`\\*Semantic SymRef\\*\\'" "\\`\\*tramp/.*\\*\\'" "\\`\\*Async-native-compile-log\\*\\'"))
+  ;; Where to place cursor after selecting a search match
+  (setq consult-point-placement 'match-beginning)
   ;; Use `consult-completion-in-region' if Vertico is enabled.
   ;; Otherwise use the default `completion--in-region' function.
   (setq completion-in-region-function
