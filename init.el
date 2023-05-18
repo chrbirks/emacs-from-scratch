@@ -141,6 +141,10 @@ _b_: browse packages _q_: quit
    "w r" '(split-root-window-right :which-key "split right all")
    "w m" '(efs/toggle-maximize-buffer :which-key "maximize buffer")
 
+   "x" '(:ignore t :which-key "text")
+   "x r" '(:ignore t :which-key "rectangles")
+   "x r t" '(string-rectangle :which-key "string-rectangle")
+   "x r k" '(kill-rectangle :which-key "kill-rectangle")
 
    ;; "f d e" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))
  )
