@@ -120,6 +120,8 @@ _b_: browse packages _q_: quit
 
    "l"  '(:ignore t :which-key "layouts")
 
+   "o" '(:ignore t :which-key "org mode")
+
    "p"  '(:ignore t :which-key "project")
 
    "r"  '(:ignore t :which-key "registers")
@@ -1022,8 +1024,11 @@ COUNT defaults to 1, and KILL defaults to nil."
    "a o r d" '(:ignore t :which-key "dailies")
    "a o r d t" '(org-roam-dailies-goto-today :which-key "goto today")
    "a o r d d" '(org-roam-dailies-goto-date :which-key "goto date")
-   )
-  )
+   "o S A" '(org-archive-subtree-default :which-key "archive subtree")
+   "o S S" '(org-sort :which-key "org sort")
+   "o T T" '(org-todo :which-key "org todo")
+   "o T t" '(org-show-todo-tree :which-key "org todo tree")
+   ))
 
 (use-package org-roam-ui
   :ensure t
