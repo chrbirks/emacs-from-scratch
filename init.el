@@ -416,9 +416,10 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spaceline-spacemacs-theme) ; Set the theme
   ;; (spaceline-helm-mode) ; Special minor-mode for Helm
   ;; (spaceline-info-mode) ; Special minor-mode for info+
+  (spaceline-toggle-minor-modes-off)
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) ; Color according to evil state
-  (setq powerline-height 12)
-  (setq powerline-text-scale-factor 1.1)
+  ;; (setq powerline-height 10)
+  ;; (setq powerline-text-scale-factor 1.1)
   (setq powerline-default-separator 'arrow)
   (setq spaceline-workspace-numbers-unicode t) ; Get unicode numbers when using window-numbering-mode
   (setq spaceline-window-numbers-unicode t) ; Get unicode numbers when using eyebrowse-mode
