@@ -1425,9 +1425,9 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   (global-hl-todo-mode))
 
-;; Highlight tabs ;; FIXME: Does not work
+;; Highlight tabs
 (setq whitespace-style '(face tabs))
-(whitespace-mode)
+(global-whitespace-mode)
 
 (custom-set-faces
  ;; Set face for persp-mode modeline for when open buffer is not in current perspective
