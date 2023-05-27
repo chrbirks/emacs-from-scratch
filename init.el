@@ -263,6 +263,20 @@ _b_: browse packages _q_: quit
 ; TODO: chezmoi template
 (setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
 
+(use-package diminish)
+
+;; Diminish some common minor modes
+(add-hook 'elpaca-after-init-hook (lambda ()
+                                    (with-eval-after-load 'autorevert
+                                      (require 'diminish)
+                                      (diminish 'auto-revert-mode))
+                                    (with-eval-after-load 'eldoc
+                                      (require 'diminish)
+                                      (diminish 'eldoc-mode))
+                                    (with-eval-after-load 'hideshow
+                                      (require 'diminish)
+                                      (diminish 'hs-minor-mode))))
+
 (use-package no-littering
   :demand t
   :defer nil)
@@ -323,6 +337,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package evil-collection
   :after evil
+  :diminish evil-collection-unimpaired-mode
   :config
   (evil-collection-init) ;; Register evil binding for all modes at once instead of calling individual *-setup functions
   (setq evil-want-keybinding t)
@@ -335,6 +350,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package evil-escape
   :demand t
+  :diminish evil-escape-mode
   :init
   (setq evil-escape-key-sequence "fd"
         evil-escape-delay 0.15)
@@ -416,7 +432,6 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spaceline-spacemacs-theme) ; Set the theme
   ;; (spaceline-helm-mode) ; Special minor-mode for Helm
   ;; (spaceline-info-mode) ; Special minor-mode for info+
-  (spaceline-toggle-minor-modes-off)
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) ; Color according to evil state
   ;; (setq powerline-height 10)
   ;; (setq powerline-text-scale-factor 1.1)
@@ -1249,6 +1264,12 @@ COUNT defaults to 1, and KILL defaults to nil."
         )
   (lsp-enable-which-key-integration t))
 
+;; Diminish lsp-lens-mode
+(add-hook 'elpaca-after-init-hook (lambda ()
+                                    (with-eval-after-load 'lsp-lens
+                                      (require 'diminish)
+                                      (diminish 'lsp-lens-mode))))
+
 ;; See all error statistics in modeline
 (with-eval-after-load 'lsp-mode
   (setq lsp-modeline-diagnostics-scope :project) ;project, workspace or file
@@ -1369,7 +1390,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package git-gutter
   :ensure t
-  :init
+  :diminish git-gutter-mode
   :config 
   (global-git-gutter-mode +1)
   (set-face-background 'git-gutter:modified "#4f97d7") ;; spacemacs blue
@@ -1427,7 +1448,11 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Highlight tabs
 (setq whitespace-style '(face tabs))
-(global-whitespace-mode)
+(add-hook 'prog-mode-hook #'whitespace-mode)
+(add-hook 'elpaca-after-init-hook (lambda ()
+                                    (with-eval-after-load 'whitespace
+                                      (require 'diminish)
+                                      (diminish 'whitespace-mode))))
 
 ;; FIXME: Buffers are shared between all perspectives
 (use-package persp-mode
