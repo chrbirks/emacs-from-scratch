@@ -1429,28 +1429,12 @@ COUNT defaults to 1, and KILL defaults to nil."
 (setq whitespace-style '(face tabs))
 (global-whitespace-mode)
 
-(custom-set-faces
- ;; Set face for persp-mode modeline for when open buffer is not in current perspective
- '(persp-face-lighter-buffer-not-in-persp ((t (:background "gold" :foreground "#00F" :weight bold))))
- ;; Use more faded colors for symbol-overlay
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- ;; (custom-set-faces
-  '(symbol-overlay-face-1 ((t (:background "#689d6a"       :foreground "black"))))
-  '(symbol-overlay-face-2 ((t (:background "#b08588"       :foreground "black"))))
-  '(symbol-overlay-face-3 ((t (:background "#7c6f64"       :foreground "black"))))
-  '(symbol-overlay-face-3 ((t (:background "#5c6f64"       :foreground "black"))))
-  '(symbol-overlay-face-4 ((t (:background "#98971a"       :foreground "black"))))
-  '(symbol-overlay-face-5 ((t (:background "#016286"       :foreground "black"))))
-  '(symbol-overlay-face-6 ((t (:background "#d79921"       :foreground "black"))))
-  '(symbol-overlay-face-7 ((t (:background "medium orchid" :foreground "black"))))
-  '(symbol-overlay-face-8 ((t (:background "#fbe107"       :foreground "black"))))
-  ;; )
-)
-
 ;; FIXME: Buffers are shared between all perspectives
 (use-package persp-mode
   :demand t
+  :custom-face
+  ;; Set face for persp-mode modeline for when open buffer is not in current perspective
+  (persp-face-lighter-buffer-not-in-persp ((t (:background "gold" :foreground "#00F" :weight bold))))
   :init
   (persp-mode)
   :config
@@ -1560,6 +1544,16 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package symbol-overlay
   :demand t
   :after transient
+  :custom-face
+  (symbol-overlay-face-1 ((t (:background "#689d6a"       :foreground "black"))))
+  (symbol-overlay-face-2 ((t (:background "#b08588"       :foreground "black"))))
+  (symbol-overlay-face-3 ((t (:background "#7c6f64"       :foreground "black"))))
+  (symbol-overlay-face-3 ((t (:background "#5c6f64"       :foreground "black"))))
+  (symbol-overlay-face-4 ((t (:background "#98971a"       :foreground "black"))))
+  (symbol-overlay-face-5 ((t (:background "#016286"       :foreground "black"))))
+  (symbol-overlay-face-6 ((t (:background "#d79921"       :foreground "black"))))
+  (symbol-overlay-face-7 ((t (:background "medium orchid" :foreground "black"))))
+  (symbol-overlay-face-8 ((t (:background "#fbe107"       :foreground "black"))))
   :config
   ;; Make transient state
   (transient-define-suffix efs--so-suffix-print-args (the-prefix-arg)
