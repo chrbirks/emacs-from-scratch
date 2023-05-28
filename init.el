@@ -157,6 +157,8 @@ _b_: browse packages _q_: quit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq
+ ;; Don't blink cursor
+ blink-cursor-mode nil
  ;; No need to remind me what a scratch buffer is.
  initial-scratch-message nil
  ;; Never ding at me, ever.
@@ -264,6 +266,7 @@ _b_: browse packages _q_: quit
 (setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
 
 (use-package diminish)
+(use-package delight)
 
 ;; Diminish some common minor modes
 (add-hook 'elpaca-after-init-hook (lambda ()
@@ -611,6 +614,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package recentf
   :elpaca nil ;; recentf is a native package
   :demand t
+  :delight (recentf-mode)
   :init
   (run-at-time nil (* 5 60) 'recentf-save-list) ;; Save recent files every 5 minutes
   :config
@@ -620,6 +624,9 @@ COUNT defaults to 1, and KILL defaults to nil."
         recentf-max-saved-items 25)
   (add-to-list 'recentf-exclude ".*/\\.config/emacs-from-scratch/var/persp-mode/.*")
   (add-to-list 'recentf-exclude ".*/\\.config/emacs-from-scratch/var/treemacs/persist\\.org$")
+  ;; Don't show the message in the bottom of the screen
+  (advice-add #'recentf-cleanup :after #'(lambda (&rest _ignored)
+                                           (message nil)))
   (recentf-mode 1)
   )
 
@@ -666,7 +673,9 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package marginalia
   :after general
   :custom
-  (marginalia-align 'right)
+  (marginalia-align 'right) ;; Alight text, e.g. if file path is too long to show in the minibuffer,
+                            ;; prioritize to show the right-most side with the filename
+  (marginalia-field-width 320)
   :init
   (marginalia-mode)
   :bind (:map minibuffer-local-map
@@ -706,8 +715,6 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; Consult for enhanced completion commands
 (use-package consult
   :init
-  ;; (setq consult-narrow-key (kbd "C-c n"))
-
   ;; Configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
@@ -732,13 +739,6 @@ COUNT defaults to 1, and KILL defaults to nil."
                      #'consult-completion-in-region
                    #'completion--in-region)
                  args)))
-
-  ;; ;; List only buffers in current prespective ;; FIXME: Doesn't do anything
-  ;; ;; (with-eval-after-load 'perspective
-  ;; (with-eval-after-load 'persp
-  ;;   (consult-customize
-  ;;    consult--source-buffer :hidden t :default nil)
-  ;;   (add-to-list 'consult-buffer-sources persp-consult-source))
 
   ;; Other setup
   ;; vertico-grid-annotate, vertico-flat-annotate
@@ -778,7 +778,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
   ;; Global keybindings
   (spacemacs-leader
-   "b b" '(consult-buffer :which-key "switch buffer") ; TODO: How to sort dirs, files, *-buffers, etc.
+   "b b" '(consult-buffer :which-key "switch buffer") ;; Call consult-narrow-key to see narrowing options
    "b B" '(persp-switch-to-buffer :which-key "switch persp buffer")
    "b P" '(consult-project-buffer :which-key "switch project buffer")
 
@@ -978,10 +978,10 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package helpful
   :commands (helpful-callable helpful-variable helpful-command helpful-key)
-  :custom
-  (counsel-describe-variable-function #'helpful-variable)
   :bind
   ("C-h f" . helpful-function)
+  ([remap describe-function] . helpful-command)
+  ([remap describe-macro] . helpful-macro)
   ([remap describe-symbol] . helpful-symbol)
   ([remap describe-variable] . helpful-variable)
   ([remap describe-command] . helpful-command)
@@ -1468,7 +1468,7 @@ COUNT defaults to 1, and KILL defaults to nil."
                                       (require 'diminish)
                                       (diminish 'whitespace-mode))))
 
-;; FIXME: Buffers are shared between all perspectives
+;; NOTE: Buffers are shared between all perspectives when using persp-mode
 (use-package persp-mode
   :demand t
   :custom-face
@@ -1477,6 +1477,10 @@ COUNT defaults to 1, and KILL defaults to nil."
   :init
   (persp-mode)
   :config
+  ;; Only show open buffers and not recent files
+  (with-eval-after-load 'marginalia
+    (add-to-list 'marginalia-command-categories '(persp-switch-to-buffer* . buffer)))
+
   (defun efs/current-layout-name ()
     "Get name of the current perspective."
     (safe-persp-name (get-frame-persp)))
@@ -1488,7 +1492,6 @@ COUNT defaults to 1, and KILL defaults to nil."
     (interactive)
     (persp-save-state-to-file persp-auto-save-fname))
   (run-with-timer 0 (* 5 60) 'efs/save-persp-state) ;; Save perspective every 5 minutes
-  ;; (add-hook 'kill-emacs-hook #'persp-state-save)
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
         persp-set-last-persp-for-new-frames nil
@@ -1574,7 +1577,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;                (window-height . 0.3)))
 
 (defun efs/symbol-overlay-put ()
-  "Start symbol-overlay-transient-state."
+  "Start symbol-overlay transient state."
   (interactive)
   (symbol-overlay-put)
   (efs/symbol-overlay-transient)
