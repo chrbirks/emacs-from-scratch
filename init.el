@@ -728,7 +728,14 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   ;; Select which buffers to mark as hidden buffers
   (setq consult-buffer-filter
-        '("\\` " "\\`\\*Completions\\*\\'" "\\`\\*Flymake log\\*\\'" "\\`\\*Semantic SymRef\\*\\'" "\\`\\*tramp/.*\\*\\'" "\\`\\*Async-native-compile-log\\*\\'"))
+        '("\\` "
+          "\\`\\*Completions\\*\\'"
+          "\\`\\*Flymake log\\*\\'"
+          "\\`\\*Semantic SymRef\\*\\'"
+          "\\`\\*tramp/.*\\*\\'"
+          "\\`\\*Async-native-compile-log\\*\\'"
+          "\\`magit.*\\'"))
+
   ;; Where to place cursor after selecting a search match
   (setq consult-point-placement 'match-beginning)
   ;; Use `consult-completion-in-region' if Vertico is enabled.
