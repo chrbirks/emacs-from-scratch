@@ -281,11 +281,11 @@ _b_: browse packages _q_: quit
                                       (diminish 'hs-minor-mode))))
 
 (use-package no-littering
-  :demand t
+  :ensure t
   :defer nil)
 
 (use-package evil
-  :demand t
+  :ensure t
   :init
   (setq evil-want-integration t) ; set to t before loading evil-collections
   (setq evil-want-keybinding nil) ; Set to nil before loading evil-collections
@@ -366,7 +366,7 @@ COUNT defaults to 1, and KILL defaults to nil."
    "j w" '(evil-avy-goto-word-or-subword-1 :which-key "jump to word")))
 
 (use-package evil-escape
-  :demand t
+  :ensure t
   :diminish evil-escape-mode
   :init
   (setq evil-escape-key-sequence "fd"
@@ -384,7 +384,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (if (version<= emacs-version "28")
     ;; Use undo-tree for Emacs version earlier than 28
     (use-package undo-tree
-      :demand t
+      :ensure t
       :config
       (global-undo-tree-mode)
       (spacemacs-leader
@@ -402,7 +402,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
   ;; Use vundo supported for Emacs > v28
   (use-package vundo
-    :demand t
+    :ensure t
     :config
     (setq vundo-glyph-alist vundo-unicode-symbols) ;; Use unicode symbols instead of default ASCII
     (spacemacs-leader
@@ -458,7 +458,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 )
 
 ;; (use-package spaceline-all-the-icons
-;;   :demand t
+;;   :ensure t
 ;;   :after spaceline
 ;;   :config
 ;;   (setq spaceline-all-the-icons-separator-type 'arrow)
@@ -502,7 +502,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; nano-sidebar
 ;; (elpaca-use-package (nano-sidebar
 (elpaca (nano-sidebar
-  :demand t
+  :ensure t
   :host github
   :repo "rougier/nano-sidebar"))
 
@@ -613,7 +613,6 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package recentf
   :elpaca nil ;; recentf is a native package
-  :demand t
   :delight (recentf-mode)
   :init
   (run-at-time nil (* 5 60) 'recentf-save-list) ;; Save recent files every 5 minutes
@@ -714,6 +713,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Consult for enhanced completion commands
 (use-package consult
+  :ensure t
   :init
   ;; Configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
@@ -811,7 +811,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   )
 
 (use-package corfu
-  :demand t
+  :ensure t
   :bind
   (:map corfu-map
         ("RET" . #'newline) ;; Prevent enter from completing candidates
@@ -913,7 +913,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Icons for corfu completion buffer
 (use-package kind-icon
-  :demand t
+  :ensure t
   :after corfu
   :custom
   (kind-icon-use-icons t)
@@ -931,7 +931,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   )
 
 ;; (use-package corfu-popupinfo
-;;   :demand t
+;;   :ensure t
 ;;   :after corfu
 ;;   ;; :hook (corfu-mode . corfu-doc-mode)
 ;; ;;  :general (:keymaps 'corfu-map
@@ -947,18 +947,18 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;   )
 
 ;; (use-package corfu-history
-;;   :demand t
+;;   :ensure t
 ;;   :after corfu
 ;;   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package all-the-icons
-  :demand t)
+  :ensure t)
 
 ;; Get file and buffer icons in minibuffer
 (use-package all-the-icons-completion
-  :demand t
+  :ensure t
   :after (vertico consult marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init
@@ -1001,7 +1001,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (visual-line-mode 1))
 
 (use-package org
-  :demand t
+  :ensure t
   ;; :pin org
   :commands (org-capture org-agenda)
   :hook (org-mode . efs/org-mode-setup)
@@ -1393,13 +1393,13 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 
 (use-package rg
-  :demand t
+  :ensure t
   :config
   (rg-enable-menu)
   )
 
 (use-package magit
-  :demand t
+  :ensure t
   ;; :commands magit-status
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
@@ -1442,7 +1442,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :defer t)
 
 (use-package winum
-  :demand t
+  :ensure t
   :config
   (setq winum-auto-setup-mode-line nil) ;; Do not display window number in modeline since it's already included in spaceline
   (setq winum-ignored-buffers '("*Java Dependency List*" "*LSP Error List*" "*LSP Symbols List*" " *Treemacs-Framebuffer-5*" " *Treemacs-Framebuffer-4*" " *Treemacs-Framebuffer-3*" " *Treemacs-Framebuffer-2*" " *Treemacs-Framebuffer-1*" " *LV*" " *which-key*"))
@@ -1463,7 +1463,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Highlight words like todo, fixme, note, etc.
 (use-package hl-todo
-  :demand t
+  :ensure t
   :config
   (global-hl-todo-mode))
 
@@ -1477,7 +1477,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; NOTE: Buffers are shared between all perspectives when using persp-mode
 (use-package persp-mode
-  :demand t
+  :ensure t
   :custom-face
   ;; Set face for persp-mode modeline for when open buffer is not in current perspective
   (persp-face-lighter-buffer-not-in-persp ((t (:background "gold" :foreground "#00F" :weight bold))))
@@ -1591,7 +1591,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   )
 
 (use-package symbol-overlay
-  :demand t
+  :ensure t
   :after transient
   :custom-face
   (symbol-overlay-face-1 ((t (:background "#689d6a"       :foreground "black"))))
@@ -1694,7 +1694,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   )
 
 (use-package transient
-  :demand t
+  :ensure t
   :config
   ;; ;; NOTE: Example how to set up transient:
   ;; (transient-define-suffix pmx-show-prefix ()
@@ -1826,14 +1826,14 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; Highlight text, press "S-<delimiter>" to surround text with delimiters.
 ;; Use "(" to include spaces around delimiters, use ")" for no spaces.
 (use-package evil-surround
-  :demand t
+  :ensure t
   :after evil
   :config
   (global-evil-surround-mode 1)
   )
 
 (use-package treemacs
-  :demand t
+  :ensure t
   :config
   (setq treemacs-git-mode 'simple)
   (setq treemacs-hide-gitignored-files-mode nil)
@@ -1855,7 +1855,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   )
 
 (use-package treemacs-all-the-icons
-  :demand t
+  :ensure t
   :after treemacs
   )
 
