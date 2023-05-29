@@ -684,31 +684,26 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Embark for executing commands on selected completion items (killing buffer, etc.)
 (use-package embark
+  :commands (embark-collect embark-collect-mark embark-collect-toggle-marks embark-collect-unmark embark-collect-toggle-view)
   :init
   ;; Replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
   :bind
   ("C-h B" . embark-bindings)
-  ("C-c c" . embark-act)
+  ("C-c c" . embark-act) ;; "C-h" after embark-act to get help for embark-act commands
   ("C-c C" . embark-dwim)
   (:map minibuffer-local-map
         (("M-M" . embark-collect-toggle-marks)
-         ("M-E" . embark-export) ;; Export all minibuffer result to new buffer. Run occur-edit-mode/wgrep-change-to-wgrep-mode with "i"
-         ("M-C" . embark-collect)) ;; "m": mark, "u": unmark, "t": mark all
-        )
-  )
-
-;; +| Mark a candidate   | m           | a SPC         |
-;; +| Unmark a candidate | u           | a SPC         |
-;; +| Unmark all         | U           | A SPC         |
-;; +| Mark all [1]       | t           | A SPC         |
-;; +| Toggle all marks   | t           | not available |
+         ("M-E" . embark-export)   ;; Export all minibuffer result to new buffer depending on type.
+                                   ;; Run occur-edit-mode or wgrep-change-to-wgrep-mode (depending on what was in the minibuffer) with "i".
+                                   ;; Run "C-c C-C" to finish occur mode, and "Z Z" to finish wgrep mode.
+         ("M-C" . embark-collect)) ;; "m": mark, "u": unmark, "t": mark all.
+        ))
 
 (use-package embark-consult
   :after (embark consult)
   :hook
   (embark-collect-mode . consult-preview-at-point-mode)
-  ;; (embark-collect-mode . consult-fontify-buffer-lines)
 )
 
 ;; Consult for enhanced completion commands
@@ -755,13 +750,11 @@ COUNT defaults to 1, and KILL defaults to nil."
    :preview-key 'any)
 
   ;; Configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "C-<") ;; "C-+"
 
   ;; Make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-  (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'which-key)
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "h") #'consult-narrow-help)
+  (define-key consult-narrow-map (kbd "M-h") #'consult-narrow-help)
 
   ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
