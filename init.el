@@ -798,12 +798,11 @@ COUNT defaults to 1, and KILL defaults to nil."
 
    "s s" '(consult-line :which-key "seach buffer")
    "s S" '(efs--consult-line-symbol-at-point :which-key "search buffer at point")
-   ;; "s S" '(consult-line-multi :which-key "seach all buffers") ; TODO: Do not search virtual buffers
+   "s b" '(consult-line-multi :which-key "seach all buffers")
    "s p" '(consult-ripgrep :which-key "search project")
    "s r" '(rg-menu :which-key "ripgrep-menu")
    "s d" '(deadgrep :which-key "deadgrep")
 
-   ;; "p f" '(counsel-projectile-find-file :which-key "find file")
    "p b" '(consult-project-buffer :which-key "project buffers")
    "p i" '(consult-imenu :which-key "project imenu")
    "p I" '(consult-imenu-multi :which-key "project imenu-multi")
@@ -1388,8 +1387,8 @@ COUNT defaults to 1, and KILL defaults to nil."
                (format " in [%s]" project-name))))))
   (spacemacs-leader
    "p c" '(projectile-commander :which-key "projectile-commander")
-   "p f" '(projectile-find-file-dwim :which-key "find file")
-   "p m" '(projectile-command-map :which-key "projectile command map")
+   "p f" '(projectile-find-file :which-key "find-file")
+   "p m" '(projectile-command-map :which-key "projectile-command-map")
    )
 )
 
