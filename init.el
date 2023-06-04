@@ -276,6 +276,15 @@ _b_: browse packages _q_: quit
                                     (with-eval-after-load 'eldoc
                                       (require 'diminish)
                                       (diminish 'eldoc-mode))
+                                    (with-eval-after-load 'undo-tree-mode
+                                      (require 'diminish)
+                                      (diminish 'undo-tree-mode))
+                                    (with-eval-after-load 'visual-line-mode
+                                      (require 'diminish)
+                                      (diminish 'visual-line-mode))
+                                    (with-eval-after-load 'buffer-face-mode
+                                      (require 'diminish)
+                                      (diminish 'buffer-face-mode))
                                     (with-eval-after-load 'hideshow
                                       (require 'diminish)
                                       (diminish 'hs-minor-mode))))
