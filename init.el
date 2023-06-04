@@ -1892,132 +1892,19 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
-(setq verilog-auto-delete-trailing-whitespace t
-      verilog-highlight-grouping-keywords nil
-      verilog-highlight-p1800-keywords t
-      verilog-highlight-modules t
-      verilog-tab-always-indent t
-      verilog-indent-level 2
-      verilog-indent-level-behavioral 2
-      verilog-indent-level-declaration 2
-      verilog-indent-level-module 2
-      verilog-indent-level-directive 2
-      verilog-cexp-indent 4
-      verilog-auto-lineup (quote all)
-      verilog-auto-endcomments t
-      verilog-auto-newline nil ;; Disable auto-newline on semicolon in Verilog
-      verilog-linter "verilator -sv --lint-only -Wall --cdc --default-language 1800-2012"
-      )
-      ;; verilog-linter "verilator -sv --lint-only -Wall --cdc +1800-2012ext+sv"
-
-;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
-(add-to-list 'auto-mode-alist '("\\.[dsp]?va?h\\'" . verilog-mode))
-
-;; ---------------------------------------------------------------------------
-;; Setup for Verilog language server
-
-;; Setup for SVLS
-;; (setq lsp-clients-verilog-executable (file-truename "~/github/svls/target/release/svls"))
-
-;; Setup for hdl-checker
-;; (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" (file-truename "~/etc/example_code/systemverilog/.hdl_checker.config") )
-
-;; ;; Use verilog-ext mode
-;; ;; Required packages: projectile
-;; ;;                    ggtags
-;; ;;                    ag
-;; ;;                    ripgrep
-;; ;;                    company
-;; ;;                    yasnippet
-;; ;;                    hydra
-;; ;;                    outshine
-;; ;;                    flycheck
-;; ;;                    apheleia
-;; ;;                    lsp-mode
-;; ;;                    eglot
-;; (use-package verilog-ext
-;;   ;; :load-path "~/github/verilog-ext/"
-;;   :ensure t
-;;   :defer t
-;;   :after verilog-mode
-;;   :demand
-;;   :bind (:map verilog-mode-map
-;;               ;; Default keys override
-;;               ("TAB"           . verilog-ext-electric-verilog-tab)
-;;               ("M-d"           . verilog-ext-kill-word)
-;;               ("M-f"           . verilog-ext-forward-word)
-;;               ("M-b"           . verilog-ext-backward-word)
-;;               ("C-<backspace>" . verilog-ext-backward-kill-word)
-;;               ;; Features
-;;               ("M-i"           . verilog-ext-imenu-list)
-;;               ("C-c C-p"       . verilog-ext-preprocess)
-;;               ("C-c C-f"       . verilog-ext-flycheck-mode-toggle)
-;;               ("C-c C-t"       . verilog-ext-hydra/body)
-;;               ("C-c C-v"       . verilog-ext-vhier-current-file)
-;;               ;; Code beautifying
-;;               ("C-M-i"         . verilog-ext-indent-block-at-point)
-;;               ("C-c b"         . verilog-ext-module-at-point-beautify)
-;;               ;; Dwim navigation
-;;               ("C-M-a"         . verilog-ext-nav-beg-of-defun-dwim)
-;;               ("C-M-e"         . verilog-ext-nav-end-of-defun-dwim)
-;;               ("C-M-d"         . verilog-ext-nav-down-dwim)
-;;               ("C-M-u"         . verilog-ext-nav-up-dwim)
-;;               ("C-M-p"         . verilog-ext-nav-prev-dwim)
-;;               ("C-M-n"         . verilog-ext-nav-next-dwim)
-;;               ;; Module navigation
-;;               ("C-M-."         . verilog-ext-jump-to-parent-module)
-;;               ;; Port connections
-;;               ("C-c c"         . verilog-ext-toggle-connect-port)
-;;               ("C-c C-c"       . verilog-ext-connect-ports-recursively))
-;;   :init
-;;   (setq verilog-ext-lsp-set-server 've-svlangserver)
-;;   (setq verilog-ext-snippets-dir "~/.emacs.d/straight/repos/verilog-ext/snippets")
-;;   (setq verilog-ext-flycheck-eldoc-toggle t)
-;;   (setq verilog-ext-flycheck-verible-rules '("-line-length"))
-;;   (setq verilog-ext-hierarchy-backend "tree-sitter")
-;;   (setq verilog-ext-jump-to-parent-module-engine 'rg)
-;;   (setq verilog-ext-hierarchy-frontend nil)
-;;   :config
-;;   (verilog-ext-flycheck-set-linter 'verilog-verible)
-;;   (verilog-ext-add-snippets))
-;; (with-eval-after-load 'verilog-ext 
-;;   ((add-to-list 'load-path (expand-file-name "~/github/verilog-ext"))
-;;    (verilog-ext-mode-setup)
-;;    (add-hook 'verilog-mode-hook #'verilog-ext-mode))
-
-
-(setq
- ;; Use 'verilator_bin' instead of 'verilator' which throws errors
- flycheck-verilog-verilator-executable "verilator_bin"
- ;; TODO: (flycheck-verilator-include-path ...)
- )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Configure svlangserver (Requires Verilator and Verible"
-
-;; '(lsp-clients-svlangserver-includeIndexing '["bbs/**/*.{v,vh,sv,svh}"])
-;; '(lsp-clients-svlangserver-excludeIndexing '["bbs/simulation/**/*.{v,vh,sv,svh}"
-;;                                             "bbs/work*/**/*.{v,vh,sv,svh}"
-;;                                             "bbs/design/afu/stratix10/pac_lc/axi_protocol_afu/**/*"
-;;                                             "bbs/design/afu/stratix10/pac_lc/dummy_afu/**/*"
-;;                                             "bbs/design/afu/stratix10/pac_lc/eth_afu/**/*"
-;;                                             "bbs/design/afu/stratix10/pac_lc/hello_afu/**/*"
-;;                                             "bbs/design/afu/stratix10/pac_lc/hello_afu_interrupt/**/*"
-;;                                             "bbs/design/afu/stratix10/pac_lc/nlb_afu/**/*"
-;;                                             "bbs/**/ip/**/*.{v,vh,sv,svh}"])
-;; '(lsp-clients-svlangserver-workspace-additional-dirs '["/mnt/storage/projects/intel/ofs-platform-afu-bbb/"])
-
-;; Disable use of hdl_checker first
-(setq lsp-clients-verilog-executable nil)
-
-(custom-set-variables
- '(lsp-clients-svlangserver-launchConfiguration "verilator -sv --lint-only -Wall -Wno-fatal --assert --cdc")
- ;; '(lsp-clients-svlangserver-launchConfiguration "verilator -sv --lint-only -Wall --cdc --default-language 1800-2012")
- ;; '(lsp-clients-svlangserver-launchConfiguration "verilator -sv --lint-only -Wall --default-language 1800-2017")
- ;; '(lsp-clients-svlangserver-formatCommand "~/etc/verible-v0.0-1278-g660b3d5/bin/verible-verilog-format")
- '(lsp-clients-svlangserver-formatCommand "~/etc/verible/bin/verible-verilog-format")
- '(lsp-clients-svlangserver-includeIndexing '["does-not-exist.sv"])
- '(lsp-clients-svlangserver-excludeIndexing '["bbs/simulation/**/*.{v,vh,sv,svh}"
+(use-package verilog-mode
+  :elpaca nil ;; verilog-mode is a native package
+  :defer t
+  :custom
+  ;; LSP setup for verilog-mode
+  ;; Disable use of hdl_checker first
+  (lsp-clients-verilog-executable nil)
+  ;; Configure svlangserver globally (Requires Verilator and Verible).
+  ;; Can also be configured on a project basis in a .dir-locals.el
+  (lsp-clients-svlangserver-launchConfiguration "verilator -sv --lint-only -Wall -Wno-fatal --assert --cdc")
+  (lsp-clients-svlangserver-formatCommand "~/etc/verible/bin/verible-verilog-format")
+  (lsp-clients-svlangserver-includeIndexing '["does-not-exist.sv"])
+  (lsp-clients-svlangserver-excludeIndexing '["bbs/simulation/**/*.{v,vh,sv,svh}"
                                               "bbs/work*/**/*.{v,vh,sv,svh}"
                                               "bbs/design/afu/stratix10/pac_lc/axi_protocol_afu/**/*"
                                               "bbs/design/afu/stratix10/pac_lc/dummy_afu/**/*"
@@ -2026,9 +1913,34 @@ COUNT defaults to 1, and KILL defaults to nil."
                                               "bbs/design/afu/stratix10/pac_lc/hello_afu_interrupt/**/*"
                                               "bbs/design/afu/stratix10/pac_lc/nlb_afu/**/*"
                                               "bbs/**/ip/**/*.{v,vh,sv,svh}"])
- ;; '(lsp-clients-svlangserver-workspace-additional-dirs nil)
- '(lsp-clients-svlangserver-lintOnUnsaved t))
-; ((verilog-mode (lsp-clients-svlangserver-work))) ;; TODO
+  ;; '(lsp-clients-svlangserver-workspace-additional-dirs '["/mnt/storage/projects/intel/ofs-platform-afu-bbb/"])
+  (lsp-clients-svlangserver-lintOnUnsaved t)
+  :config
+  (setq verilog-auto-delete-trailing-whitespace t
+        verilog-highlight-grouping-keywords nil
+        verilog-highlight-p1800-keywords t
+        verilog-highlight-modules t
+        verilog-tab-always-indent t
+        verilog-indent-level 2
+        verilog-indent-level-behavioral 2
+        verilog-indent-level-declaration 2
+        verilog-indent-level-module 2
+        verilog-indent-level-directive 2
+        verilog-cexp-indent 4
+        verilog-auto-lineup (quote all)
+        verilog-auto-endcomments t
+        verilog-auto-newline nil ;; Disable auto-newline on semicolon in Verilog
+        verilog-linter "verilator -sv --lint-only -Wall --cdc --default-language 1800-2012"
+        ;; verilog-linter "verilator -sv --lint-only -Wall --cdc +1800-2012ext+sv"
+        )
+
+  ;; Use 'verilator_bin' instead of 'verilator' which throws errors
+  (setq
+   ;; TODO: (flycheck-verilator-include-path ...)
+   flycheck-verilog-verilator-executable "verilator_bin")
+
+  ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
+  (add-to-list 'auto-mode-alist '("\\.[dsp]?va?h\\'" . verilog-mode)))
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2042,42 +1954,36 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
-(setq vhdl-array-index-record-field-in-sensitivity-list t
-      vhdl-compiler "GHDL"
-      vhdl-default-library "work"
-      vhdl-hideshow-menu t
-      vhdl-index-menu t ; Build file index for imenu when opened
-      vhdl-intelligent-tab nil
-      vhdl-makefile-default-targets (quote ("all" "clean" "library"))
-      vhdl-source-file-menu t ; Add menu of all source files in current directory
-      vhdl-speedbar-auto-open nil
-      vhdl-speedbar-display-mode (quote files)
-      vhdl-stutter-mode t ; Enable ".." -> "=>" and other shortcuts
-      vhdl-use-direct-instantiation (quote standard) ; Only use direct instantiation of VHDL standard allows it (from '93)
-      flycheck-vhdl-ghdl-executable "/usr/bin/ghdl"
-      flycheck-ghdl-ieee-library "synopsys" ;;"standard"
-      flycheck-ghdl-language-standard "08"
-      ;; TODO: flycheck-ghdl-workdir "/home/chrbirks/github/dev_env/example_code/vhdl"
-      )
+(use-package vhdl-mode
+  :elpaca nil ;; vhdl-mode is a native package
+  :defer t
+  :config
+  (setq vhdl-array-index-record-field-in-sensitivity-list t
+        vhdl-compiler "GHDL"
+        vhdl-default-library "work"
+        vhdl-hideshow-menu t
+        vhdl-index-menu t ; Build file index for imenu when opened
+        vhdl-intelligent-tab nil
+        vhdl-makefile-default-targets (quote ("all" "clean" "library"))
+        vhdl-source-file-menu t ; Add menu of all source files in current directory
+        vhdl-speedbar-auto-open nil
+        vhdl-speedbar-display-mode (quote files)
+        vhdl-stutter-mode t ; Enable ".." -> "=>" and other shortcuts
+        vhdl-use-direct-instantiation (quote standard) ; Only use direct instantiation of VHDL standard allows it (from '93)
+        vhdl-end-comment-column 1000
+        vhdl-standard '(8 nil)
+        flycheck-vhdl-ghdl-executable "/usr/bin/ghdl"
+        flycheck-ghdl-ieee-library "synopsys" ;;"standard"
+        flycheck-ghdl-language-standard "08"
+        ;; TODO: flycheck-ghdl-workdir "/home/chrbirks/github/dev_env/example_code/vhdl"
+        )
+  :hook
+  ;; Consider underscores as part of word in vhdl-mode
+  (vhdl-mode . (lambda ()
+                 (modify-syntax-entry ?_ "w"))))
 
-;; (add-hook 'vhdl-mode-hook #'superword-mode) ;; Minor mode for not considering _ as word separators
-
-  ;; ---------------------------------------------------------------------------
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Setup for VHDL language server
-
-  ;; ;; Set path to vhdl-tool LSP server
-  ;; (setq lsp-vhdl-server-path "~/github/dev_env/emacs/vhdl-tool")
-  ;; (custom-set-variables
-  ;;  '(lsp-vhdl-server 'vhdl-tool))
-
-  ;; ;; Set path to hdl_checker LSP server
-  ;; (setq lsp-vhdl-server-path "~/.local/bin/hdl_checker")
-  ;; (custom-set-variables
-  ;;  '(lsp-vhdl-server 'hdl-checker))
-  ;; (setenv "HDL_CHECKER_DEFAULT_PROJECT_FILE" ".hdl_checker.config")
-  ;; (setenv "HDL_CHECKER_WORK_PATH" ".hdl_checker")
-  ;; (setenv "GHDL_PATH" "/usr/local/bin/")
-  ;; (setenv "MODELSIM_PATH" "/opt/Mentor/questasim/10.6c/questasim/linux_x86_64/")
 
   ;; Set path to Rust VHDL-LS
   (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/debug/vhdl_ls"))
@@ -2085,47 +1991,7 @@ COUNT defaults to 1, and KILL defaults to nil."
    '(lsp-vhdl-server 'vhdl-ls))
   ;; (setenv "VHDL_LS_CONFIG" (file-truename "~/github/dev_env/example_code/vhdl/vhdl_ls.toml"))
 
-  ;; ;; Setup for GHDL LS
-  ;; (setq lsp-vhdl-server-path (file-truename "/usr/bin/ghdl-ls"))
-  ;; (custom-set-variables
-  ;;  '(lsp-vhdl-server 'ghdl-ls))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; Use vhdl-ext mode
-;; ;; Required packages: projectile
-;; ;;                    ggtags
-;; ;;                    ag
-;; ;;                    ripgrep
-;; ;;                    company
-;; ;;                    yasnippet
-;; ;;                    hydra
-;; ;;                    outshine
-;; ;;                    flycheck
-;; ;;                    apheleia
-;; ;;                    lsp-mode
-;; ;;                    eglot
-;; (use-package vhdl-ext
-;;   :ensure t
-;;   :defer t
-;;   :after vhdl-mode
-;;   :demand
-;;   ;; :mode (("\\.vhd\\'" . vhdl-ts-mode))
-;;   :bind (:map vhdl-mode-map
-;;          ("C-M-d"   . vhdl-ext-find-entity-instance-fwd)
-;;          ("C-M-u"   . vhdl-ext-find-entity-instance-bwd)
-;;          ("C-M-."   . vhdl-ext-jump-to-parent-entity)
-;;          ("M-."     . vhdl-ext-jump-to-entity-at-point-def)
-;;          ("M-?"     . vhdl-ext-jump-to-entity-at-point-ref)
-;;          ("C-c C-t" . vhdl-ext-hydra/body))
-;;   :config
-;;   (setq vhdl-ext-lsp-set-server 'vhdl-ls)
-;;   (setq vhdl-ext-eglot-set-server 'vhdl-ls)
-;;   ;; Flycheck
-;;   (setq vhdl-ext-flycheck-ghdl-work-lib "~/my_ghdl_workdir")
-;;   (vhdl-ext-mode-setup)
-;; )
-;; (add-hook 'vhdl-mode-hook #'vhdl-ext-mode)
 
 ;; Must be last
 (elpaca-process-queues)
-
