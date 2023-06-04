@@ -1460,11 +1460,12 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   (global-hl-todo-mode))
 
-;; Highlight tabs
+;; Highlight tabs in prog-mode
 (setq whitespace-style '(face tabs))
 (add-hook 'prog-mode-hook #'whitespace-mode)
 (add-hook 'elpaca-after-init-hook (lambda ()
                                     (with-eval-after-load 'whitespace
+                                      (set-face-attribute 'whitespace-tab nil :background "orange red")
                                       (require 'diminish)
                                       (diminish 'whitespace-mode))))
 
@@ -2038,14 +2039,6 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; (add-hook 'verilog-mode #'tree-sitter-mode)
 ;; (add-hook 'verilog-mode #'tree-sitter-hl-mode)
 ;; ;; (add-to-list 'tree-sitter-major-mode-language-alist #'(verilog-mode . verilog)) ;; FIXME (11-04-2022): Necessary until verilog-mode is added to the list in the tree-sitter-langs package: https://github.com/emacs-tree-sitter/tree-sitter-langs/pull/93
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Mark tabs when in verilog-mode by customizing whitespace-mode
-(setq whitespace-style '(face tabs))
-(add-hook 'verilog-mode-hook #'whitespace-mode)
-;; Set tab background color
-(with-eval-after-load 'whitespace (set-face-attribute 'whitespace-tab nil
-                                                      :background "orange red"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
