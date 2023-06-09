@@ -142,7 +142,7 @@
    "w /" '(split-window-right :which-key "split right")
    "w b" '(split-root-window-below :which-key "split below all")
    "w r" '(split-root-window-right :which-key "split right all")
-   "w m" '(efs/toggle-maximize-buffer :which-key "maximize buffer")
+   "w m" '(efs--toggle-maximize-buffer :which-key "maximize buffer")
 
    "x" '(:ignore t :which-key "text")
    "x r" '(:ignore t :which-key "rectangles")
@@ -238,16 +238,16 @@
 
 ;; Fonts
 ;; You will most likely need to adjust this font size for your system!
-(defvar efs/default-font-size 100)
-(defvar efs/default-variable-font-size 100)
+(defvar efs--default-font-size 100)
+(defvar efs--default-variable-font-size 100)
 
-(set-face-attribute 'default nil :font "MesloLGS Nerd Font Mono" :height efs/default-font-size)
+(set-face-attribute 'default nil :font "MesloLGS Nerd Font Mono" :height efs--default-font-size)
 
 ;; Set the fixed pitch face
-(set-face-attribute 'fixed-pitch nil :font "MesloLGS Nerd Font Mono" :height efs/default-font-size)
+(set-face-attribute 'fixed-pitch nil :font "MesloLGS Nerd Font Mono" :height efs--default-font-size)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Fira Code Nerd Font" :height efs/default-variable-font-size :weight 'regular)
+(set-face-attribute 'variable-pitch nil :font "Fira Code Nerd Font" :height efs--default-variable-font-size :weight 'regular)
 
 ;; Helper functions for snippets templates
 ;; Format:          \sum_{}^{}
@@ -490,26 +490,28 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;   (spaceline-all-the-icons-theme)
 ;;   )
 
-(defvar toggle-maximized-buffer-state nil
-  "State variable to track the maximization status of the buffer.")
+(defvar efs--toggle-maximized-buffer-state nil
+  "State variable to track the maximization status of the buffer. Maximized if non-nill.")
 
-(defvar toggle-maximized-buffer-prev-config nil
+(defvar efs--toggle-maximized-buffer-prev-config nil
   "Variable to store the previous window configuration before maximizing.")
 
-(defun efs/toggle-maximize-buffer ()
+(defun efs--toggle-maximize-buffer ()
   "Toggle the maximization of the current buffer. Plays nice with a treemacs buffer."
   (interactive)
   (unless (bound-and-true-p winner-mode)
     (winner-mode 1))
-  (if toggle-maximized-buffer-state
+  (if efs--toggle-maximized-buffer-state
+      ;; In maximized state
       (progn
-        (when toggle-maximized-buffer-prev-config
-          (set-window-configuration toggle-maximized-buffer-prev-config))
-        (setq toggle-maximized-buffer-state nil))
+        (when efs--toggle-maximized-buffer-prev-config
+          (set-window-configuration efs--toggle-maximized-buffer-prev-config)) ;; Restore windows config
+        (setq efs--toggle-maximized-buffer-state nil))
+    ;; Not in maximized state
     (progn
-      (setq toggle-maximized-buffer-prev-config (current-window-configuration))
+      (setq efs--toggle-maximized-buffer-prev-config (current-window-configuration)) ;; Save window config
       (delete-other-windows) ;; Maybe use treemacs-delete-other-windows
-      (setq toggle-maximized-buffer-state t))))
+      (setq efs--toggle-maximized-buffer-state t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; nano-sidebar
@@ -860,7 +862,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 
 ;; Cape - Completion At Point Extensions
-(defun efs/cape-capf-setup-verilog ()
+(defun efs--cape-capf-setup-verilog ()
   "Create completions backends for verilog-mode"
   ;; (let ((result))
   ;;   (dolist (element '(verilog-completion-at-point cape-symbol cape-dabbrev) result)
@@ -871,7 +873,7 @@ COUNT defaults to 1, and KILL defaults to nil."
                      result)
       (add-to-list 'completion-at-point-functions element))))
 
-;; (defun efs/cape-capf-setup-lsp ()
+;; (defun efs--cape-capf-setup-lsp ()
 ;;   "Replace the default `lsp-completion-at-point' with its
 ;; `cape-capf-buster' version. Also add `cape-file' and
 ;; `company-yasnippet' backends."
@@ -913,7 +915,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
   :hook
-  (verilog-mode . efs/cape-capf-setup-verilog)
+  (verilog-mode . efs--cape-capf-setup-verilog)
 )
 
 ;; Icons for corfu completion buffer
@@ -1000,7 +1002,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   ([remap describe-key] . helpful-key))
 
 
-(defun efs/org-mode-setup ()
+(defun efs--org-mode-setup ()
   (org-indent-mode 0)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
@@ -1009,7 +1011,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :ensure t
   ;; :pin org
   :commands (org-capture org-agenda)
-  :hook (org-mode . efs/org-mode-setup)
+  :hook (org-mode . efs--org-mode-setup)
   :config
   (setq org-log-into-drawer '("LOOGBOOK")
         org-directory "~/org/"
@@ -1202,14 +1204,14 @@ COUNT defaults to 1, and KILL defaults to nil."
   :ensure t
   :defer t)
 
-(defun efs/lsp-mode-setup ()
+(defun efs--lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
 
 (use-package lsp-mode
   :defer t
   :commands (lsp lsp-deferred)
-  :hook (lsp-mode . efs/lsp-mode-setup)
+  :hook (lsp-mode . efs--lsp-mode-setup)
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -1521,17 +1523,17 @@ COUNT defaults to 1, and KILL defaults to nil."
   (with-eval-after-load 'marginalia
     (add-to-list 'marginalia-command-categories '(persp-switch-to-buffer* . buffer)))
 
-  (defun efs/current-layout-name ()
+  (defun efs--current-layout-name ()
     "Get name of the current perspective."
     (safe-persp-name (get-frame-persp)))
-  (defun efs/layouts-ts-kill ()
+  (defun efs--layouts-ts-kill ()
     "Kill current perspective"
     (interactive)
-    (persp-kill (efs/current-layout-name)))
-  (defun efs/save-persp-state ()
+    (persp-kill (efs--current-layout-name)))
+  (defun efs--save-persp-state ()
     (interactive)
     (persp-save-state-to-file persp-auto-save-fname))
-  (run-with-timer 0 (* 5 60) 'efs/save-persp-state) ;; Save perspective every 5 minutes
+  (run-with-timer 0 (* 5 60) 'efs--save-persp-state) ;; Save perspective every 5 minutes
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
         persp-set-last-persp-for-new-frames nil
@@ -1559,7 +1561,7 @@ COUNT defaults to 1, and KILL defaults to nil."
    "l s" '(persp-save-state-to-file :which-key "save all to file")
    "l S" '(persp-save-to-file-by-names :which-key "save persp to file")
    "l L" '(persp-load-state-from-file :which-key "load from file")
-   "l x" '(efs/layouts-ts-kill :which-key "kill layout")
+   "l x" '(efs--layouts-ts-kill :which-key "kill layout")
    )
   )
 
@@ -1616,11 +1618,11 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;                (window . root)
 ;;                (window-height . 0.3)))
 
-(defun efs/symbol-overlay-put ()
+(defun efs--symbol-overlay-put ()
   "Start symbol-overlay transient state."
   (interactive)
   (symbol-overlay-put)
-  (efs/symbol-overlay-transient)
+  (efs--symbol-overlay-transient)
   )
 
 (use-package symbol-overlay
@@ -1686,7 +1688,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     (interactive)
     (symbol-overlay-jump-prev)
     )
-  (transient-define-prefix efs/symbol-overlay-transient ()
+  (transient-define-prefix efs--symbol-overlay-transient ()
     "Symbol overlay transient state"
     ;; :transient-suffix 'transient--do-stay ;; Do not quit transient state automatically
     ["Symbol overlay transient state"
@@ -1720,7 +1722,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
   ;; Global keys
   (spacemacs-leader
-   "s o" '(efs/symbol-overlay-put :which-key "toggle symbol overlay")
+   "s o" '(efs--symbol-overlay-put :which-key "toggle symbol overlay")
    "s O" '(symbol-overlay-remove-all :which-key "remove symbol overlays")
    "t o" '(symbol-overlay-mode :which-key "symbol overlay mode")
    )
