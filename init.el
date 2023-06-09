@@ -53,30 +53,29 @@
 ;; (use-package evil :demand t)
 ;; Expands to: (elpaca evil (use-package evil :demand t))
 
-(use-package hydra
-  :defer t
-  :demand t)
-(use-package use-package-hydra
-  :demand t)
-
 (add-hook 'elpaca-after-init-hook (lambda ()
-                                    (defhydra hydra-elpaca-helper (:hint nil :color pink)
-                                      "
-_i_: info            _u_: update packages _r_: recipe copy
-_l_: log             _f_: fetch updates
-_m_: manager         _s_: status
-_b_: browse packages _q_: quit
-"
-                                      ("i" elpaca-info :exit t)
-                                      ("l" elpaca-log :exit t)
-                                      ("s" elpaca-status :exit t)
-                                      ("b" elpaca-browse :exit t)
-                                      ("m" elpaca-manager :exit t)
-                                      ("u" elpaca-update-all :exit t)
-                                      ("r" elpaca-menu-item :exit t)
-                                      ("f" elpaca-fetch-all :exit t)
-                                      ("q" nil :color blue))
-                                    ))
+                                    (transient-define-prefix efs--transient-elpaca-helper ()
+                                      "elpaca transient state"
+                                      ["Elpaca helper"
+                                       :class transient-columns
+                                       ["Info"
+                                        ("i" elpaca-info :transient nil :description "info")
+                                        ("l" elpaca-log :transient t :description "log")
+                                        ("s" elpaca-status :transient t :description "status")
+                                        ("b" elpaca-browse :transient nil :description "browse")]
+                                       ["Updates"
+                                        ("m" elpaca-manager :transient nil :description "manager")
+                                        ("u" elpaca-update-all :transient t :description "update all")
+                                        ("r" elpaca-menu-item :transient nil :description "menu item")
+                                        ("f" elpaca-fetch-all :transient t :description "fetch all")]
+                                       ["Others"
+                                        ("q" transient-quit-all :description "quit")]
+                                       ])))
+
+(defun efs--elpaca-helper ()
+  "Start elpaca-helper transient"
+  (interactive)
+  (efs--transient-elpaca-helper))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Leader-key and key-map config
@@ -98,7 +97,7 @@ _b_: browse packages _q_: quit
    "TAB" '(indent-for-tab-command :which-key "indent-for-tab-command")
 
    "a" '(:ignore t :which-key "applications")
-   "a k" 'hydra-elpaca-helper/body
+   "a k" 'efs--elpaca-helper
    "a b" 'general-describe-keybindings
    "a o a" 'org-agenda
    "a o c" 'org-capture
