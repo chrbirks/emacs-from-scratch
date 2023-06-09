@@ -1411,6 +1411,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package git-gutter
   :ensure t
+  :after transient
   :diminish git-gutter-mode
   :config 
   (global-git-gutter-mode +1)
@@ -1421,7 +1422,22 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
   (setq git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
   (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
-)
+  (transient-define-prefix efs--git-gutter-transient ()
+    "Git-gutter transient state"
+    ["Symbol overlay transient state"
+     :class transient-columns
+     ["Symbol navigation"
+      ("n" git-gutter:next-hunk :transient t :description "next hunk")
+      ("N" git-gutter:previous-hunk :transient t :description "prev hunk")]
+     ["Other"
+      ("p" git-gutter:popup-hunk :transient t :description "popup hunk")
+      ("q" transient-quit-all :description "quit")]
+     ])
+  ;; Global keys
+  (spacemacs-leader
+    "g g" '(efs--git-gutter-transient :description "git gutter transient")
+    ))
+
 (use-package evil-nerd-commenter
   :after evil
   :config
