@@ -266,6 +266,9 @@
 ; TODO: chezmoi template
 (setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
 
+;; Any .do files should be in tcl-mode
+(add-to-list 'auto-mode-alist '("\\.do\\'" . tcl-mode))
+
 (use-package diminish)
 (use-package delight)
 
@@ -1236,7 +1239,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-ui-sideline-show-code-actions nil ; Show all possible LSP actions such as renaming, type casting, etc.
         ; Enable lenses
         lsp-lens-enable t
-        ;; lsp-lens-place-position ; FIXME (05-09-2021) Not implemented yet
+        lsp-lens-place-position 'above-line
         ; Eldoc
         lsp-eldoc-enable-hover nil ; Show LSP info in minibuffer?
         lsp-eldoc-enable-signature-help t
@@ -1483,6 +1486,17 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package hl-todo
   :ensure t
   :config
+  (setq hl-todo-exclude-modes nil
+        hl-todo-keyword-faces
+        '(("TODO"       . "#dc752f")
+          ("DONE"       . "#86dc2f")
+          ("NOTE"       . "#b1951d")
+          ("HACK"       . "#b1951d")
+          ("TEMP"       . "#b1951d")
+          ("FIXME"      . "#dc752f")
+          ("fogbugz"    . "#18be4e")
+          ("XXX+"       . "#dc752f")
+          ("\\?\\?\\?+" . "#dc752f")))
   (global-hl-todo-mode))
 
 ;; Highlight tabs in prog-mode
