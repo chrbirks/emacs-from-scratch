@@ -109,6 +109,8 @@
 
    "c" '(:ignore t :which-key "comments")
 
+   "e" '(:ignore t :which-key "errors")
+
    "f" '(:ignore t :which-key "files")
    "f s" '(save-buffer :which-key "save buffer")
    "f S" '(evil-write-all :which-key "save all buffers")
@@ -1904,6 +1906,11 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
   ;; ;; (setq 'flycheck-global-modes t)
+  :config
+  (spacemacs-leader
+   "e n" '(flycheck-next-error :which-key "next error")
+   "e p" '(flycheck-previous-error :which-key "previous error")
+   )
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
