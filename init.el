@@ -266,8 +266,11 @@
 ; TODO: chezmoi template
 (setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
 
-;; Any .do files should be in tcl-mode
+;; Any .do .qsf .qpf and .sdc file should be in tcl-mode
 (add-to-list 'auto-mode-alist '("\\.do\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.sdc\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.qpf\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.qsf\\'" . tcl-mode))
 
 (use-package diminish)
 (use-package delight)
