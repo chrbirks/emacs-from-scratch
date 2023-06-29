@@ -1504,9 +1504,10 @@ COUNT defaults to 1, and KILL defaults to nil."
           ("\\?\\?\\?+" . "#dc752f")))
   (global-hl-todo-mode))
 
-;; Highlight tabs in prog-mode
+;; Highlight tabs in certain modes
 (setq whitespace-style '(face tabs))
-(add-hook 'prog-mode-hook #'whitespace-mode)
+(add-hook 'vhdl-mode-hook #'whitespace-mode)
+(add-hook 'verilog-mode-hook #'whitespace-mode)
 (add-hook 'elpaca-after-init-hook (lambda ()
                                     (with-eval-after-load 'whitespace
                                       (set-face-attribute 'whitespace-tab nil :background "orange red")
