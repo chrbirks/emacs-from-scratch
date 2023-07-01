@@ -213,7 +213,7 @@
    indent-tabs-mode nil)
 
 ;; Set row/column window size at startup
-(if (window-system) (set-frame-size (selected-frame) 140 82))
+(if (window-system) (set-frame-size (selected-frame) 140 60))
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 (add-hook 'elpaca-after-init-hook (lambda () (load custom-file 'noerror)))

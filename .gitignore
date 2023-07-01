@@ -2,5 +2,7 @@ eln-cache
 elpaca
 etc
 var
+transient
+tree-sitter
 custom.el
 *~
