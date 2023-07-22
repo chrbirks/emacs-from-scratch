@@ -185,8 +185,24 @@
 (when (> emacs-major-version 28)
   (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
 
-;; The default is 800 kilobytes.  Measured in bytes.
-(setq gc-cons-threshold (* 50 1000 1000))
+;; Set `gc-cons-threshold' to a high value during startup,
+;; and restore it to a more reasonable default value after startup.
+(setq gc-cons-threshold most-positive-fixnum)
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (setq gc-cons-threshold (* 2 1000 1000))))
+
+;; Increase `gc-cons-threshold' when Emacs is idle,
+;; and decrease it back to its original value when Emacs becomes busy.
+(defvar my-normal-gc-cons-threshold (* 2 1000 1000))
+(defvar my-idle-gc-cons-threshold (* 100 1000 1000))
+(defun my-gc-cons-threshold ()
+  (if (not (eq this-command 'minibuffer-complete))
+      (setq gc-cons-threshold
+            (if (or (minibufferp) current-prefix-arg)
+                my-normal-gc-cons-threshold
+              my-idle-gc-cons-threshold))))
+(add-hook 'pre-command-hook #'my-gc-cons-threshold)
 
 ;; Prevent warning buffer from stealing focus on every new warning
 (setq warning-minimum-level :warning)
@@ -1403,6 +1419,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :config
+  ;; Set global key bindings
   (spacemacs-leader
    "g s" '(magit-status :which-key "magit status")
    )
@@ -1574,7 +1591,6 @@ COUNT defaults to 1, and KILL defaults to nil."
   :init
   (which-key-add-key-based-replacements "C-c t" "term")
   :config
-  (setq vterm-max-scrollback 10000)
   ;; Add find-file-other-window to accepted commands
   (add-to-list 'vterm-eval-cmds
                '("find-file-other-window" find-file-other-window)))
@@ -1840,9 +1856,6 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package lispyville
   :hook (lispy-mode . lispyville-mode))
-
-;; Make gc pauses faster by decreasing the threshold.
-(setq gc-cons-threshold (* 2 1000 1000))
 
 ;; Settings for horizontal/vertical scrolling
 (setq scroll-margin     5              ;; Set top/bottom scroll margin in number of lines
