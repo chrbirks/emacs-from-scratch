@@ -459,26 +459,6 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq spaceline-window-numbers-unicode t) ; Get unicode numbers when using eyebrowse-mode
 )
 
-;; (use-package spaceline-all-the-icons
-;;   :ensure t
-;;   :after spaceline
-;;   :config
-;;   (setq spaceline-all-the-icons-separator-type 'arrow)
-;;   (setq spaceline-all-the-icons-file-name-highlight t)
-;;   (setq spaceline-all-the-icons-highlight-file-name t)
-;;   (setq spaceline-all-the-icons-window-number-always-visible t)
-;;   (setq spaceline-all-the-icons-clock-always-visible nil)
-;;   (spaceline-all-the-icons--setup-git-ahead)
-;;   (spaceline-toggle-all-the-icons-dedicated-on)
-;;   (spaceline-toggle-all-the-icons-fullscreen-on)
-;;   (spaceline-toggle-all-the-icons-buffer-position-on)
-;;   (spaceline-all-the-icons-icon-set-eyebrowse-slot 'circle)
-;;   (spaceline-all-the-icons-icon-set-git-ahead 'commit)
-;;   (spaceline-all-the-icons-icon-set-modified 'circle)
-;;   (spaceline-all-the-icons-icon-set-window-numbering 'circle)
-;;   (spaceline-all-the-icons-theme)
-;;   )
-
 (defvar efs--toggle-maximized-buffer-state nil
   "State variable to track the maximization status of the buffer. Maximized if non-nill.")
 
