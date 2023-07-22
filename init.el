@@ -328,20 +328,6 @@ COUNT defaults to 1, and KILL defaults to nil."
       (delete-region beg end)))
   (evil-define-key 'normal 'global "x" 'efs--evil-delete-char) ;; Map "x" to efs--evil-delete-char
 
-  ;; Redefined evil-paste-after so it doesn't insert an extra line shift
-  (defun efs--evil-paste-after (&optional count register)
-    "Version of evil-paste-after that removes trailing newlines."
-    (interactive "P<x>")
-    (let* ((text (if register
-                     (evil-get-register register)
-                   (current-kill 0)))
-           (text (if (and text (string-match "\n\\'" text))
-                     (replace-match "" t t text)
-                   text))
-           (kill-ring (list text)))
-      (evil-paste-after count register)))
-  (evil-define-key 'normal 'global (kbd "p") 'efs--evil-paste-after) ;; Map "p" to efs-evil-paste-after
-
   ;; Set cursor based on evil state
   (setq evil-normal-state-cursor '(box "DarkGoldenrod2")
         evil-insert-state-cursor '((bar . 2) "chartreuse3")
