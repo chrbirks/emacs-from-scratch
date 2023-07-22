@@ -328,7 +328,7 @@ COUNT defaults to 1, and KILL defaults to nil."
       (delete-region beg end)))
   (evil-define-key 'normal 'global "x" 'efs--evil-delete-char) ;; Map "x" to efs--evil-delete-char
 
-  ;; Set cursor based on evil state
+  ;; Set cursor color based on evil state
   (setq evil-normal-state-cursor '(box "DarkGoldenrod2")
         evil-insert-state-cursor '((bar . 2) "chartreuse3")
         evil-visual-state-cursor '((hbar . 2) "gray")
@@ -382,6 +382,17 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spacemacs-leader
    "s e" '(evil-iedit-state/iedit-mode :which-key "iedit-mode at point")
    ))
+
+(use-package evil-org
+  :ensure t
+  :after org
+  :diminish evil-org-mode
+  :hook
+  (org-mode . evil-org-mode)
+  (evil-org-mode . (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))) ;; Enable all key bindings
+  :config
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 (if (version<= emacs-version "28")
     ;; Use undo-tree for Emacs version earlier than 28
@@ -459,6 +470,9 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq spaceline-window-numbers-unicode t) ; Get unicode numbers when using eyebrowse-mode
 )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Function for maximizing/unmaximizing the active window.
+;; Could maybe be implemented safer with '(window-configuration-to-register :efs-window-conf-var)' instead.
 (defvar efs--toggle-maximized-buffer-state nil
   "State variable to track the maximization status of the buffer. Maximized if non-nill.")
 
