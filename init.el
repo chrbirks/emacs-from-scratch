@@ -41,10 +41,10 @@
 
 ;; Install use-package support
 (elpaca elpaca-use-package
-        ;; Enable :elpaca use-package keyword.
-        (elpaca-use-package-mode)
-        ;; Assume :elpaca t unless otherwise specified.
-        (setq elpaca-use-package-by-default t))
+  ;; Enable :elpaca use-package keyword.
+  (elpaca-use-package-mode)
+  ;; Assume :elpaca t unless otherwise specified.
+  (setq elpaca-use-package-by-default t))
 
 ;; Block until current queue processed.
 (elpaca-wait)
@@ -52,30 +52,6 @@
 ;; Install packages like this:
 ;; (use-package evil :demand t)
 ;; Expands to: (elpaca evil (use-package evil :demand t))
-
-(add-hook 'elpaca-after-init-hook (lambda ()
-                                    (transient-define-prefix efs--transient-elpaca-helper ()
-                                      "elpaca transient state"
-                                      ["Elpaca helper"
-                                       :class transient-columns
-                                       ["Info"
-                                        ("i" elpaca-info :transient nil :description "info")
-                                        ("l" elpaca-log :transient t :description "log")
-                                        ("s" elpaca-status :transient t :description "status")
-                                        ("b" elpaca-browse :transient nil :description "browse")]
-                                       ["Updates"
-                                        ("m" elpaca-manager :transient nil :description "manager")
-                                        ("u" elpaca-update-all :transient t :description "update all")
-                                        ("r" elpaca-menu-item :transient nil :description "menu item")
-                                        ("f" elpaca-fetch-all :transient t :description "fetch all")]
-                                       ["Others"
-                                        ("q" transient-quit-all :description "quit")]
-                                       ])))
-
-(defun efs--elpaca-helper ()
-  "Start elpaca-helper transient"
-  (interactive)
-  (efs--transient-elpaca-helper))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Leader-key and key-map config
@@ -1852,6 +1828,29 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;;       ("d" "drilldown" pmx-nested-transient)]])
 
   ;;   (global-set-key (kbd "M-o") 'pmx-transient-toy)
+
+  ;; Transient helper for elpaca
+  (transient-define-prefix efs--transient-elpaca-helper ()
+    "elpaca transient state"
+    ["Elpaca helper"
+     :class transient-columns
+     ["Info"
+      ("i" elpaca-info        :transient nil :description "info")
+      ("l" elpaca-log         :transient t   :description "log")
+      ("s" elpaca-status      :transient t   :description "status")
+      ("b" elpaca-browse      :transient nil :description "browse")]
+     ["Updates"
+      ("m" elpaca-manager     :transient nil :description "manager")
+      ("u" elpaca-update-all  :transient t   :description "update all")
+      ("r" elpaca-menu-item   :transient nil :description "menu item")
+      ("f" elpaca-fetch-all   :transient t   :description "fetch all")]
+     ["Others"
+      ("q" transient-quit-all                :description "quit")]
+     ])
+  (defun efs--elpaca-helper ()
+    "Start elpaca-helper transient"
+    (interactive)
+    (efs--transient-elpaca-helper))
 )
 
 (use-package lispyville
