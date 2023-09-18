@@ -59,6 +59,7 @@
   :demand t
   :after evil
   :config
+  (general-evil-setup)
   (general-create-definer spacemacs-leader
                           :prefix "SPC"
                           :global-prefix "C-SPC"
@@ -128,6 +129,32 @@
    ;; "f d e" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))
  )
   )
+
+(elpaca-wait)
+
+(use-package diminish)
+(use-package delight)
+
+;; Diminish some common minor modes
+(add-hook 'elpaca-after-init-hook (lambda ()
+                                    (with-eval-after-load 'autorevert
+                                      (require 'diminish)
+                                      (diminish 'auto-revert-mode))
+                                    (with-eval-after-load 'eldoc
+                                      (require 'diminish)
+                                      (diminish 'eldoc-mode))
+                                    (with-eval-after-load 'undo-tree-mode
+                                      (require 'diminish)
+                                      (diminish 'undo-tree-mode))
+                                    (with-eval-after-load 'visual-line-mode
+                                      (require 'diminish)
+                                      (diminish 'visual-line-mode))
+                                    (with-eval-after-load 'buffer-face-mode
+                                      (require 'diminish)
+                                      (diminish 'buffer-face-mode))
+                                    (with-eval-after-load 'hideshow
+                                      (require 'diminish)
+                                      (diminish 'hs-minor-mode))))
 
 (elpaca-wait)
 
@@ -212,12 +239,11 @@
 
 (setq inhibit-startup-message t)
 
-(scroll-bar-mode -1)        ; Disable visible scrollbar
-(tool-bar-mode -1)          ; Disable the toolbar
-(tooltip-mode -1)           ; Disable tooltips
-(set-fringe-mode 5)        ; Give some breathing room
-(menu-bar-mode -1)          ; Disable the menu bar
-
+(scroll-bar-mode -1) ; Disable visible scrollbar
+(tool-bar-mode -1)   ; Disable the toolbar
+(tooltip-mode -1)    ; Disable tooltips
+(set-fringe-mode 5)  ; Give some breathing room
+(menu-bar-mode -1)   ; Disable the menu bar
 (column-number-mode)
 (global-display-line-numbers-mode t)
 
@@ -263,30 +289,6 @@
 (add-to-list 'auto-mode-alist '("\\.sdc\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.qpf\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.qsf\\'" . tcl-mode))
-
-(use-package diminish)
-(use-package delight)
-
-;; Diminish some common minor modes
-(add-hook 'elpaca-after-init-hook (lambda ()
-                                    (with-eval-after-load 'autorevert
-                                      (require 'diminish)
-                                      (diminish 'auto-revert-mode))
-                                    (with-eval-after-load 'eldoc
-                                      (require 'diminish)
-                                      (diminish 'eldoc-mode))
-                                    (with-eval-after-load 'undo-tree-mode
-                                      (require 'diminish)
-                                      (diminish 'undo-tree-mode))
-                                    (with-eval-after-load 'visual-line-mode
-                                      (require 'diminish)
-                                      (diminish 'visual-line-mode))
-                                    (with-eval-after-load 'buffer-face-mode
-                                      (require 'diminish)
-                                      (diminish 'buffer-face-mode))
-                                    (with-eval-after-load 'hideshow
-                                      (require 'diminish)
-                                      (diminish 'hs-minor-mode))))
 
 (use-package no-littering
   :ensure t
