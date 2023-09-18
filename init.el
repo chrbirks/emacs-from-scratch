@@ -392,6 +392,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     ;; Use undo-tree for Emacs version earlier than 28
     (use-package undo-tree
       :ensure t
+      :diminish undo-tree-mode
       :config
       (global-undo-tree-mode)
       (spacemacs-leader
@@ -410,6 +411,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; Use vundo supported for Emacs > v28
   (use-package vundo
     :ensure t
+    :diminish vundo-mode
     :config
     (setq vundo-glyph-alist vundo-unicode-symbols) ;; Use unicode symbols instead of default ASCII
     (spacemacs-leader
@@ -1925,6 +1927,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; Add verilog-mode and vhdl-mode to default-enabled flycheck modes
 (use-package flycheck
   :ensure t
+  :diminish flycheck-mode
   ;; :config
   ;; ; FIXME: Try removing these since they are part of lsp-mode
   ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
