@@ -1049,6 +1049,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spacemacs-leader
    "a o" '(:ignore t :which-key "org")
    "a o r" '(:ignore t :which-key "roam")
+   "a o r f" '(org-roam-node-find :wk "node-find")
    "a o r d" '(:ignore t :which-key "dailies")
    "a o r d t" '(org-roam-dailies-goto-today :which-key "goto today")
    "a o r d d" '(org-roam-dailies-goto-date :which-key "goto date")
@@ -1931,6 +1932,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spacemacs-leader
    "e n" '(flycheck-next-error :which-key "next error")
    "e p" '(flycheck-previous-error :which-key "previous error")
+   "e l" '(flycheck-list-errors :which-key "list errors")
+   "e L" '(lsp-treemacs-errors-list :which-key "lsp list errors")
    )
 )
 
