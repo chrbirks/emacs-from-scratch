@@ -839,6 +839,13 @@ COUNT defaults to 1, and KILL defaults to nil."
     )
 )
 
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :elpaca (:host github :repo "LuigiPiucco/nerd-icons-corfu")
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
+  )
 
 ;; Cape - Completion At Point Extensions
 (defun efs--cape-capf-setup-verilog ()
