@@ -397,11 +397,13 @@ COUNT defaults to 1, and KILL defaults to nil."
       (global-undo-tree-mode)
       (spacemacs-leader
        "a u" '(undo-tree-visualize :which-key "undo-tree-visualize"))
-      ;; :bind (:map evil-normal-state-map
-      ;;             ("j" . undo-tree-visualize-redo)
-      ;;             ("k" . undo-tree-visualize-undo)
-      ;;             ("h" . undo-tree-visualize-switch-branch-left)
-      ;;             ("l" . undo-tree-visualize-switch-branch-right))
+      ;; Redefine evil-mode keys while in undo-tree-mode
+      (evil-make-overriding-map undo-tree-visualizer-mode-map 'normal)
+      (evil-define-key 'normal undo-tree-visualizer-mode-map
+        "h" 'undo-tree-visualize-switch-branch-left
+        "j" 'undo-tree-visualize-redo
+        "k" 'undo-tree-visualize-undo
+        "l" 'undo-tree-visualize-switch-branch-right)
       ;; Do not save undo-tree files named .~undo-tree~ everywhere.
       (setq undo-tree-auto-save-history nil)
       ;; Or make place the files in /.emacs.d/undo instead
@@ -416,6 +418,13 @@ COUNT defaults to 1, and KILL defaults to nil."
     (setq vundo-glyph-alist vundo-unicode-symbols) ;; Use unicode symbols instead of default ASCII
     (spacemacs-leader
      "a u" '(vundo :which-key "vundo tree")) ;; "C-n": vundo-next, "C-p": vundo-previous, "h"; vundo-backwards, "l": vundo-forwards
+    ;; Redefine evil-mode keys while in vundo-mode
+    (evil-make-overriding-map vundo-mode-map 'normal)
+    (evil-define-key 'normal vundo-mode-map
+      "h" 'vundo-backward
+      "j" 'vundo-next
+      "k" 'vundo-previous
+      "l" 'vundo-forward) 
     )
 )
 
