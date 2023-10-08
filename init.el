@@ -69,62 +69,62 @@
   (spacemacs-leader
    ;:keymaps 'clojure-mode-map
    "SPC" 'execute-extended-command
-   "'" '(vterm-toggle :which-key "vterm toggle")
+   "'" '(vterm-toggle :wk "vterm toggle")
 
-   "TAB" '(indent-for-tab-command :which-key "indent-for-tab-command")
+   "TAB" '(indent-for-tab-command :wk "indent-for-tab-command")
 
-   "a" '(:ignore t :which-key "applications")
+   "a" '(:ignore t :wk "applications")
    "a k" 'efs--elpaca-helper
    "a b" 'general-describe-keybindings
    "a o a" 'org-agenda
    "a o c" 'org-capture
 
-   "b" '(:ignore t :which-key "buffers")
-   "b p" '(switch-to-prev-buffer :which-key "previous buffer")
-   "b n" '(switch-to-next-buffer :which-key "next buffer")
+   "b" '(:ignore t :wk "buffers")
+   "b p" '(switch-to-prev-buffer :wk "previous buffer")
+   "b n" '(switch-to-next-buffer :wk "next buffer")
    "b d" 'kill-this-buffer
 
-   "c" '(:ignore t :which-key "comments")
+   "c" '(:ignore t :wk "comments")
 
-   "e" '(:ignore t :which-key "errors")
+   "e" '(:ignore t :wk "errors")
 
-   "f" '(:ignore t :which-key "files")
-   "f s" '(save-buffer :which-key "save buffer")
-   "f S" '(evil-write-all :which-key "save all buffers")
+   "f" '(:ignore t :wk "files")
+   "f s" '(save-buffer :wk "save buffer")
+   "f S" '(evil-write-all :wk "save all buffers")
 
-   "g" '(:ignore t :which-key "version control")
+   "g" '(:ignore t :wk "version control")
 
-   "j"  '(:ignore t :which-key "navigate")
+   "j"  '(:ignore t :wk "navigate")
 
-   "l"  '(:ignore t :which-key "layouts")
+   "l"  '(:ignore t :wk "layouts")
 
-   "o" '(:ignore t :which-key "org mode")
+   "o" '(:ignore t :wk "org mode")
 
-   "p"  '(:ignore t :which-key "project")
+   "p"  '(:ignore t :wk "project")
 
-   "r"  '(:ignore t :which-key "registers")
+   "r"  '(:ignore t :wk "registers")
 
-   "s"  '(:ignore t :which-key "search/symbol")
+   "s"  '(:ignore t :wk "search/symbol")
 
-   "t"  '(:ignore t :which-key "toggles")
-   "t l" '(toggle-truncate-lines :which-key "toggle-truncate-lines")
-   "t t" '(consult-theme :which-key "choose theme")
+   "t"  '(:ignore t :wk "toggles")
+   "t l" '(toggle-truncate-lines :wk "toggle-truncate-lines")
+   "t t" '(consult-theme :wk "choose theme")
 
-   "q" '(:ignore t :which-key "quit")
-   "q q" '(save-buffers-kill-terminal :which-key "quit emacs")
+   "q" '(:ignore t :wk "quit")
+   "q q" '(save-buffers-kill-terminal :wk "quit emacs")
 
-   "w" '(:ignore t :which-key "windows")
-   "w d" '(delete-window :which-key "delete window")
-   "w -" '(split-window-below :which-key "split below")
-   "w /" '(split-window-right :which-key "split right")
-   "w b" '(split-root-window-below :which-key "split below all")
-   "w r" '(split-root-window-right :which-key "split right all")
-   "w m" '(efs--toggle-maximize-buffer :which-key "maximize buffer")
+   "w" '(:ignore t :wk "windows")
+   "w d" '(delete-window :wk "delete window")
+   "w -" '(split-window-below :wk "split below")
+   "w /" '(split-window-right :wk "split right")
+   "w b" '(split-root-window-below :wk "split below all")
+   "w r" '(split-root-window-right :wk "split right all")
+   "w m" '(efs--toggle-maximize-buffer :wk "maximize buffer")
 
-   "x" '(:ignore t :which-key "text")
-   "x r" '(:ignore t :which-key "rectangles")
-   "x r t" '(string-rectangle :which-key "string-rectangle")
-   "x r k" '(kill-rectangle :which-key "kill-rectangle")
+   "x" '(:ignore t :wk "text")
+   "x r" '(:ignore t :wk "rectangles")
+   "x r t" '(string-rectangle :wk "string-rectangle")
+   "x r k" '(kill-rectangle :wk "kill-rectangle")
 
    ;; "f d e" '(lambda () (interactive) (find-file (expand-file-name "~/.emacs.d/Emacs.org")))
  )
@@ -357,9 +357,9 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; Set Avy to use actual words instead of sequences of letters (requires Avy 0.5.0)
   (setq avy-style 'words)
   (spacemacs-leader
-   "j j" '(evil-avy-goto-char-timer :which-key "jump to char")
-   "j l" '(evil-avy-goto-line :which-key "jump to line")
-   "j w" '(evil-avy-goto-word-or-subword-1 :which-key "jump to word")))
+   "j j" '(evil-avy-goto-char-timer :wk "jump to char")
+   "j l" '(evil-avy-goto-line :wk "jump to line")
+   "j w" '(evil-avy-goto-word-or-subword-1 :wk "jump to word")))
 
 (use-package evil-escape
   :ensure t
@@ -374,7 +374,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :after evil
   :config
   (spacemacs-leader
-   "s e" '(evil-iedit-state/iedit-mode :which-key "iedit-mode at point")
+   "s e" '(evil-iedit-state/iedit-mode :wk "iedit-mode at point")
    ))
 
 (use-package evil-org
@@ -396,7 +396,7 @@ COUNT defaults to 1, and KILL defaults to nil."
       :config
       (global-undo-tree-mode)
       (spacemacs-leader
-       "a u" '(undo-tree-visualize :which-key "undo-tree-visualize"))
+       "a u" '(undo-tree-visualize :wk "undo-tree-visualize"))
       ;; Redefine evil-mode keys while in undo-tree-mode
       (evil-make-overriding-map undo-tree-visualizer-mode-map 'normal)
       (evil-define-key 'normal undo-tree-visualizer-mode-map
@@ -417,7 +417,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     :config
     (setq vundo-glyph-alist vundo-unicode-symbols) ;; Use unicode symbols instead of default ASCII
     (spacemacs-leader
-     "a u" '(vundo :which-key "vundo tree")) ;; "C-n": vundo-next, "C-p": vundo-previous, "h"; vundo-backwards, "l": vundo-forwards
+     "a u" '(vundo :wk "vundo tree")) ;; "C-n": vundo-next, "C-p": vundo-previous, "h"; vundo-backwards, "l": vundo-forwards
     ;; Redefine evil-mode keys while in vundo-mode
     (evil-make-overriding-map vundo-mode-map 'normal)
     (evil-define-key 'normal vundo-mode-map
@@ -654,8 +654,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   ;; Global keybindings
   (spacemacs-leader
-   "f f" '(find-file :which-key "find file")
-   "f A" '(find-alternate-file :which-key "replace buffer with file")
+   "f f" '(find-file :wk "find file")
+   "f A" '(find-alternate-file :wk "replace buffer with file")
    )
   ;; :hook (rfn-eshadow-update-overlay . vertico-directory-tidy) ; Correct file path when using a command for selecting a file
   )
@@ -781,27 +781,27 @@ COUNT defaults to 1, and KILL defaults to nil."
 
   ;; Global keybindings
   (spacemacs-leader
-   "b b" '(consult-buffer :which-key "switch buffer") ;; Call consult-narrow-key to see narrowing options
-   "b B" '(persp-switch-to-buffer :which-key "switch persp buffer")
-   "b P" '(consult-project-buffer :which-key "switch project buffer")
+   "b b" '(consult-buffer :wk "switch buffer") ;; Call consult-narrow-key to see narrowing options
+   "b B" '(persp-switch-to-buffer :wk "switch persp buffer")
+   "b P" '(consult-project-buffer :wk "switch project buffer")
 
-   "f r" '(consult-recent-file :which-key "recent files")
-   "r y" '(consult-yank-from-kill-ring :which-key "yank kill-ring")
-   "r s" '(consult-register-store :which-key "store register")
-   "r r" '(consult-register :which-key "select register")
+   "f r" '(consult-recent-file :wk "recent files")
+   "r y" '(consult-yank-from-kill-ring :wk "yank kill-ring")
+   "r s" '(consult-register-store :wk "store register")
+   "r r" '(consult-register :wk "select register")
 
-   "s s" '(consult-line :which-key "seach buffer")
-   "s S" '(efs--consult-line-symbol-at-point :which-key "search buffer at point")
-   "s b" '(consult-line-multi :which-key "seach all buffers")
-   "s p" '(consult-ripgrep :which-key "search project")
-   "s r" '(rg-menu :which-key "ripgrep-menu")
-   "s d" '(deadgrep :which-key "deadgrep")
+   "s s" '(consult-line :wk "seach buffer")
+   "s S" '(efs--consult-line-symbol-at-point :wk "search buffer at point")
+   "s b" '(consult-line-multi :wk "seach all buffers")
+   "s p" '(consult-ripgrep :wk "search project")
+   "s r" '(rg-menu :wk "ripgrep-menu")
+   "s d" '(deadgrep :wk "deadgrep")
 
-   "p b" '(consult-project-buffer :which-key "project buffers")
-   "p i" '(consult-imenu :which-key "project imenu")
-   "p I" '(consult-imenu-multi :which-key "project imenu-multi")
+   "p b" '(consult-project-buffer :wk "project buffers")
+   "p i" '(consult-imenu :wk "project imenu")
+   "p I" '(consult-imenu-multi :wk "project imenu-multi")
 
-   "t m" '(consult-minor-mode-menu :which-key "enable/disable minor-mode")
+   "t m" '(consult-minor-mode-menu :wk "enable/disable minor-mode")
    )
   )
 
@@ -1067,16 +1067,16 @@ COUNT defaults to 1, and KILL defaults to nil."
            :empty-lines-before 1
            :unnarrowed nil)))
   (spacemacs-leader
-   "a o" '(:ignore t :which-key "org")
-   "a o r" '(:ignore t :which-key "roam")
+   "a o" '(:ignore t :wk "org")
+   "a o r" '(:ignore t :wk "roam")
    "a o r f" '(org-roam-node-find :wk "node-find")
-   "a o r d" '(:ignore t :which-key "dailies")
-   "a o r d t" '(org-roam-dailies-goto-today :which-key "goto today")
-   "a o r d d" '(org-roam-dailies-goto-date :which-key "goto date")
-   "o S A" '(org-archive-subtree-default :which-key "archive subtree")
-   "o S S" '(org-sort :which-key "org sort")
-   "o T T" '(org-todo :which-key "org todo")
-   "o T t" '(org-show-todo-tree :which-key "org todo tree")
+   "a o r d" '(:ignore t :wk "dailies")
+   "a o r d t" '(org-roam-dailies-goto-today :wk "goto today")
+   "a o r d d" '(org-roam-dailies-goto-date :wk "goto date")
+   "o S A" '(org-archive-subtree-default :wk "archive subtree")
+   "o S S" '(org-sort :wk "org sort")
+   "o T T" '(org-todo :wk "org todo")
+   "o T t" '(org-show-todo-tree :wk "org todo tree")
    ))
 
 (use-package org-roam-ui
@@ -1084,7 +1084,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :after org
   :config
   (spacemacs-leader
-   "a o r u" '(org-roam-ui-open :which-key "org-roam-ui-open")))
+   "a o r u" '(org-roam-ui-open :wk "org-roam-ui-open")))
 
 (use-package org-projectile
   :after org
@@ -1397,9 +1397,9 @@ COUNT defaults to 1, and KILL defaults to nil."
              (unless (string= "-" project-name)
                (format " in [%s]" project-name))))))
   (spacemacs-leader
-   "p c" '(projectile-commander :which-key "projectile-commander")
-   "p f" '(projectile-find-file :which-key "find-file")
-   "p m" '(projectile-command-map :which-key "projectile-command-map")
+   "p c" '(projectile-commander :wk "projectile-commander")
+   "p f" '(projectile-find-file :wk "find-file")
+   "p m" '(projectile-command-map :wk "projectile-command-map")
    )
 )
 
@@ -1418,7 +1418,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   ;; Set global key bindings
   (spacemacs-leader
-   "g s" '(magit-status :which-key "magit status")
+   "g s" '(magit-status :wk "magit status")
    )
   )
 
@@ -1455,9 +1455,9 @@ COUNT defaults to 1, and KILL defaults to nil."
   :after evil
   :config
   (spacemacs-leader
-   "c l" '(evilnc-comment-or-uncomment-lines :which-key "comment-or-uncomment-lines")
-   "c p" '(evilnc-comment-or-uncomment-paragraphs :which-key "comment-or-uncomment-paragraph")
-   "c y" '(evilnc-copy-and-comment-lines :which-key "copy-and-comment-lines")
+   "c l" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment-lines")
+   "c p" '(evilnc-comment-or-uncomment-paragraphs :wk "comment-or-uncomment-paragraph")
+   "c y" '(evilnc-copy-and-comment-lines :wk "copy-and-comment-lines")
    )
   )
 
@@ -1478,15 +1478,15 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq winum-ignored-buffers-regexp '("\\*Treemacs-Scoped-Buffer-"))
   (winum-mode)
   (spacemacs-leader
-   "1" '(winum-select-window-1 :which-key "select window 1")
-   "2" '(winum-select-window-2 :which-key "select window 2")
-   "3" '(winum-select-window-3 :which-key "select window 3")
-   "4" '(winum-select-window-4 :which-key "select window 4")
-   "5" '(winum-select-window-5 :which-key "select window 5")
-   "6" '(winum-select-window-6 :which-key "select window 6")
-   "7" '(winum-select-window-7 :which-key "select window 7")
-   "8" '(winum-select-window-8 :which-key "select window 8")
-   "9" '(winum-select-window-9 :which-key "select window 9")
+   "1" '(winum-select-window-1 :wk "select window 1")
+   "2" '(winum-select-window-2 :wk "select window 2")
+   "3" '(winum-select-window-3 :wk "select window 3")
+   "4" '(winum-select-window-4 :wk "select window 4")
+   "5" '(winum-select-window-5 :wk "select window 5")
+   "6" '(winum-select-window-6 :wk "select window 6")
+   "7" '(winum-select-window-7 :wk "select window 7")
+   "8" '(winum-select-window-8 :wk "select window 8")
+   "9" '(winum-select-window-9 :wk "select window 9")
    )
   )
 
@@ -1563,12 +1563,12 @@ COUNT defaults to 1, and KILL defaults to nil."
                           :hooks '(after-switch-to-buffer-functions)
                           :switch 'window))
   (spacemacs-leader
-   ;; "l n" '(persp-add-new :which-key "new persp")
-   "l l" '(persp-switch :which-key "switch persp")
-   "l s" '(persp-save-state-to-file :which-key "save all to file")
-   "l S" '(persp-save-to-file-by-names :which-key "save persp to file")
-   "l L" '(persp-load-state-from-file :which-key "load from file")
-   "l x" '(efs--layouts-ts-kill :which-key "kill layout")
+   ;; "l n" '(persp-add-new :wk "new persp")
+   "l l" '(persp-switch :wk "switch persp")
+   "l s" '(persp-save-state-to-file :wk "save all to file")
+   "l S" '(persp-save-to-file-by-names :wk "save persp to file")
+   "l L" '(persp-load-state-from-file :wk "load from file")
+   "l x" '(efs--layouts-ts-kill :wk "kill layout")
    )
   )
 
@@ -1728,10 +1728,10 @@ COUNT defaults to 1, and KILL defaults to nil."
 
   ;; Global keys
   (spacemacs-leader
-   "s o" '(efs--symbol-overlay-put :which-key "toggle symbol overlay")
-   "s O" '(symbol-overlay-remove-all :which-key "remove symbol overlays")
+   "s o" '(efs--symbol-overlay-put :wk "toggle symbol overlay")
+   "s O" '(symbol-overlay-remove-all :wk "remove symbol overlays")
    "s M-o" '(efs--symbol-overlay-transient :wk "symbol overlay transient")
-   "t o" '(symbol-overlay-mode :which-key "symbol overlay mode")
+   "t o" '(symbol-overlay-mode :wk "symbol overlay mode")
    )
   )
 
@@ -1911,8 +1911,8 @@ COUNT defaults to 1, and KILL defaults to nil."
      (treemacs-git-mode 'simple)))
   ;; Keybindings
   (spacemacs-leader
-   "0" '(treemacs-select-window :which-key "treemacs window")
-   "f t" '(treemacs :which-key "treemacs")
+   "0" '(treemacs-select-window :wk "treemacs window")
+   "f t" '(treemacs :wk "treemacs")
    )
   )
 
@@ -1962,10 +1962,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 
   (spacemacs-leader
-   "e n" '(flycheck-next-error :which-key "next error")
-   "e p" '(flycheck-previous-error :which-key "previous error")
-   "e l" '(efs--toggle-flycheck-error-list :which-key "list errors")
-   "e L" '(lsp-treemacs-errors-list :which-key "lsp list errors")
+   "e n" '(flycheck-next-error :wk "next error")
+   "e p" '(flycheck-previous-error :wk "previous error")
+   "e l" '(efs--toggle-flycheck-error-list :wk "list errors")
+   "e L" '(lsp-treemacs-errors-list :wk "lsp list errors")
    )
 )
 
