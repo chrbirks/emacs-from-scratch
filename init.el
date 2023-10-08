@@ -1437,7 +1437,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
   (transient-define-prefix efs--git-gutter-transient ()
     "Git-gutter transient state"
-    ["Symbol overlay transient state"
+    ["Git-gutter transient state"
      :class transient-columns
      ["Symbol navigation"
       ("n" git-gutter:next-hunk :transient t :description "next hunk")
@@ -1448,7 +1448,7 @@ COUNT defaults to 1, and KILL defaults to nil."
      ])
   ;; Global keys
   (spacemacs-leader
-    "g g" '(efs--git-gutter-transient :description "git gutter transient")
+    "g g" '(efs--git-gutter-transient :wk "git-gutter transient")
     ))
 
 (use-package evil-nerd-commenter
@@ -1625,7 +1625,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;                (window-height . 0.3)))
 
 (defun efs--symbol-overlay-put ()
-  "Start symbol-overlay transient state."
+  "Do symbol overlay at cursor and start symbol-overlay transient state."
   (interactive)
   (symbol-overlay-put)
   (efs--symbol-overlay-transient)
@@ -1702,9 +1702,9 @@ COUNT defaults to 1, and KILL defaults to nil."
      ["Symbol navigation"
       ("n" efs--so-jump-next)
       ("N" efs--so-jump-prev)]
-     ["All symbols"
       ("f" symbol-overlay-switch-forward :transient t :description "switch symbol forward")
       ("F" symbol-overlay-switch-backward :transient t :description "switch symbol backwards")
+     ["All symbols"
       ("o" symbol-overlay-put :transient t :description "toggle overlay") ;; TODO: Select random face when calling this
       ("O" symbol-overlay-remove-all :transient t :description "remove all overlays")]
      ["Scope"
@@ -1730,6 +1730,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spacemacs-leader
    "s o" '(efs--symbol-overlay-put :which-key "toggle symbol overlay")
    "s O" '(symbol-overlay-remove-all :which-key "remove symbol overlays")
+   "s M-o" '(efs--symbol-overlay-transient :wk "symbol overlay transient")
    "t o" '(symbol-overlay-mode :which-key "symbol overlay mode")
    )
   )
