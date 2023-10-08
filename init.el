@@ -1701,9 +1701,9 @@ COUNT defaults to 1, and KILL defaults to nil."
      :class transient-columns
      ["Symbol navigation"
       ("n" efs--so-jump-next)
-      ("N" efs--so-jump-prev)]
+      ("N" efs--so-jump-prev)
       ("f" symbol-overlay-switch-forward :transient t :description "switch symbol forward")
-      ("F" symbol-overlay-switch-backward :transient t :description "switch symbol backwards")
+      ("F" symbol-overlay-switch-backward :transient t :description "switch symbol backwards")]
      ["All symbols"
       ("o" symbol-overlay-put :transient t :description "toggle overlay") ;; TODO: Select random face when calling this
       ("O" symbol-overlay-remove-all :transient t :description "remove all overlays")]
