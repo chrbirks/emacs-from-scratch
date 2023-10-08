@@ -395,15 +395,17 @@ COUNT defaults to 1, and KILL defaults to nil."
       :diminish undo-tree-mode
       :config
       (global-undo-tree-mode)
+      (setq undo-tree-visualizer-diff t) ;; Show diff in separate buffer by default
       (spacemacs-leader
        "a u" '(undo-tree-visualize :wk "undo-tree-visualize"))
       ;; Redefine evil-mode keys while in undo-tree-mode
-      (evil-make-overriding-map undo-tree-visualizer-mode-map 'normal)
-      (evil-define-key 'normal undo-tree-visualizer-mode-map
+      (evil-make-overriding-map undo-tree-visualizer-mode-map 'motion)
+      (evil-define-key 'motion undo-tree-visualizer-mode-map
         "h" 'undo-tree-visualize-switch-branch-left
         "j" 'undo-tree-visualize-redo
         "k" 'undo-tree-visualize-undo
-        "l" 'undo-tree-visualize-switch-branch-right)
+        "l" 'undo-tree-visualize-switch-branch-right
+        "d" 'undo-tree-visualizer-toggle-diff)
       ;; Do not save undo-tree files named .~undo-tree~ everywhere.
       (setq undo-tree-auto-save-history nil)
       ;; Or make place the files in /.emacs.d/undo instead
