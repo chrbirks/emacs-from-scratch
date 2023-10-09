@@ -467,11 +467,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   (require 'spaceline-config)
   (spaceline-spacemacs-theme) ; Set the theme
-  ;; (spaceline-helm-mode) ; Special minor-mode for Helm
-  ;; (spaceline-info-mode) ; Special minor-mode for info+
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) ; Color according to evil state
-  ;; (setq powerline-height 10)
-  ;; (setq powerline-text-scale-factor 1.1)
   (setq powerline-default-separator 'arrow)
   (setq spaceline-workspace-numbers-unicode t) ; Get unicode numbers when using window-numbering-mode
   (setq spaceline-window-numbers-unicode t) ; Get unicode numbers when using eyebrowse-mode
@@ -480,28 +476,30 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Function for maximizing/unmaximizing the active window.
 ;; Could maybe be implemented safer with '(window-configuration-to-register :efs-window-conf-var)' instead.
-(defvar efs--toggle-maximized-buffer-state nil
-  "State variable to track the maximization status of the buffer. Maximized if non-nill.")
 
-(defvar efs--toggle-maximized-buffer-prev-config nil
-  "Variable to store the previous window configuration before maximizing.")
+(defvar efs--toggle-maximized-buffer-state (make-hash-table :test #'equal)
+  "Hash-table to store state of the maximization status of the buffer. Unique for each perspective. Maximized if non-nill.")
+
+(defvar efs--toggle-maximized-buffer-prev-config (make-hash-table :test #'equal)
+  "Hash-table to store the previous window configuration before maximizing. Unique for each perspective.")
 
 (defun efs--toggle-maximize-buffer ()
   "Toggle the maximization of the current buffer. Plays nice with a treemacs buffer."
   (interactive)
   (unless (bound-and-true-p winner-mode)
     (winner-mode 1))
-  (if efs--toggle-maximized-buffer-state
-      ;; In maximized state
+  (let ((maximized-state (gethash persp-last-persp-name efs--toggle-maximized-buffer-state)))
+  (if (gethash persp-last-persp-name efs--toggle-maximized-buffer-state)
+      ;; If in maximized state
       (progn
-        (when efs--toggle-maximized-buffer-prev-config
-          (set-window-configuration efs--toggle-maximized-buffer-prev-config)) ;; Restore windows config
-        (setq efs--toggle-maximized-buffer-state nil))
-    ;; Not in maximized state
+        (when (gethash persp-last-persp-name efs--toggle-maximized-buffer-prev-config)
+          (set-window-configuration (gethash persp-last-persp-name efs--toggle-maximized-buffer-prev-config)) ;; Restore windows config
+        (puthash persp-last-persp-name nil efs--toggle-maximized-buffer-state)))
+    ;; If not in maximized state
     (progn
-      (setq efs--toggle-maximized-buffer-prev-config (current-window-configuration)) ;; Save window config
-      (delete-other-windows) ;; Maybe use treemacs-delete-other-windows
-      (setq efs--toggle-maximized-buffer-state t))))
+      (puthash persp-last-persp-name (current-window-configuration) efs--toggle-maximized-buffer-prev-config) ;; Save window config
+      (delete-other-windows)
+      (puthash persp-last-persp-name t efs--toggle-maximized-buffer-state)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; nano-sidebar
