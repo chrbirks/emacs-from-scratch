@@ -1412,15 +1412,47 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package magit
   :ensure t
-  ;; :commands magit-status
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :config
+  (defvar efs--magit-status-prev-window-config-table (make-hash-table :test #'equal)
+    "Hash-table to store the previous window configuration before running magit-status for different perspectives.")
+  (defun efs--get-or-set-magit-prev-config ()
+    "Get or Set the previous window configuration based on persp-last-persp-name."
+    (let ((window-config (gethash persp-last-persp-name efs--magit-status-prev-window-config-table)))
+      (unless window-config
+        (setq window-config (current-window-configuration))
+        (puthash persp-last-persp-name window-config efs--magit-status-prev-window-config-table))
+      window-config))
+  (defun efs--magit-status ()
+    "Version of magit-status that opens in full frame and restores previous window config on quit."
+    (interactive)
+    ;; Save window configuration if not already saved. It will be reset to nil when quitting the magit-status buffer.
+    (unless (bound-and-true-p winner-mode)
+      (winner-mode 1))
+    ;; Save the window config
+    (efs--get-or-set-magit-prev-config)
+    ;; Tell magit-status buffer to open in full frame
+    (let ((display-buffer-alist
+           '(("^magit: " 
+              (display-buffer-full-frame)
+              ))))
+      (magit-status)))
+  (defun efs--restore-magit-windows (orig-fun &rest args)
+    "Restore window configuration to before magit-status was opened. Only restore if buffer is magit-status-mode."
+    (interactive)
+    (if (and (gethash persp-last-persp-name efs--magit-status-prev-window-config-table)
+             (string-equal "magit-status-mode" (symbol-name major-mode)))
+        (progn
+          (set-window-configuration (gethash persp-last-persp-name efs--magit-status-prev-window-config-table))
+          (remhash persp-last-persp-name efs--magit-status-prev-window-config-table)) ;; Clear the variable after quitting
+      (apply orig-fun args)))
+  (advice-add 'magit-mode-quit-window :around #'efs--restore-magit-windows)
+
   ;; Set global key bindings
   (spacemacs-leader
-   "g s" '(magit-status :wk "magit status")
-   )
-  )
+   "g s" '(efs--magit-status :wk "magit status")
+   ))
 
 (use-package git-gutter
   :ensure t
