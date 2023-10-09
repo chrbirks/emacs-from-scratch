@@ -1953,23 +1953,25 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
   ;; ;; (setq 'flycheck-global-modes t)
   :config
-
-(defun efs--toggle-flycheck-error-list ()
-  "Toggle flycheck's error list window.
+  (defun efs--toggle-flycheck-error-list ()
+    "Toggle flycheck's error list window.
 If the error list is visible, hide it.  Otherwise, show it."
-  (interactive)
-  (if-let ((window (flycheck-get-error-list-window)))
-      (save-selected-window (quit-window nil window))
-    (flycheck-list-errors)))
-
-
+    (interactive)
+    (if-let ((window (flycheck-get-error-list-window)))
+        (save-selected-window (quit-window nil window))
+      (let ((display-buffer-alist
+             '(("^\\*Flycheck errors\\*$"
+                (display-buffer-in-side-window)
+                (side . bottom)
+                (window-height . 0.25)))))
+        (flycheck-list-errors))))
   (spacemacs-leader
-   "e n" '(flycheck-next-error :wk "next error")
-   "e p" '(flycheck-previous-error :wk "previous error")
-   "e l" '(efs--toggle-flycheck-error-list :wk "list errors")
-   "e L" '(lsp-treemacs-errors-list :wk "lsp list errors")
-   )
-)
+    "e n" '(flycheck-next-error :wk "next error")
+    "e p" '(flycheck-previous-error :wk "previous error")
+    "e l" '(efs--toggle-flycheck-error-list :wk "list errors")
+    "e L" '(lsp-treemacs-errors-list :wk "lsp list errors")
+    )
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; LSP settings for RTL
