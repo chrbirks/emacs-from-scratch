@@ -1053,11 +1053,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   (defun deadgrep-org ()
     "Search files in org-directory"
     (interactive)
-    ;; Set deadgrep search root to org-directory
-    (setq deadgrep-project-root-overrides `(("~/" . ,org-directory)))
-
-    (call-interactively #'deadgrep deadgrep-project-root-overrides)
-    )
+    (let ((default-directory "~/org/"))
+      (call-interactively #'deadgrep)))
   ;; Define Org (not roam) capture templates
   (setq org-capture-templates
         '(("t" "TODO" entry
