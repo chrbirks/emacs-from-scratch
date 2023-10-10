@@ -618,7 +618,11 @@ COUNT defaults to 1, and KILL defaults to nil."
   :elpaca nil ;; recentf is a native package
   :delight (recentf-mode)
   :init
-  (run-at-time nil (* 5 60) 'recentf-save-list) ;; Save recent files every 5 minutes
+  (defun efs--recentf-save-list ()
+    (interactive)
+    (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
+      (recentf-save-list)))
+  (run-with-timer 0 (* 1 60) 'efs--recentf-save-list) ;; Save recent files every 5 minutes
   :config
   (setq recentf-save-file (expand-file-name "var/recentf-save.el" user-emacs-directory)
         ;; recentf-auto-cleanup 'never
@@ -1571,8 +1575,9 @@ COUNT defaults to 1, and KILL defaults to nil."
     (persp-kill (efs--current-layout-name)))
   (defun efs--save-persp-state ()
     (interactive)
-    (persp-save-state-to-file persp-auto-save-fname))
-  (run-with-timer 0 (* 5 60) 'efs--save-persp-state) ;; Save perspective every 5 minutes
+    (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
+      (persp-save-state-to-file persp-auto-save-fname)))
+  (run-with-timer 0 (* 1 60) 'efs--save-persp-state) ;; Save perspective every 5 minutes
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
         persp-set-last-persp-for-new-frames nil
