@@ -1007,8 +1007,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   (visual-line-mode 1))
 
 (use-package org
+  :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
   :ensure t
-  ;; :pin org
   :commands (org-capture org-agenda)
   :hook (org-mode . efs--org-mode-setup)
   :config
@@ -1087,22 +1087,23 @@ COUNT defaults to 1, and KILL defaults to nil."
   (spacemacs-leader
    "a o r u" '(org-roam-ui-open :wk "org-roam-ui-open")))
 
-(use-package org-projectile
-  :after org
-  :ensure t
-  :config
-  ;; Add org-projectile files to agenda view
-  ;; Filter the list to only projects that exists
-  (defun org-modern-config/org-projectile-todo-files ()
-    "Fetch a list of org TO DO files for projects that actually exist."
-    (seq-filter #'file-exists-p (org-projectile-todo-files)))
-  (setq org-agenda-files
-        (append org-agenda-files (org-modern-config/org-projectile-todo-files)))
+(unless (version<= emacs-version "28") ;; FIXME 11-10-2023: Don't use org-projectile on Emacs 27.1 as it doesn't compile
+  (use-package org-projectile
+    :after org
+    :ensure t
+    :config
+    ;; Add org-projectile files to agenda view
+    ;; Filter the list to only projects that exists
+    (defun org-modern-config/org-projectile-todo-files ()
+      "Fetch a list of org TO DO files for projects that actually exist."
+      (seq-filter #'file-exists-p (org-projectile-todo-files)))
+    (setq org-agenda-files
+          (append org-agenda-files (org-modern-config/org-projectile-todo-files)))
 
-  ;; Override org-projectile-get-project-todo-file to store project-specific TODOs in ~/org/projects/<project>/TODOs.org
-  (defun org-projectile-get-project-todo-file (project-path)
-    (concat "~/org/projects/" (file-name-nondirectory (directory-file-name project-path)) "/TODOs.org"))
-  )
+    ;; Override org-projectile-get-project-todo-file to store project-specific TODOs in ~/org/projects/<project>/TODOs.org
+    (defun org-projectile-get-project-todo-file (project-path)
+      (concat "~/org/projects/" (file-name-nondirectory (directory-file-name project-path)) "/TODOs.org"))
+    ))
 
 ;; For replacing keywords such as TODOs etc. with svg images
 (use-package svg-tag-mode
@@ -1425,6 +1426,17 @@ COUNT defaults to 1, and KILL defaults to nil."
         (setq window-config (current-window-configuration))
         (puthash persp-last-persp-name window-config efs--magit-status-prev-window-config-table))
       window-config))
+  ;; FIXME 11-10.2023: Need to define this instead of using display-buffer-full-frame that is only introduced in Emacs 29
+  (defun efs--display-buffer-full-window (buffer alist)
+    "Display BUFFER in a full window. ALIST is the display-buffer's ALIST."
+    (let ((window (display-buffer-use-some-window buffer alist)))
+      (when window
+        (delete-other-windows window)
+        window)))
+  ;; FIXME 11-10-2023: Need to define this expected function that is only introduced in Emacs 29 (https://github.com/magit/magit/issues/5011)
+  (defun seq-keep (function sequence)
+    "Apply FUNCTION to SEQUENCE and return the list of all the non-nil results."
+    (delq nil (seq-map function sequence)))
   (defun efs--magit-status ()
     "Version of magit-status that opens in full frame and restores previous window config on quit."
     (interactive)
@@ -1436,7 +1448,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     ;; Tell magit-status buffer to open in full frame
     (let ((display-buffer-alist
            '(("^magit: " 
-              (display-buffer-full-frame)
+              (efs--display-buffer-full-window)
               ))))
       (magit-status)))
   (defun efs--restore-magit-windows (orig-fun &rest args)
@@ -1608,13 +1620,13 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package vterm
   :preface
-  (defun my/vterm-mode-hook ()
+  (defun efs--vterm-mode-hook ()
     (hl-line-mode -1)
     (display-line-numbers-mode -1)
     (display-fill-column-indicator-mode -1)
     (auto-fill-mode -1))
   :hook
-  ((vterm-mode . my/vterm-mode-hook))
+  ((vterm-mode . efs--vterm-mode-hook))
   :custom
   (vterm-kill-buffer-on-exit t)
   (vterm-max-scrollback 10000)
