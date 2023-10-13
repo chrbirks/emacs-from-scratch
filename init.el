@@ -1009,7 +1009,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package org
   :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
   :ensure t
-  :commands (org-capture org-agenda)
+  :commands (org-capture org-agenda deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
   :config
   (setq org-log-into-drawer '("LOOGBOOK")
