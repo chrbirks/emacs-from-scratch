@@ -304,10 +304,7 @@
   (setq evil-want-fine-undo nil)
   :config
   (evil-mode 1)
-  (if (version<= emacs-version "28")
-      (evil-set-undo-system 'undo-tree)
-    (evil-set-undo-system 'undo-redo)
-    )
+  (evil-set-undo-system 'undo-tree)
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
@@ -388,47 +385,27 @@ COUNT defaults to 1, and KILL defaults to nil."
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-(if (version<= emacs-version "28")
-    ;; Use undo-tree for Emacs version earlier than 28
-    (use-package undo-tree
-      :ensure t
-      :diminish undo-tree-mode
-      :config
-      (global-undo-tree-mode)
-      (setq undo-tree-visualizer-diff t) ;; Show diff in separate buffer by default
-      (spacemacs-leader
-       "a u" '(undo-tree-visualize :wk "undo-tree-visualize"))
-      ;; Redefine evil-mode keys while in undo-tree-mode
-      (evil-make-overriding-map undo-tree-visualizer-mode-map 'motion)
-      (evil-define-key 'motion undo-tree-visualizer-mode-map
-        "h" 'undo-tree-visualize-switch-branch-left
-        "j" 'undo-tree-visualize-redo
-        "k" 'undo-tree-visualize-undo
-        "l" 'undo-tree-visualize-switch-branch-right
-        "d" 'undo-tree-visualizer-toggle-diff)
-      ;; Do not save undo-tree files named .~undo-tree~ everywhere.
-      (setq undo-tree-auto-save-history nil)
-      ;; Or make place the files in /.emacs.d/undo instead
-      ;; (setq undo-tree-history-directory-alist '(("." . "/.emacs.d/undo")))
+(use-package undo-tree
+  :ensure t
+  :diminish undo-tree-mode
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-diff t) ;; Show diff in separate buffer by default
+  (spacemacs-leader
+    "a u" '(undo-tree-visualize :wk "undo-tree-visualize"))
+  ;; Redefine evil-mode keys while in undo-tree-mode
+  (evil-make-overriding-map undo-tree-visualizer-mode-map 'motion)
+  (evil-define-key 'motion undo-tree-visualizer-mode-map
+    "h" 'undo-tree-visualize-switch-branch-left
+    "j" 'undo-tree-visualize-redo
+    "k" 'undo-tree-visualize-undo
+    "l" 'undo-tree-visualize-switch-branch-right
+    "d" 'undo-tree-visualizer-toggle-diff)
+  ;; Do not save undo-tree files named .~undo-tree~ everywhere.
+  (setq undo-tree-auto-save-history nil)
+  ;; Or make place the files in /.emacs.d/undo instead
+  ;; (setq undo-tree-history-directory-alist '(("." . "/.emacs.d/undo")))
   )
-
-  ;; Use vundo supported for Emacs > v28
-  (use-package vundo
-    :ensure t
-    :diminish vundo-mode
-    :config
-    (setq vundo-glyph-alist vundo-unicode-symbols) ;; Use unicode symbols instead of default ASCII
-    (spacemacs-leader
-     "a u" '(vundo :wk "vundo tree")) ;; "C-n": vundo-next, "C-p": vundo-previous, "h"; vundo-backwards, "l": vundo-forwards
-    ;; Redefine evil-mode keys while in vundo-mode
-    (evil-make-overriding-map vundo-mode-map 'normal)
-    (evil-define-key 'normal vundo-mode-map
-      "h" 'vundo-backward
-      "j" 'vundo-next
-      "k" 'vundo-previous
-      "l" 'vundo-forward) 
-    )
-)
 
 ;; Remote access via TRAMP
 (require 'tramp)
