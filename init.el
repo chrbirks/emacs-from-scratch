@@ -213,7 +213,7 @@
 (setq initial-scratch-message nil)
 
 (setq-default
-   debug-on-error t
+   debug-on-error nil
    ;; Prevent warning buffer from stealing focus on every new async compilation warning. Set to nil to supress them entirely.
    native-comp-async-report-warnings-errors 'silent
    ;; Do not wrap lines
