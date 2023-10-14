@@ -1358,6 +1358,49 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
   (setq git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
   (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
+  ;; Define functions for toggling visibility of unmodified lines
+  (setq efs--git-gutter-overlays nil)
+  (defun efs--line-modified-p ()
+    "Is the current line modified?"
+    (let ((current-line (line-number-at-pos))
+          (ranges (mapcar (lambda (hunk) 
+                            (cons (git-gutter-hunk-start-line hunk) 
+                                  (git-gutter-hunk-end-line hunk)))
+                          git-gutter:diffinfos)))
+      (seq-find (lambda (range)
+                  (<= (car range) current-line (cdr range)))
+                ranges)))
+  (defun efs--toggle-modified-lines-visibility ()
+    "Toggle hiding/showing git-gutter unmodified lines and replace them with [...]"
+    (interactive)
+    ;; overlays exist, remove them
+    (if efs--git-gutter-overlays
+        (progn
+          (mapc 'delete-overlay efs--git-gutter-overlays)
+          (setq efs--git-gutter-overlays nil))
+      ;; no overlays, create them
+      (save-excursion
+        (goto-char (point-min))
+        (let ((in-unmod-seq nil)
+              (start-unmod-seq nil))
+          (while (not (eobp))
+            (if (not (efs--line-modified-p))
+                (unless in-unmod-seq
+                  (setq in-unmod-seq t)
+                  (setq start-unmod-seq (line-beginning-position)))
+              (when in-unmod-seq
+                (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
+                  (overlay-put overlay 'display "[...]")
+                  (push overlay efs--git-gutter-overlays)
+                  (setq in-unmod-seq nil))))
+            (forward-line 1))))))
+  (defun efs--revert-hidden-lines ()
+    "Revert hidden lines when quitting git-gutter transient state."
+    (when efs--git-gutter-overlays
+      (efs--toggle-modified-lines-visibility)))
+  ;; Run efs--revert-hidden-lines when transient-quit-all is called
+  (advice-add 'transient-quit-all :after #'efs--revert-hidden-lines)
+  ;; Define transient state for git-gutter
   (transient-define-prefix efs--git-gutter-transient ()
     "Git-gutter transient state"
     ["Git-gutter transient state"
@@ -1367,6 +1410,7 @@ COUNT defaults to 1, and KILL defaults to nil."
       ("N" git-gutter:previous-hunk :transient t :description "prev hunk")]
      ["Other"
       ("p" git-gutter:popup-hunk :transient t :description "popup hunk")
+      ("t" efs--toggle-modified-lines-visibility :transient t :description "toggle context lines")
       ("q" transient-quit-all :description "quit")]
      ])
   ;; Global keys
