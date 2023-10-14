@@ -1614,33 +1614,6 @@ COUNT defaults to 1, and KILL defaults to nil."
   (symbol-overlay-face-8 ((t (:background "#fbe107"       :foreground "black"))))
   :config
   ;; Make transient state
-  (transient-define-suffix efs--so-suffix-print-args (the-prefix-arg)
-    "Report the PREFIX-ARG, prefix's scope, and infix values."
-    :transient 'transient--do-call
-    (interactive "P")
-    (let ((args (transient-args (oref transient-current-prefix command)))
-          (scope (oref transient-current-prefix scope)))
-      (message "prefix-arg: %s \nprefix's scope value: %s \ntransient-args: %s"
-               the-prefix-arg scope args)))
-  (transient-define-infix efs--so-random-init-infix ()
-    "Switch on and off."
-    :argument "--switch"
-    :shortarg "-s" ; will be used for :key when key is not set
-    :description "switch"
-    :init-value (lambda (obj)
-                  (oset obj value
-                        (eq 0 (random 2))))) ; write t with 50% probability
-  (transient-define-argument efs--so-symbol-face-2 ()
-    "This is a specialized infix for only selecting one of several values."
-    :class 'transient-switches
-    :argument-format "--%s-snowcone"
-    :argument-regexp "\\(--\\(grape\\|orange\\|cherry\\|lime\\)-snowcone\\)"
-    :choices '("grape" "orange" "cherry" "lime"))
-  (transient-define-argument efs--so-symbol-face ()
-    "This is a specialized infix for only selecting one of several values."
-    :argument "face="
-    :class 'transient-option
-    :choices '("face1" "face2" "face3" "face4"))
   (transient-define-suffix efs--so-jump-next ()
     "Next symbol"
     :description "next symbol"
@@ -1651,14 +1624,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (transient-define-suffix efs--so-jump-prev ()
     "Previous symbol"
     :description "previous symbol"
-    ;; :description '(lambda ()
-    ;;                    (concat
-    ;;                     "set sentence: "
-    ;;                     (propertize
-    ;;                      (format "%s" "XYZ")
-    ;;                      'face 'transient-argument)))
     :transient t ;; Do not quit transient state
-    ;; :key "p"
     (interactive)
     (symbol-overlay-jump-prev)
     )
@@ -1679,10 +1645,6 @@ COUNT defaults to 1, and KILL defaults to nil."
       ("t" symbol-overlay-toggle-in-scope :transient t :description "scope")
       ("z" recenter-top-bottom :transient t :description "recenter")]
      ["Actions"
-      ;; ("p" "print arguments" efs--so-suffix-print-args)
-      ;; ("u" "symbol face" efs--so-symbol-face)
-      ;; ("x" "xxx" efs--so-random-init-infix) 
-      ;; ("-y" "yyy" efs--so-random-init-infix) 
       ("r" symbol-overlay-query-replace :transient t :description "query-replace")
       ("R" symbol-overlay-rename :transient t :description "rename")
       ("s" symbol-overlay-isearch-literally :transient t :description "isearch")
