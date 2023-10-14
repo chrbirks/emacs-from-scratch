@@ -500,7 +500,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     (interactive)
     (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
       (recentf-save-list)))
-  (run-with-timer 0 (* 1 60) 'efs--recentf-save-list) ;; Save recent files every 5 minutes
+  (run-with-timer 0 (* 5 60) 'efs--recentf-save-list) ;; Save recent files every 5 minutes
   :config
   (setq recentf-save-file (expand-file-name "var/recentf-save.el" user-emacs-directory)
         ;; recentf-auto-cleanup 'never
@@ -1031,7 +1031,7 @@ COUNT defaults to 1, and KILL defaults to nil."
           '(
             ("TODO"     :foreground "#b7742f" :background "#292b2e" :weight bold)
             ("DOING"    :foreground "yellow"  :background "#292b2e" :weight bold)
-            ("WAITING"  :foreground "yellow"  :background "#292b2e" :weight normal)
+            ("WAITING"  :foreground "#00c1ff" :background "#292b2e" :weight normal)
             ("CANCELED" :foreground "#686868" :background "#292b2e" :weight bold)
             ("DONE"     :foreground "#686868" :background "#292b2e" :weight bold)
             ))
@@ -1464,7 +1464,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     (interactive)
     (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
       (persp-save-state-to-file persp-auto-save-fname)))
-  (run-with-timer 0 (* 1 60) 'efs--save-persp-state) ;; Save perspective every 5 minutes
+  (run-with-timer 0 (* 5 60) 'efs--save-persp-state) ;; Save perspective every 5 minutes
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
         persp-set-last-persp-for-new-frames nil
