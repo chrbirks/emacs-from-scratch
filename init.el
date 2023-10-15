@@ -1418,6 +1418,9 @@ COUNT defaults to 1, and KILL defaults to nil."
     "g g" '(efs--git-gutter-transient :wk "git-gutter transient")
     ))
 
+(use-package diff-hl
+  :config (global-diff-hl-mode))
+
 (use-package evil-nerd-commenter
   :after evil
   :config
