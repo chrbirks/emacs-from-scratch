@@ -1912,12 +1912,6 @@ If the error list is visible, hide it.  Otherwise, show it."
     )
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; LSP settings for RTL
-; Enable LSP for the following modes
-(add-hook 'vhdl-mode-hook #'lsp-deferred)
-(add-hook 'verilog-mode-hook #'lsp-deferred)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
