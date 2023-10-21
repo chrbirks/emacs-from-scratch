@@ -442,6 +442,10 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; Comments should appear in italics.
   (setq spacemacs-theme-comment-italic t))
 
+(use-package indent-guide
+  :config
+  (spacemacs-leader
+   "t i" '(indent-guide-mode :wk "indent-guide-mode")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Spaceline config
