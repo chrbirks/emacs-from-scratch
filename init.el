@@ -280,9 +280,15 @@
 (setq switch-to-buffer-in-dedicated-window 'pop) ; Opening buffer in dedicated window causes it to pop up somewhere else instead of an error
 
 ;; Snippets settings
-; Add custom snippets dir
-; TODO: chezmoi template
-(setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
+(use-package yasnippet
+  :init
+  ; Add custom snippets dir
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
+  :defer t)
+
+(use-package yasnippet-snippets
+  :defer t
+  :after yasnippet)
 
 ;; Any .do .qsf .qpf and .sdc file should be in tcl-mode
 (add-to-list 'auto-mode-alist '("\\.do\\'" . tcl-mode))
