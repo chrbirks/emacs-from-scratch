@@ -740,14 +740,6 @@ COUNT defaults to 1, and KILL defaults to nil."
     )
 )
 
-(use-package nerd-icons-corfu
-  :ensure t
-  :after corfu
-  :elpaca (:host github :repo "LuigiPiucco/nerd-icons-corfu")
-  :config
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
-  )
-
 ;; Cape - Completion At Point Extensions
 (defun efs--cape-capf-setup-verilog ()
   "Create completions backends for verilog-mode"
@@ -806,22 +798,12 @@ COUNT defaults to 1, and KILL defaults to nil."
 )
 
 ;; Icons for corfu completion buffer
-(use-package kind-icon
+(use-package nerd-icons-corfu
   :ensure t
   :after corfu
-  :custom
-  (kind-icon-use-icons t)
-  (kind-icon-default-face 'corfu-default) ; Have background color be the same as `corfu' face background
-  (kind-icon-blend-background nil)  ; Use midpoint color between foreground and background colors ("blended")?
-  (kind-icon-blend-frac 0.08)
-
-  ;; NOTE 2022-02-05: `kind-icon' depends `svg-lib' which creates a cache
-  ;; directory that defaults to the `user-emacs-directory'. Here, I change that
-  ;; directory to a location appropriate to `no-littering' conventions, a
-  ;; package which moves directories of other packages to sane locations.
-  (svg-lib-icons-dir (no-littering-expand-var-file-name "svg-lib/cache/")) ; Change cache dir
+  :elpaca (:host github :repo "LuigiPiucco/nerd-icons-corfu")
   :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter) ; Enable `kind-icon'
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
   )
 
 ;; (use-package corfu-popupinfo
