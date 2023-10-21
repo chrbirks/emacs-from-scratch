@@ -1089,14 +1089,16 @@ COUNT defaults to 1, and KILL defaults to nil."
   :ensure t
   :defer t)
 
-(defun efs--lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
+;; (defun efs--lsp-mode-setup ()
+;;   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+;;   (lsp-headerline-breadcrumb-mode))
 
 (use-package lsp-mode
   :defer t
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . efs--lsp-mode-setup)
+  :commands (lsp lsp-deferred lsp-mode)
+  :hook ((python-mode . lsp-deferred)
+         (vhdl-mode . lsp-mode)
+         (verilog-mode . lsp-mode))
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -1137,7 +1139,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-modeline-code-actions-enable t
         lsp-modeline-diagnostics-enable t
         ; Auto completion
-        lsp-completion-provider :capf
+        lsp-completion-provider :none
         lsp-completion-show-detail t
         lsp-completion-show-kind t
         lsp-completion-enable t
@@ -1189,6 +1191,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (add-hook 'lsp-managed-mode-hook 'lsp-modeline-diagnostics-mode))
 
 (use-package lsp-ui
+  :commands lsp-ui-mode
   :hook (lsp-mode . lsp-ui-mode)
   :custom
   (lsp-ui-doc-position 'bottom))
@@ -1282,7 +1285,6 @@ COUNT defaults to 1, and KILL defaults to nil."
    "p m" '(projectile-command-map :wk "projectile-command-map")
    )
 )
-
 
 (use-package rg
   :ensure t
@@ -2006,11 +2008,17 @@ If the error list is visible, hide it.  Otherwise, show it."
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Setup for VHDL language server
 
-  ;; Set path to Rust VHDL-LS
-  (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/debug/vhdl_ls"))
+  ;; ;; Set path to Rust VHDL-LS
+  ;; (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/debug/vhdl_ls"))
+  ;; (custom-set-variables
+  ;;  '(lsp-vhdl-server 'vhdl-ls))
+  ;; ;; (setenv "VHDL_LS_CONFIG" (file-truename "~/github/dev_env/example_code/vhdl/vhdl_ls.toml"))
+
+  ;; Set path to hdl_checker
+  ;; See logfiles under /tmp/hdl_checker_*
+  (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
   (custom-set-variables
-   '(lsp-vhdl-server 'vhdl-ls))
-  ;; (setenv "VHDL_LS_CONFIG" (file-truename "~/github/dev_env/example_code/vhdl/vhdl_ls.toml"))
+   '(lsp-vhdl-server 'hdl-checker))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
