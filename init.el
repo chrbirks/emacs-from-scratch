@@ -887,8 +887,8 @@ COUNT defaults to 1, and KILL defaults to nil."
         org-default-notes-file "~/org/notes.org" ;; Default file for templates that does not specify a file
         ;; Org Projectile
         org-projectile-file "TODOs.org"
-        org-projectile-projects-file "~/org/projects/misc-TODOs.org"
-        org-projectile-per-project-filepath "~/org/projects/TODOs-%s.org" ;; Per-project org-projectile files if org-projectile-projects-directory is nil ;; FIXME: 28-12-22: Cannot get it to work
+        org-project-capture-projects-file "~/org/projects/misc-TODOs.org"
+        org-project-capture-per-project-filepath "~/org/projects/TODOs-%s.org" ;; Per-project org-projectile files if org-projectile-projects-directory is nil ;; FIXME: 28-12-22: Cannot get it to work
         ;; Org Roam
         org-roam-directory "~/org/roam/"
         org-roam-dailies-directory "daily/" ;; Relative to org-roam-directory
