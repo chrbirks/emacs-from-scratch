@@ -1481,6 +1481,16 @@ COUNT defaults to 1, and KILL defaults to nil."
                                       (require 'diminish)
                                       (diminish 'whitespace-mode))))
 
+;; Clean up trailing whitespaces in modified lines on save
+;; Run: "whitespace-toggle-options" "?" "r" to visualize trailing whitespaces
+(use-package ws-butler
+  :hook ((vhdl-mode verilog-mode) . ws-butler-mode)
+  :config
+  ;; Set to only trim whitespaces from modified lines
+  (setq ws-butler-trim-predicate
+        (lambda (beg end)
+          (buffer-modified-p))))
+
 ;; NOTE: Buffers are shared between all perspectives when using persp-mode
 (use-package persp-mode
   :ensure t
