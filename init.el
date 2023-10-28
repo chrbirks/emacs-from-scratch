@@ -1352,6 +1352,13 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
   (setq git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
   (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
+
+  ;; Face definition for horizontal ruler
+  (defface efs--horizontal-rule
+    '((default :inherit 'org-hide)
+      (((background light)) :strike-through "gray70")
+      (t :strike-through "gray30"))
+    "Face used for horizontal ruler.")
   ;; Define functions for toggling visibility of unmodified lines
   (setq efs--git-gutter-overlays nil)
   (defun efs--line-modified-p ()
@@ -1382,9 +1389,13 @@ COUNT defaults to 1, and KILL defaults to nil."
                 (unless in-unmod-seq
                   (setq in-unmod-seq t)
                   (setq start-unmod-seq (line-beginning-position)))
+              ;; (when in-unmod-seq
+              ;;   (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
+              ;;     ;; (overlay-put overlay 'display "[...]")
               (when in-unmod-seq
                 (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
-                  (overlay-put overlay 'display "[...]")
+                  (overlay-put overlay 'display "                                             ")
+                  (overlay-put overlay 'face 'efs--horizontal-rule)
                   (push overlay efs--git-gutter-overlays)
                   (setq in-unmod-seq nil))))
             (forward-line 1))))))
