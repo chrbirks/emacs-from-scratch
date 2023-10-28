@@ -500,7 +500,10 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package wgrep)
-(use-package deadgrep)
+
+(use-package deadgrep
+  :config
+  (setq deadgrep-extra-arguments '("!*~" "--glob" "--no-config"))) ;; Exclude *~ files. NOTE: The words must be written in reverse order
 
 (use-package recentf
   :elpaca nil ;; recentf is a native package
