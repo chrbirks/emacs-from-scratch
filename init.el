@@ -475,18 +475,20 @@ COUNT defaults to 1, and KILL defaults to nil."
   (interactive)
   (unless (bound-and-true-p winner-mode)
     (winner-mode 1))
-  (let ((maximized-state (gethash persp-last-persp-name efs--toggle-maximized-buffer-state)))
   (if (gethash persp-last-persp-name efs--toggle-maximized-buffer-state)
       ;; If in maximized state
       (progn
         (when (gethash persp-last-persp-name efs--toggle-maximized-buffer-prev-config)
           (set-window-configuration (gethash persp-last-persp-name efs--toggle-maximized-buffer-prev-config)) ;; Restore windows config
-        (puthash persp-last-persp-name nil efs--toggle-maximized-buffer-state)))
+          (puthash persp-last-persp-name nil efs--toggle-maximized-buffer-state)))
     ;; If not in maximized state
     (progn
+      ;; Reset the no-delete-other-windows parameter for all windows since buffers such as lsp-treemacs-errors-list buffers somehow can prevent other windows from being maximized
+      (dolist (win (window-list))
+        (set-window-parameter win 'no-delete-other-windows nil))
       (puthash persp-last-persp-name (current-window-configuration) efs--toggle-maximized-buffer-prev-config) ;; Save window config
       (delete-other-windows)
-      (puthash persp-last-persp-name t efs--toggle-maximized-buffer-state)))))
+      (puthash persp-last-persp-name t efs--toggle-maximized-buffer-state))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
