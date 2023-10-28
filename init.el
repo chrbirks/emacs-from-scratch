@@ -1826,9 +1826,6 @@ COUNT defaults to 1, and KILL defaults to nil."
     (efs--transient-elpaca-helper))
 )
 
-(use-package lispyville
-  :hook (lispy-mode . lispyville-mode))
-
 ;; Settings for horizontal/vertical scrolling
 (setq scroll-margin     5              ;; Set top/bottom scroll margin in number of lines
       scroll-conservatively 1          ;; Set lines to top/bottom scroll
