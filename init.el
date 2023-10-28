@@ -1289,6 +1289,9 @@ COUNT defaults to 1, and KILL defaults to nil."
   (rg-enable-menu)
   )
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Version control config
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package magit
   :ensure t
   :custom
@@ -1349,7 +1352,6 @@ COUNT defaults to 1, and KILL defaults to nil."
   :after transient
   :diminish git-gutter-mode
   :config 
-  (global-git-gutter-mode +1)
   (set-face-background 'git-gutter:modified "#4f97d7") ;; spacemacs blue
   (set-face-background 'git-gutter:added "#67b11d") ;; spacemacs green
   (set-face-background 'git-gutter:deleted "#f2241f") ;; spacemacs red
@@ -1428,8 +1430,30 @@ COUNT defaults to 1, and KILL defaults to nil."
     "g g" '(efs--git-gutter-transient :wk "git-gutter transient")
     ))
 
-(use-package diff-hl
-  :config (global-diff-hl-mode))
+;; Highlight version control differences in gutter
+(use-package diff-hl)
+
+(defun efs--set-vc-visualize ()
+  "Choose either git-gutter-mode or diff-hl-mode based on VC backend."
+  (interactive)
+  (let ((backend (vc-backend buffer-file-name)))
+    (cond
+     ((eq backend 'Git)
+      ;; If in a Git repo, enable git-gutter-mode and disable diff-hl-mode
+      (git-gutter-mode 1)
+      (when (bound-and-true-p diff-hl-mode)
+        (diff-hl-mode -1)))
+     ;; If not in a Git repo, enable diff-hl-mode and disable git-gutter-mode
+     (t
+      (diff-hl-mode 1)
+      (when (bound-and-true-p git-gutter-mode)
+        (git-gutter-mode -1))))))
+
+;; Add the function to the `find-file-hook` to automatically select the appropriate mode
+;; when a file is opened.
+(add-hook 'find-file-hook 'efs--set-vc-visualize)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package evil-nerd-commenter
   :after evil
