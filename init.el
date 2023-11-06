@@ -60,13 +60,13 @@
   :after evil
   :config
   (general-evil-setup)
-  (general-create-definer spacemacs-leader
+  (general-create-definer efs-leader
                           :prefix "SPC"
                           :global-prefix "C-SPC"
                           :keymaps 'override ; Override other defines for SPC. This might be a bad solution?
                           :states '(normal visual motion emacs))
   ;; Global keybindings
-  (spacemacs-leader
+  (efs-leader
    ;:keymaps 'clojure-mode-map
    "SPC" 'execute-extended-command
    "'" '(vterm-toggle :wk "vterm toggle")
@@ -359,7 +359,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq evil-want-keybinding t)
   ;; Set Avy to use actual words instead of sequences of letters (requires Avy 0.5.0)
   (setq avy-style 'words)
-  (spacemacs-leader
+  (efs-leader
    "j j" '(evil-avy-goto-char-timer :wk "jump to char")
    "j l" '(evil-avy-goto-line :wk "jump to line")
    "j w" '(evil-avy-goto-word-or-subword-1 :wk "jump to word")))
@@ -376,7 +376,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package evil-iedit-state
   :after evil
   :config
-  (spacemacs-leader
+  (efs-leader
    "s e" '(evil-iedit-state/iedit-mode :wk "iedit-mode at point")
    ))
 
@@ -397,7 +397,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   (global-undo-tree-mode)
   (setq undo-tree-visualizer-diff t) ;; Show diff in separate buffer by default
-  (spacemacs-leader
+  (efs-leader
     "a u" '(undo-tree-visualize :wk "undo-tree-visualize"))
   ;; Redefine evil-mode keys while in undo-tree-mode
   (evil-make-overriding-map undo-tree-visualizer-mode-map 'motion)
@@ -444,7 +444,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package indent-guide
   :config
-  (spacemacs-leader
+  (efs-leader
    "t i" '(indent-guide-mode :wk "indent-guide-mode")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -550,7 +550,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   ;; Global keybindings
-  (spacemacs-leader
+  (efs-leader
    "f f" '(find-file :wk "find file")
    "f A" '(find-alternate-file :wk "replace buffer with file")
    )
@@ -677,7 +677,7 @@ COUNT defaults to 1, and KILL defaults to nil."
       (consult-line initial)))
 
   ;; Global keybindings
-  (spacemacs-leader
+  (efs-leader
    "b b" '(consult-buffer :wk "switch buffer") ;; Call consult-narrow-key to see narrowing options
    "b B" '(persp-switch-to-buffer :wk "switch persp buffer")
    "b P" '(consult-project-buffer :wk "switch project buffer")
@@ -942,7 +942,7 @@ COUNT defaults to 1, and KILL defaults to nil."
            (file "~/.config/emacs/org-templates/weibel-todo.org")
            :empty-lines-before 1
            :unnarrowed nil)))
-  (spacemacs-leader
+  (efs-leader
    "a o" '(:ignore t :wk "org")
    "a o r" '(:ignore t :wk "roam")
    "a o r f" '(org-roam-node-find :wk "node-find")
@@ -959,7 +959,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :ensure t
   :after org
   :config
-  (spacemacs-leader
+  (efs-leader
    "a o r u" '(org-roam-ui-open :wk "org-roam-ui-open")))
 
 (unless (version<= emacs-version "28") ;; FIXME 11-10-2023: Don't use org-projectile on Emacs 27.1 as it doesn't compile
@@ -1276,7 +1276,7 @@ COUNT defaults to 1, and KILL defaults to nil."
            (let ((project-name (projectile-project-name)))
              (unless (string= "-" project-name)
                (format " in [%s]" project-name))))))
-  (spacemacs-leader
+  (efs-leader
    "p c" '(projectile-commander :wk "projectile-commander")
    "p f" '(projectile-find-file :wk "find-file")
    "p m" '(projectile-command-map :wk "projectile-command-map")
@@ -1343,7 +1343,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (advice-add 'magit-mode-quit-window :around #'efs--restore-magit-windows)
 
   ;; Set global key bindings
-  (spacemacs-leader
+  (efs-leader
    "g s" '(efs--magit-status :wk "magit status")
    ))
 
@@ -1426,7 +1426,7 @@ COUNT defaults to 1, and KILL defaults to nil."
       ("q" transient-quit-all :description "quit")]
      ])
   ;; Global keys
-  (spacemacs-leader
+  (efs-leader
     "g g" '(efs--git-gutter-transient :wk "git-gutter transient")
     ))
 
@@ -1458,7 +1458,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package evil-nerd-commenter
   :after evil
   :config
-  (spacemacs-leader
+  (efs-leader
    "c l" '(evilnc-comment-or-uncomment-lines :wk "comment-or-uncomment-lines")
    "c p" '(evilnc-comment-or-uncomment-paragraphs :wk "comment-or-uncomment-paragraph")
    "c y" '(evilnc-copy-and-comment-lines :wk "copy-and-comment-lines")
@@ -1481,7 +1481,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq winum-ignored-buffers '("*Java Dependency List*" "*LSP Error List*" "*LSP Symbols List*" " *Treemacs-Framebuffer-5*" " *Treemacs-Framebuffer-4*" " *Treemacs-Framebuffer-3*" " *Treemacs-Framebuffer-2*" " *Treemacs-Framebuffer-1*" " *LV*" " *which-key*"))
   (setq winum-ignored-buffers-regexp '("\\*Treemacs-Scoped-Buffer-"))
   (winum-mode)
-  (spacemacs-leader
+  (efs-leader
    "1" '(winum-select-window-1 :wk "select window 1")
    "2" '(winum-select-window-2 :wk "select window 2")
    "3" '(winum-select-window-3 :wk "select window 3")
@@ -1577,7 +1577,7 @@ COUNT defaults to 1, and KILL defaults to nil."
                                      persp-add-buffer-on-after-change-major-mode)
                           :hooks '(after-switch-to-buffer-functions)
                           :switch 'window))
-  (spacemacs-leader
+  (efs-leader
    ;; "l n" '(persp-add-new :wk "new persp")
    "l l" '(persp-switch :wk "switch persp")
    "l s" '(persp-save-state-to-file :wk "save all to file")
@@ -1704,7 +1704,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     (setq symbol-overlay-map map))
 
   ;; Global keys
-  (spacemacs-leader
+  (efs-leader
    "s o" '(efs--symbol-overlay-put :wk "toggle symbol overlay")
    "s O" '(symbol-overlay-remove-all :wk "remove symbol overlays")
    "s M-o" '(efs--symbol-overlay-transient :wk "symbol overlay transient")
@@ -1884,7 +1884,7 @@ COUNT defaults to 1, and KILL defaults to nil."
     (`(t . _)
      (treemacs-git-mode 'simple)))
   ;; Keybindings
-  (spacemacs-leader
+  (efs-leader
    "0" '(treemacs-select-window :wk "treemacs window")
    "f t" '(treemacs :wk "treemacs")
    )
@@ -1937,7 +1937,7 @@ If the error list is visible, hide it.  Otherwise, show it."
                 (side . bottom)
                 (window-height . 0.25)))))
         (flycheck-list-errors))))
-  (spacemacs-leader
+  (efs-leader
     "e n" '(flycheck-next-error :wk "next error")
     "e p" '(flycheck-previous-error :wk "previous error")
     "e l" '(efs--toggle-flycheck-error-list :wk "list errors")
