@@ -729,7 +729,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :config
   ;; Load corfu extensions
   (with-eval-after-load 'corfu
-    (add-to-list 'load-path "~/.config/scratch-emacs/elpaca/repos/corfu/extensions/")
+    (add-to-list 'load-path "~/.config/emacs-from-scratch/elpaca/repos/corfu/extensions/")
     ;; corfu-info: Get the corfu-info-documentation and corfu-info-location functions
     (require 'corfu-info)
     ;; corfu-history: Sort candidates by their history position
