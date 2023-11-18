@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# name: module
+# key: module
+# expand-env: ((yas-indent-line 'fixed))
+
+# TODO: Continue to insert more parameters until no inputs given. Jump to port declaration after that.
+
+# \begin{$12}%${13:$(unless (and yas-moving-away-p (not yas-modified-p)) "\n    \\\\label{")}${13:<name>}${13:$(unless (and yas-moving-away-p (not yas-modified-p)) "}")}
+# \end{$12}
+# DEBUG:
+#\$13 yas-modified-p: ${13:$(when yas-modified-p "t")}
+#\$13 yas-moving-away-p: ${13:$(when yas-moving-away-p "t")}
+#// index{$15:$(if (eq yas/moving-away-p t) (nil))}
+
+# --
+
+module ${1:`(file-name-nondirectory (file-name-sans-extension (buffer-file-name)))`}
+  #(parameter ${2:int$(yas-choose-value '("int" "logic" " "))}${3:[${4:msb}:${5:lsb}]} ${6:name} = '0
+) (
+  ${7:input$(yas-choose-value '("input" "output"))}${8: logic$(yas-choose-value '(" logic" " wire" " reg"))}${9:${10: [msb:lsb]}} $11
+);
+  $0
+
+endmodule : $1

@@ -1,0 +1,3 @@
+* TODO %^{Task} %^G
+SCHEDULED: %^T%i
+%a

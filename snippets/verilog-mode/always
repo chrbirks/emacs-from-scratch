@@ -1,0 +1,11 @@
+# name: always @()
+# key: always
+# group: verilog
+# --
+always @(posedge ${1:clk}) begin
+   $0
+
+   if (~$2) begin
+
+   end
+end

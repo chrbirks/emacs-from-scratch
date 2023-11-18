@@ -1,0 +1,14 @@
+%?
+
+* Brygning
+
+* Gæring
+
+* Kabonering
+
+* OG måling
+OG +0dage         =
+OG +00dage (slut) =
+Alc %             = (slut-start)*131,25
+
+* Billeder

@@ -283,7 +283,7 @@
 (use-package yasnippet
   :init
   ; Add custom snippets dir
-  (setq yas-snippet-dirs '("~/.config/emacs/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
+  (setq yas-snippet-dirs '("~/.config/emacs-from-scratch/snippets" "~/etc/spacemacs.d/private/snippets/" "~/etc/spacemacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))
   :defer t)
 
 (use-package yasnippet-snippets
@@ -897,7 +897,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         ;; Org Roam
         org-roam-directory "~/org/roam/"
         org-roam-dailies-directory "daily/" ;; Relative to org-roam-directory
-        org-roam-db-location "~/.config/emacs/org-roam.db"
+        org-roam-db-location "~/.config/emacs-from-scratch/org-roam.db"
         ;; Org Agenda
         org-agenda-files '("~/org/tasks.org"
                            "~/org/notes.org"
@@ -934,12 +934,12 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq org-capture-templates
         '(("t" "TODO" entry
            (file "~/org/projects/TODOs.org")
-           (file "~/.config/emacs/org-templates/todo.org")
+           (file "~/.config/emacs-from-scratch/org-templates/todo.org")
            :empty-lines-before 1
            :unnarrowed nil)
           ("w" "Weibel TODO" entry
            (file "~/org/projects/weibel/TODOs.org")
-           (file "~/.config/emacs/org-templates/weibel-todo.org")
+           (file "~/.config/emacs-from-scratch/org-templates/weibel-todo.org")
            :empty-lines-before 1
            :unnarrowed nil)))
   (efs-leader
@@ -1018,6 +1018,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (set-face-background 'fringe (face-attribute 'default :background))
 
   ;; Set faces for TOD0 keywords
+  ;; TODO: Is this still used? If so, move .config/emacs/packages/ to .config/emacs-from-scratch/
   (if nil
       ;; If true
       (progn ;; If true
@@ -1046,7 +1047,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         '(
           ;; Default template
           ("d" "Default" plain
-           (file "~/.config/emacs/org-roam-templates/default.org")
+           (file "~/.config/emacs-from-scratch/org-roam-templates/default.org")
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "# -*- mode: org; eval: (setq-local org-download-image-dir \"images\" org-download-heading-lvl nil) -*-
 #+title: ${title}
@@ -1054,7 +1055,7 @@ COUNT defaults to 1, and KILL defaults to nil."
            :unnarrowed t)
           ;; Ølbrygning template
           ("o" "Ølbrygning" plain
-           (file "~/.config/emacs/org-roam-templates/ølbrygning.org")
+           (file "~/.config/emacs-from-scratch/org-roam-templates/ølbrygning.org")
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "# -*- mode: org; eval: (setq-local org-download-image-dir \"images\" org-download-heading-lvl nil) -*-
 #+title: ${title}
@@ -1065,7 +1066,7 @@ COUNT defaults to 1, and KILL defaults to nil."
            :unnarrowed t)
           ;; Weibel template
           ("w" "Weibel" plain
-           (file "~/.config/emacs/org-roam-templates/weibel.org")
+           (file "~/.config/emacs-from-scratch/org-roam-templates/weibel.org")
            :target (file+head "%<%Y%m%d%H%M%S>-${slug}.org"
                               "# -*- mode: org; eval: (setq-local org-download-image-dir \"images\" org-download-heading-lvl nil) -*-
 #+title: ${title}

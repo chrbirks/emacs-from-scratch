@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: sv-struct
+# key: /struct
+# --
+typedef struct ${1:packed} {
+logic a;
+logic b;
+} ${2:name};

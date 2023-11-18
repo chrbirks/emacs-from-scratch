@@ -1,0 +1,11 @@
+# name: always_comb
+# key: always
+# group: verilog
+# --
+always begin
+   $0
+
+   if (~${1:reset_n}) begin
+
+   end
+end
