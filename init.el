@@ -1843,7 +1843,7 @@ COUNT defaults to 1, and KILL defaults to nil."
       ("b" elpaca-browse      :transient nil :description "browse")]
      ["Updates"
       ("m" elpaca-manager     :transient nil :description "manager")
-      ("u" elpaca-update-all  :transient t   :description "update all")
+      ("u" elpaca-merge-all   :transient t   :description "merge all")
       ("r" elpaca-menu-item   :transient nil :description "menu item")
       ("f" elpaca-fetch-all   :transient t   :description "fetch all")]
      ["Others"
