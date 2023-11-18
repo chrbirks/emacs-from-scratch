@@ -882,7 +882,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   (visual-line-mode 1))
 
 (use-package org
-  :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
+  :defer nil
+  ;; :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
   :ensure t
   :commands (org-capture org-agenda deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
@@ -1041,6 +1042,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package org-roam
   :after org
+  :commands (org-roam-node-find org-roam-dailies-goto-today org-roam-dailies-goto-date)
   :config
   ;; Define Org-roam capture templates
   (setq org-roam-capture-templates
