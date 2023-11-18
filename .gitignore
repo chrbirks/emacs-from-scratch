@@ -1,8 +1,17 @@
+.cache
+.lsp-session-v1
+.org-id-locations
+bookmarks
 eln-cache
 elpaca
 etc
+history
+persp-confs/
+projectile-bookmarks.eld
 var
 transient
 tree-sitter
+tramp
 custom.el
+*.rej
 *~
