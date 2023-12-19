@@ -1,6 +1,7 @@
 .cache
 .lsp-session-v1
 .org-id-locations
+org-roam.db
 bookmarks
 eln-cache
 elpaca

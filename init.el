@@ -107,7 +107,7 @@
    "s"  '(:ignore t :wk "search/symbol")
 
    "t"  '(:ignore t :wk "toggles")
-   "t l" '(toggle-truncate-lines :wk "toggle-truncate-lines")
+   "t l" '(visual-line-mode :wk "toggle-truncate-lines")
    "t t" '(consult-theme :wk "choose theme")
 
    "q" '(:ignore t :wk "quit")
