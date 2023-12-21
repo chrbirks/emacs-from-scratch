@@ -132,29 +132,20 @@
 
 (elpaca-wait)
 
-(use-package diminish)
-(use-package delight)
+(use-package diminish
+  :ensure t
+  :config
+  ;; Diminish some common minor modes
+  (diminish 'visual-line-mode)
+  (diminish 'auto-revert-mode)
+  (diminish 'eldoc-mode)
+  (diminish 'undo-tree-mode)
+  (diminish 'visual-line-mode)
+  (diminish 'buffer-face-mode)
+  (diminish 'hs-minor-mode)
+)
 
-;; Diminish some common minor modes
-(add-hook 'elpaca-after-init-hook (lambda ()
-                                    (with-eval-after-load 'autorevert
-                                      (require 'diminish)
-                                      (diminish 'auto-revert-mode))
-                                    (with-eval-after-load 'eldoc
-                                      (require 'diminish)
-                                      (diminish 'eldoc-mode))
-                                    (with-eval-after-load 'undo-tree-mode
-                                      (require 'diminish)
-                                      (diminish 'undo-tree-mode))
-                                    (with-eval-after-load 'visual-line-mode
-                                      (require 'diminish)
-                                      (diminish 'visual-line-mode))
-                                    (with-eval-after-load 'buffer-face-mode
-                                      (require 'diminish)
-                                      (diminish 'buffer-face-mode))
-                                    (with-eval-after-load 'hideshow
-                                      (require 'diminish)
-                                      (diminish 'hs-minor-mode))))
+(use-package delight)
 
 (elpaca-wait)
 
@@ -443,6 +434,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq spacemacs-theme-comment-italic t))
 
 (use-package indent-guide
+  :diminish indent-guide-mode
   :config
   (setq indent-guide-char "▒")
   (efs-leader
@@ -1518,6 +1510,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; Clean up trailing whitespaces in modified lines on save
 ;; Run: "whitespace-toggle-options" "?" "r" to visualize trailing whitespaces
 (use-package ws-butler
+  :diminish ws-butler-mode
   :hook ((vhdl-mode verilog-mode) . ws-butler-mode)
   :config
   ;; Set to only trim whitespaces from modified lines
