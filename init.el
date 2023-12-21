@@ -444,6 +444,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package indent-guide
   :config
+  (setq indent-guide-char "▒")
   (efs-leader
    "t i" '(indent-guide-mode :wk "indent-guide-mode")))
 
