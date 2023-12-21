@@ -1101,6 +1101,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :hook ((python-mode . lsp-deferred)
          (vhdl-mode . lsp-mode)
          (verilog-mode . lsp-mode))
+         (lsp-mode . lsp-enable-which-key-integration))
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
   :config
@@ -1178,8 +1179,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-log-io nil ; log all messages to *lsp-log* for debugging
         lsp-print-performance nil ; check lsp-log data
         lsp-server-trace nil ; request tracing on the server side
-        )
-  (lsp-enable-which-key-integration t))
+        ))
 
 ;; Diminish lsp-lens-mode
 (add-hook 'elpaca-after-init-hook (lambda ()
