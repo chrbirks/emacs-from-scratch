@@ -1201,24 +1201,6 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package lsp-treemacs
   :after lsp)
 
-;; (use-package dap-mode
-;;   ;; Uncomment the config below if you want all UI panes to be hidden by default!
-;;   ;; :custom
-;;   ;; (lsp-enable-dap-auto-configure nil)
-;;   ;; :config
-;;   ;; (dap-ui-mode 1)
-;;   :commands dap-debug
-;;   :config
-;;   ;; Set up Node debugging
-;;   (require 'dap-node)
-;;   (dap-node-setup) ;; Automatically installs Node debug adapter if needed
-
-;;   ;; ;; Bind `C-c l d` to `dap-hydra` for easy access
-;;   ;; (general-define-key
-;;   ;;   :keymaps 'lsp-mode-map
-;;   ;;   :prefix lsp-keymap-prefix
-;;   ;;   "d" '(dap-hydra t :wk "debugger"))
-;; )
 
 (use-package lsp-pyright
   :ensure t
@@ -1370,7 +1352,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq git-gutter:modified-sign " ") ;; One colored space (multiple characters would be ok)
   (setq git-gutter:added-sign " ")    ;; One colored space (multiple characters would be ok)
   (setq git-gutter:deleted-sign " ")  ;; One colored space (multiple characters would be ok)
-  (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
+  ;; (setq git-gutter:lighter " GG")     ;; Set git-gutter name in the modeline
 
   ;; Face definition for horizontal ruler
   (defface efs--horizontal-rule
@@ -1949,6 +1931,7 @@ If the error list is visible, hide it.  Otherwise, show it."
                 (side . bottom)
                 (window-height . 0.25)))))
         (flycheck-list-errors))))
+  ;; Global shortcuts
   (efs-leader
     "e n" '(flycheck-next-error :wk "next error")
     "e p" '(flycheck-previous-error :wk "previous error")
@@ -2053,17 +2036,18 @@ If the error list is visible, hide it.  Otherwise, show it."
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; Setup for VHDL language server
 
-  ;; ;; Set path to Rust VHDL-LS
-  ;; (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/debug/vhdl_ls"))
-  ;; (custom-set-variables
-  ;;  '(lsp-vhdl-server 'vhdl-ls))
-  ;; ;; (setenv "VHDL_LS_CONFIG" (file-truename "~/github/dev_env/example_code/vhdl/vhdl_ls.toml"))
-
-  ;; Set path to hdl_checker
-  ;; See logfiles under /tmp/hdl_checker_*
-  (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
+  ;; Set path to Rust VHDL-LS
+  ;; (setq lsp-vhdl-server-path (file-truename "~/github/rust_hdl/target/debug/vhdl_ls")) ;; Only necessary if not in PATH
   (custom-set-variables
-   '(lsp-vhdl-server 'hdl-checker))
+   '(lsp-vhdl-server 'vhdl-ls))
+  ;; (setenv "VHDL_LS_CONFIG" (file-truename "~/github/dev_env/example_code/vhdl/vhdl_ls.toml"))
+
+  ;; ;; Set path to hdl_checker
+  ;; ;; See logfiles under /tmp/hdl_checker_*
+  ;; (setq lsp-vhdl-server-path (file-truename "~/.local/bin/hdl_checker"))
+  ;; (custom-set-variables
+  ;;  '(lsp-vhdl-server 'hdl-checker))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
