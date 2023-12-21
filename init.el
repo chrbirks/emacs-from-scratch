@@ -1193,6 +1193,9 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package lsp-treemacs
   :after lsp)
 
+;; Only show active project in error list
+(with-eval-after-load 'lsp-treemacs
+  (setq lsp-treemacs-error-list-current-project-only t))
 
 (use-package lsp-pyright
   :ensure t
