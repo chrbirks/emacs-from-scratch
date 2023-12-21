@@ -1045,6 +1045,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :after org
   :commands (org-roam-node-find org-roam-dailies-goto-today org-roam-dailies-goto-date)
   :config
+  (org-roam-db-autosync-mode t) ;; Keep org-roam session automatically synchronized
   ;; Define Org-roam capture templates
   (setq org-roam-capture-templates
         '(
