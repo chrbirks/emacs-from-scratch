@@ -1098,9 +1098,8 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package lsp-mode
   :defer t
   :commands (lsp lsp-deferred lsp-mode)
-  :hook ((python-mode . lsp-deferred)
-         (vhdl-mode . lsp-mode)
-         (verilog-mode . lsp-mode))
+  :hook ((vhdl-mode . lsp-deferred) ;; FIXME: Or just "lsp"?
+         (verilog-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
@@ -1220,6 +1219,13 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;   ;;   "d" '(dap-hydra t :wk "debugger"))
 ;; )
 
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp-deferred))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (use-package python-mode
 ;;   :defer t
