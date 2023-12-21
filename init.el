@@ -1155,6 +1155,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-signature-render-documentation t
         lsp-signature-function 'lsp-signature-posframe ; Use posframe with SignatureHelp. default: lsp-lv-message
         ; Other options
+        lsp-document-sync-method 'lsp--sync-incremental
         lsp-use-upstream-bindings t ; Bind all upstream managed `lsp-command-map` bindings behind `SPC m`. See https://emacs-lsp.github.io/lsp-mode/page/keybindings/
         lsp-enable-symbol-highlighting nil
         company-lsp-cache-candidates 'auto
