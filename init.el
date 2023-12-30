@@ -710,6 +710,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   :bind
   (:map corfu-map
         ("RET" . #'newline) ;; Prevent enter from completing candidates
+        ("C-n"     . corfu-next)
+        ("C-p"     . corfu-previous)
         ("C-c C-g" . #'corfu-quit)
         ("C-c C-d" . #'corfu-info-documentation) ;; Requires the corfu-info.el extension. See below use-package.
         ("C-c C-l" . #'corfu-info-location) ;; Requires the corfu-info.el extension. See below use-package.
@@ -1144,11 +1146,11 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-modeline-code-actions-enable t
         lsp-modeline-diagnostics-enable t
         ; Auto completion
-        lsp-completion-provider :none
         lsp-completion-show-detail t
         lsp-completion-show-kind t
         lsp-completion-enable t
         lsp-completion-enable-additional-text-edit t
+        lsp-completion-provider :none ;; Only ":(company-)capf" is supported
         ; Headerline
         lsp-headerline-breadcrumb-mode t
         lsp-headerline-breadcrumb-enable t
@@ -1161,7 +1163,6 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-document-sync-method 'lsp--sync-incremental
         lsp-use-upstream-bindings t ; Bind all upstream managed `lsp-command-map` bindings behind `SPC m`. See https://emacs-lsp.github.io/lsp-mode/page/keybindings/
         lsp-enable-symbol-highlighting nil
-        company-lsp-cache-candidates 'auto
         lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
         lsp-enable-imenu t
         lsp-ui-imenu-auto-refresh t
@@ -1181,7 +1182,10 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-log-io nil ; log all messages to *lsp-log* for debugging
         lsp-print-performance nil ; check lsp-log data
         lsp-server-trace nil ; request tracing on the server side
-        ))
+        )
+  ;; Start completion-at-point with C-SPC
+  (evil-define-key 'insert global-map (kbd "C-SPC") #'completion-at-point)
+  )
 
 ;; Diminish lsp-lens-mode
 (add-hook 'elpaca-after-init-hook (lambda ()
@@ -1937,6 +1941,8 @@ If the error list is visible, hide it.  Otherwise, show it."
                 (side . bottom)
                 (window-height . 0.25)))))
         (flycheck-list-errors))))
+  ;; Only run flycheck on buffer save and enabling of flycheck mode - not while writing text. Increases LSP performance.
+  ;; (setq flycheck-check-syntax-automatically '(save mode-enabled))
   ;; Global shortcuts
   (efs-leader
     "e n" '(flycheck-next-error :wk "next error")
