@@ -4,11 +4,13 @@
 org-roam.db
 bookmarks
 eln-cache
+elpa
 elpaca
 etc
 history
 persp-confs/
 projectile-bookmarks.eld
+projectile.cache
 var
 transient
 tree-sitter
