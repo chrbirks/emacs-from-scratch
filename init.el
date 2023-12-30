@@ -706,6 +706,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package corfu
   :ensure t
+  :after orderless
   :bind
   (:map corfu-map
         ("RET" . #'newline) ;; Prevent enter from completing candidates
@@ -887,7 +888,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :defer nil
   ;; :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
   :ensure t
-  :commands (org-capture org-agenda deadgrep-org) ;; Make available before org is loaded
+  :commands (org-capture org-agenda org-roam-capture deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
   :config
   (setq org-log-into-drawer '("LOOGBOOK")
@@ -949,6 +950,7 @@ COUNT defaults to 1, and KILL defaults to nil."
    "a o" '(:ignore t :wk "org")
    "a o r" '(:ignore t :wk "roam")
    "a o r f" '(org-roam-node-find :wk "node-find")
+   "a o r c" '(org-roam-capture :wk "capture")
    "a o r d" '(:ignore t :wk "dailies")
    "a o r d t" '(org-roam-dailies-goto-today :wk "goto today")
    "a o r d d" '(org-roam-dailies-goto-date :wk "goto date")
@@ -1173,7 +1175,6 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-auto-guess-root nil
         lsp-lens-mode t
         lsp-enable-indentation t
-        lsp-enable-snippet t
         lsp-enable-on-type-formatting nil
         lsp-enable-file-watchers t
         lsp-enable-xref t
