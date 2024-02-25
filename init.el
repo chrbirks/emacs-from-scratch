@@ -41,10 +41,10 @@
 
 ;; Install use-package support
 (elpaca elpaca-use-package
-  ;; Enable :elpaca use-package keyword.
+  ;; Enable use-package :ensure support for Elpaca.
   (elpaca-use-package-mode)
   ;; Assume :elpaca t unless otherwise specified.
-  (setq elpaca-use-package-by-default t))
+  (setq use-package-always-ensure t))
 
 ;; Hack for transient requiring seq >= 2.24
 (defun +elpaca-unload-seq (e) "Unload seq before continuing the elpaca build, then continue to build the recipe E."
@@ -510,7 +510,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq deadgrep-extra-arguments '("!*~" "--glob" "--no-config"))) ;; Exclude *~ files. NOTE: The words must be written in reverse order
 
 (use-package recentf
-  :elpaca nil ;; recentf is a native package
+  :ensure nil ;; recentf is a native package
   :delight (recentf-mode)
   :init
   (defun efs--recentf-save-list ()
@@ -1845,7 +1845,6 @@ COUNT defaults to 1, and KILL defaults to nil."
      ["Info"
       ("i" elpaca-info        :transient nil :description "info")
       ("l" elpaca-log         :transient t   :description "log")
-      ("s" elpaca-status      :transient t   :description "status")
       ("b" elpaca-browse      :transient nil :description "browse")]
      ["Updates"
       ("m" elpaca-manager     :transient nil :description "manager")
@@ -1961,7 +1960,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
 (use-package verilog-mode
-  :elpaca nil ;; verilog-mode is a native package
+  :ensure nil ;; verilog-mode is a native package
   :defer t
   :custom
   ;; LSP setup for verilog-mode
@@ -2023,7 +2022,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
 (use-package vhdl-mode
-  :elpaca nil ;; vhdl-mode is a native package
+  :ensure nil ;; vhdl-mode is a native package
   :defer t
   :config
   (setq vhdl-array-index-record-field-in-sensitivity-list t
