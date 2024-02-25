@@ -1095,10 +1095,15 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package tree-sitter-langs
   :ensure t
   :defer t)
+;; Use org-download to insert images in org files
+(use-package org-download
+  :after org
+  )
 
 ;; (defun efs--lsp-mode-setup ()
 ;;   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
 ;;   (lsp-headerline-breadcrumb-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package lsp-mode
   :defer t
