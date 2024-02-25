@@ -1151,11 +1151,13 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-modeline-code-actions-enable t
         lsp-modeline-diagnostics-enable t
         ; Auto completion
-        lsp-completion-show-detail t
-        lsp-completion-show-kind t
         lsp-completion-enable t
-        lsp-completion-enable-additional-text-edit t
         lsp-completion-provider :none ;; Only ":(company-)capf" is supported
+        lsp-completion-show-kind t
+        lsp-completion-show-label-description t
+        lsp-completion-show-detail t
+        lsp-completion-enable-additional-text-edit nil
+        lsp-enable-snippet t
         ; Headerline
         lsp-headerline-breadcrumb-mode t
         lsp-headerline-breadcrumb-enable t
@@ -1943,7 +1945,7 @@ If the error list is visible, hide it.  Otherwise, show it."
              '(("^\\*Flycheck errors\\*$"
                 (display-buffer-in-side-window)
                 (side . bottom)
-                (window-height . 0.25)))))
+                (window-height . 0.15)))))
         (flycheck-list-errors))))
   ;; Only run flycheck on buffer save and enabling of flycheck mode - not while writing text. Increases LSP performance.
   ;; (setq flycheck-check-syntax-automatically '(save mode-enabled))
