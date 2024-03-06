@@ -2,7 +2,7 @@
 
 ;; Package management
 ;; elpaca
-(defvar elpaca-installer-version 0.6)
+(defvar elpaca-installer-version 0.7)
 (defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
@@ -386,7 +386,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :diminish evil-org-mode
   :hook
   (org-mode . evil-org-mode)
-  (evil-org-mode . (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift todo heading)))) ;; Enable all key bindings
+  (evil-org-mode . (lambda () (evil-org-set-key-theme '(textobjects insert navigation additional shift todo)))) ;; Enable all key bindings
   :config
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
@@ -1864,7 +1864,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Settings for horizontal/vertical scrolling
 (setq scroll-margin     5              ;; Set top/bottom scroll margin in number of lines
-      scroll-conservatively 1          ;; Set lines to top/bottom scroll
+      scroll-conservatively 101        ;; Set lines to top/bottom scroll
       hscroll-margin    15             ;; Set horizontal scroll margin in number of characters
       hscroll-step      1
       auto-hscroll-mode 'current-line) ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
