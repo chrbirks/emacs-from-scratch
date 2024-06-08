@@ -1224,6 +1224,8 @@ COUNT defaults to 1, and KILL defaults to nil."
                          (require 'lsp-pyright)
                          (lsp-deferred))))
 
+(use-package xref) ;; On Emacs27 a newer version of xref is required for some lsp-mode functions to work
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; (use-package python-mode
