@@ -152,6 +152,7 @@
   (diminish 'visual-line-mode)
   (diminish 'buffer-face-mode)
   (diminish 'hs-minor-mode)
+  (diminish 'vhdl-hs-minor-mode)
 )
 
 (use-package delight)
@@ -214,6 +215,8 @@
 
 (setq-default
    debug-on-error nil
+   ;; Don't show cursors in inactive windows
+   cursor-in-non-selected-windows nil
    ;; Prevent warning buffer from stealing focus on every new async compilation warning. Set to nil to supress them entirely.
    native-comp-async-report-warnings-errors 'silent
    ;; Do not wrap lines
@@ -813,9 +816,8 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 ;; Icons for corfu completion buffer
 (use-package nerd-icons-corfu
-  :ensure t
   :after corfu
-  :elpaca (:host github :repo "LuigiPiucco/nerd-icons-corfu")
+  :ensure (:host github :repo "LuigiPiucco/nerd-icons-corfu")
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
   )
@@ -1092,21 +1094,11 @@ COUNT defaults to 1, and KILL defaults to nil."
         )
   )
 
-(use-package tree-sitter
-  :ensure t
-  :defer t)
-
-(use-package tree-sitter-langs
-  :ensure t
-  :defer t)
 ;; Use org-download to insert images in org files
 (use-package org-download
   :after org
   )
 
-;; (defun efs--lsp-mode-setup ()
-;;   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-;;   (lsp-headerline-breadcrumb-mode))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package lsp-mode
@@ -1171,7 +1163,7 @@ COUNT defaults to 1, and KILL defaults to nil."
         lsp-signature-render-documentation t
         lsp-signature-function 'lsp-signature-posframe ; Use posframe with SignatureHelp. default: lsp-lv-message
         ; Other options
-        lsp-document-sync-method 'lsp--sync-incremental
+        ;; lsp-document-sync-method 'lsp--sync-incremental
         lsp-use-upstream-bindings t ; Bind all upstream managed `lsp-command-map` bindings behind `SPC m`. See https://emacs-lsp.github.io/lsp-mode/page/keybindings/
         lsp-enable-symbol-highlighting nil
         lsp-ui-imenu-enable t ;TODO 17-05-2019: Does not work. Should call lsp-ui-imenu which works
