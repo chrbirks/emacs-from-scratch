@@ -629,6 +629,10 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; This adds thin lines, sorting and hides the mode line of the window.
   (advice-add #'register-preview :override #'consult-register-window)
 
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
   :config
   ;; Select which buffers to mark as hidden buffers
   (setq consult-buffer-filter
@@ -654,9 +658,13 @@ COUNT defaults to 1, and KILL defaults to nil."
   ;; Other setup
   ;; vertico-grid-annotate, vertico-flat-annotate
   (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep
    consult-bookmark consult-recent-file consult-xref
-   :preview-key 'any)
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
 
   ;; Configure the narrowing key.
   (setq consult-narrow-key "C-<") ;; "C-+"
@@ -918,6 +926,18 @@ COUNT defaults to 1, and KILL defaults to nil."
                            "~/org/projects/misc-TODOs.org"
                            )
         )
+  ;; Define org agenda groups based on priority
+  (setq org-agenda-custom-commands
+        '(("x" "A better agenda view"
+           ((todo "DOING"
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "Doing:")))
+           (tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "High-priority:")))
+            (alltodo "")
+            (agenda "")
+            ))))
   ;; Set face for done checkbox items to grey strike-through
   (defface org-checkbox-done-text
     '((t (:foreground "#71696A" :strike-through t)))
