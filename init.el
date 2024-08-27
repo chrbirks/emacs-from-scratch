@@ -1976,6 +1976,23 @@ If the error list is visible, hide it.  Otherwise, show it."
     )
   )
 
+(use-package casual-bookmarks
+  :ensure (:host github :repo "kickingvegas/casual-bookmarks")
+  :bind (:map bookmark-bmenu-mode-map
+              ("C-o" . casual-bookmarks-tmenu)
+              ("S" . casual-bookmarks-sortby-tmenu)
+              ("J" . bookmark-jump))
+  :after (bookmark))
+
+(use-package casual-calc
+  :ensure (:host github :repo "kickingvegas/casual-calc")
+  :bind (:map
+         calc-mode-map
+         ("C-o" . casual-calc-tmenu)
+         :map
+         calc-alg-map
+         ("C-o" . casual-calc-tmenu))
+  :after (calc))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
