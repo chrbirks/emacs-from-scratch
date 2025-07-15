@@ -468,34 +468,60 @@ COUNT defaults to 1, and KILL defaults to nil."
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Function for maximizing/unmaximizing the active window.
-;; Could maybe be implemented safer with '(window-configuration-to-register :efs-window-conf-var)' instead.
+;; Unified Window Management System
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar efs--toggle-maximized-buffer-state (make-hash-table :test #'equal)
-  "Hash-table to store state of the maximization status of the buffer. Unique for each perspective. Maximized if non-nill.")
+;; Core window configuration storage - single hash table for all window configs
+(defvar efs--window-configs (make-hash-table :test #'equal)
+  "Unified hash table for storing window configurations.
+Keys are (perspective . identifier) pairs.")
 
-(defvar efs--toggle-maximized-buffer-prev-config (make-hash-table :test #'equal)
-  "Hash-table to store the previous window configuration before maximizing. Unique for each perspective.")
+;; Core window management functions
+(defun efs--save-window-config (key)
+  "Save current window configuration with KEY identifier for current perspective."
+  (puthash (cons persp-last-persp-name key) 
+           (current-window-configuration) 
+           efs--window-configs))
 
+(defun efs--restore-window-config (key &optional delete-after)
+  "Restore window configuration for KEY identifier in current perspective.
+If DELETE-AFTER is non-nil, remove the configuration after restoring."
+  (let* ((full-key (cons persp-last-persp-name key))
+         (config (gethash full-key efs--window-configs)))
+    (when config
+      (set-window-configuration config)
+      (when delete-after
+        (remhash full-key efs--window-configs)))
+    config))
+
+(defun efs--has-window-config-p (key)
+  "Check if window configuration exists for KEY in current perspective."
+  (gethash (cons persp-last-persp-name key) efs--window-configs))
+
+(defun efs--maximize-window (&optional key)
+  "Maximize current window, saving configuration with optional KEY."
+  (efs--save-window-config (or key 'maximize))
+  ;; Reset the no-delete-other-windows parameter for all windows
+  (dolist (win (window-list))
+    (set-window-parameter win 'no-delete-other-windows nil))
+  (delete-other-windows))
+
+;; Toggle maximize buffer function using unified system
 (defun efs--toggle-maximize-buffer ()
-  "Toggle the maximization of the current buffer. Plays nice with a treemacs buffer."
+  "Toggle the maximization of the current buffer.
+Plays nice with special buffers like treemacs."
   (interactive)
   (unless (bound-and-true-p winner-mode)
     (winner-mode 1))
-  (if (gethash persp-last-persp-name efs--toggle-maximized-buffer-state)
-      ;; If in maximized state
+  (if (efs--has-window-config-p 'maximize)
+      ;; If in maximized state, restore
       (progn
-        (when (gethash persp-last-persp-name efs--toggle-maximized-buffer-prev-config)
-          (set-window-configuration (gethash persp-last-persp-name efs--toggle-maximized-buffer-prev-config)) ;; Restore windows config
-          (puthash persp-last-persp-name nil efs--toggle-maximized-buffer-state)))
-    ;; If not in maximized state
+        (efs--restore-window-config 'maximize t)
+        (message "Window restored"))
+    ;; If not in maximized state, maximize
     (progn
-      ;; Reset the no-delete-other-windows parameter for all windows since buffers such as lsp-treemacs-errors-list buffers somehow can prevent other windows from being maximized
-      (dolist (win (window-list))
-        (set-window-parameter win 'no-delete-other-windows nil))
-      (puthash persp-last-persp-name (current-window-configuration) efs--toggle-maximized-buffer-prev-config) ;; Save window config
-      (delete-other-windows)
-      (puthash persp-last-persp-name t efs--toggle-maximized-buffer-state))))
+      (efs--maximize-window 'maximize)
+      (message "Window maximized"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1341,16 +1367,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :config
-  (defvar efs--magit-status-prev-window-config-table (make-hash-table :test #'equal)
-    "Hash-table to store the previous window configuration before running magit-status for different perspectives.")
-  (defun efs--get-or-set-magit-prev-config ()
-    "Get or Set the previous window configuration based on persp-last-persp-name."
-    (let ((window-config (gethash persp-last-persp-name efs--magit-status-prev-window-config-table)))
-      (unless window-config
-        (setq window-config (current-window-configuration))
-        (puthash persp-last-persp-name window-config efs--magit-status-prev-window-config-table))
-      window-config))
-  ;; NOTE 11-10-2023: Need to define this instead of using display-buffer-full-frame that is only introduced in Emacs 29
+  ;; Simple display buffer function for magit
   (defun efs--display-buffer-full-window (buffer alist)
     "Display BUFFER in a full window. ALIST is the display-buffer's ALIST."
     (let ((window (display-buffer-use-some-window buffer alist)))
@@ -1364,11 +1381,12 @@ COUNT defaults to 1, and KILL defaults to nil."
   (defun efs--magit-status ()
     "Version of magit-status that opens in full frame and restores previous window config on quit."
     (interactive)
-    ;; Save window configuration if not already saved. It will be reset to nil when quitting the magit-status buffer.
+    ;; Save window configuration using unified system
     (unless (bound-and-true-p winner-mode)
       (winner-mode 1))
-    ;; Save the window config
-    (efs--get-or-set-magit-prev-config)
+    ;; Only save if not already saved
+    (unless (efs--has-window-config-p 'magit-status)
+      (efs--save-window-config 'magit-status))
     ;; Tell magit-status buffer to open in full frame
     (let ((display-buffer-alist
            '(("^magit: " 
@@ -1378,11 +1396,9 @@ COUNT defaults to 1, and KILL defaults to nil."
   (defun efs--restore-magit-windows (orig-fun &rest args)
     "Restore window configuration to before magit-status was opened. Only restore if buffer is magit-status-mode."
     (interactive)
-    (if (and (gethash persp-last-persp-name efs--magit-status-prev-window-config-table)
+    (if (and (efs--has-window-config-p 'magit-status)
              (string-equal "magit-status-mode" (symbol-name major-mode)))
-        (progn
-          (set-window-configuration (gethash persp-last-persp-name efs--magit-status-prev-window-config-table))
-          (remhash persp-last-persp-name efs--magit-status-prev-window-config-table)) ;; Clear the variable after quitting
+        (efs--restore-window-config 'magit-status t) ;; Restore and delete
       (apply orig-fun args)))
   (advice-add 'magit-mode-quit-window :around #'efs--restore-magit-windows)
 
