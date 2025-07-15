@@ -573,10 +573,10 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package orderless
   :after vertico
   :custom
-  ;; (completion-styles '(orderless basic))
-  (completion-styles '(basic orderless))
+  (completion-styles '(orderless basic))
+  ;;(completion-styles '(orderless-fast basic))
   (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles basic partial-completion))))
+  (completion-category-overrides '((file (styles partial-completion))))
   )
 
 ;; Marginalia for rich annotation in minibuffers
@@ -907,12 +907,20 @@ COUNT defaults to 1, and KILL defaults to nil."
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 
+(require 'general)
 (use-package org
+  :after general
   :defer nil
   ;; :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
   :ensure t
   :commands (org-capture org-agenda org-roam-capture deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
+  ;; :general-config
+  ;; (:keymaps 'org-mode-map
+  ;;           "C-j" 'electric-newline-and-maybe-indent)
+  ;; :custom
+  ;; (with-eval-after-load "org"
+  ;;   (define-key org-mode-map (kbd "C-j") nil))
   :config
   (setq org-log-into-drawer '("LOOGBOOK")
         org-directory "~/org/"
@@ -1413,40 +1421,101 @@ COUNT defaults to 1, and KILL defaults to nil."
       (seq-find (lambda (range)
                   (<= (car range) current-line (cdr range)))
                 ranges)))
-  (defun efs--toggle-modified-lines-visibility ()
-    "Toggle hiding/showing git-gutter unmodified lines and replace them with [...]"
-    (interactive)
-    ;; overlays exist, remove them
-    (if efs--git-gutter-overlays
-        (progn
-          (mapc 'delete-overlay efs--git-gutter-overlays)
-          (setq efs--git-gutter-overlays nil))
-      ;; no overlays, create them
-      (save-excursion
-        (goto-char (point-min))
-        (let ((in-unmod-seq nil)
-              (start-unmod-seq nil))
-          (while (not (eobp))
-            (if (not (efs--line-modified-p))
-                (unless in-unmod-seq
-                  (setq in-unmod-seq t)
-                  (setq start-unmod-seq (line-beginning-position)))
-              ;; (when in-unmod-seq
-              ;;   (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
-              ;;     ;; (overlay-put overlay 'display "[...]")
-              (when in-unmod-seq
-                (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
-                  (overlay-put overlay 'display "                                             ")
-                  (overlay-put overlay 'face 'efs--horizontal-rule)
-                  (push overlay efs--git-gutter-overlays)
-                  (setq in-unmod-seq nil))))
-            (forward-line 1))))))
+
+  ;; (defun efs--toggle-modified-lines-visibility ()
+  ;;   "Toggle hiding/showing git-gutter unmodified lines and replace them with [...]"
+  ;;   (interactive)
+  ;;   ;; overlays exist, remove them
+  ;;   (if efs--git-gutter-overlays
+  ;;       (progn
+  ;;         (mapc 'delete-overlay efs--git-gutter-overlays)
+  ;;         (setq efs--git-gutter-overlays nil))
+  ;;     ;; no overlays, create them
+  ;;     (save-excursion
+  ;;       (goto-char (point-min))
+  ;;       (let ((in-unmod-seq nil)
+  ;;             (start-unmod-seq nil))
+  ;;         (while (not (eobp))
+  ;;           (if (not (efs--line-modified-p))
+  ;;               (unless in-unmod-seq
+  ;;                 (setq in-unmod-seq t)
+  ;;                 (setq start-unmod-seq (line-beginning-position)))
+  ;;             ;; (when in-unmod-seq
+  ;;             ;;   (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
+  ;;             ;;     ;; (overlay-put overlay 'display "[...]")
+  ;;             (when in-unmod-seq
+  ;;               (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
+  ;;                 (overlay-put overlay 'display "                                             ")
+  ;;                 (overlay-put overlay 'face 'efs--horizontal-rule)
+  ;;                 (push overlay efs--git-gutter-overlays)
+  ;;                 (setq in-unmod-seq nil))))
+  ;;           (forward-line 2))))))
+
+
+(defun efs--toggle-modified-lines-visibility ()
+  "Toggle hiding/showing git-gutter unmodified lines with extra context lines."
+  (interactive)
+  (if efs--git-gutter-overlays
+      (progn
+        (mapc 'delete-overlay efs--git-gutter-overlays)
+        (setq efs--git-gutter-overlays nil))
+    (save-excursion
+      (goto-char (point-min))
+      (let ((in-mod-seq nil)
+            (start-mod-seq nil))
+        (while (not (eobp))
+          (if (efs--line-modified-p)
+              (if (not in-mod-seq)
+                  (setq in-mod-seq t
+                        start-mod-seq (line-beginning-position -1))
+                (let ((end-mod-seq (line-end-position)))
+                  (forward-line 1) ; Move to the next line for context
+                  (let ((overlay (make-overlay start-mod-seq end-mod-seq)))
+                    (overlay-put overlay 'display "                                             ")
+                    (overlay-put overlay 'face 'efs--horizontal-rule)
+                    (push overlay efs--git-gutter-overlays)
+                    (setq in-mod-seq nil))))
+          (forward-line 1)))))))  ; Move to the next line to continue checking for modifications
+
+
   (defun efs--revert-hidden-lines ()
     "Revert hidden lines when quitting git-gutter transient state."
     (when efs--git-gutter-overlays
       (efs--toggle-modified-lines-visibility)))
   ;; Run efs--revert-hidden-lines when transient-quit-all is called
   (advice-add 'transient-quit-all :after #'efs--revert-hidden-lines)
+
+  ;; ;; Configuration for horizontal rulers
+  ;; (defcustom efs--horizontal-rule t
+  ;;   "Prettify horizontal rulers.
+  ;; The value can either be a boolean to enable/disable style or display
+  ;; replacement expression, e.g., a string."
+  ;;   :type '(choice boolean sexp))
+  ;;
+  ;; (defun efs--add-horizontal-rule-font-lock ()
+  ;;   "Add font lock keyword for horizontal ruler."
+  ;;   (when efs--git-gutter-overlays
+  ;;   (font-lock-add-keywords
+  ;;    nil
+  ;;    '(("^-\\{5,\\}$" (0 (progn (put-text-property 
+  ;;    ;; '(("^\\[...\\]$" (0 (progn (put-text-property 
+  ;;                                (match-beginning 0) 
+  ;;                                (match-end 0) 
+  ;;                                'display 
+  ;;                                `(space :width (text-properties-at 0 (window-end)) :align-to (+ right-margin -1)))
+  ;;                              'efs--horizontal-rule)))
+  ;;    t))))
+  ;;
+  ;; (add-hook 'after-change-major-mode-hook 'efs--add-horizontal-rule-font-lock)
+  ;;
+  ;; (defun efs--git-gutter-overlay-watcher (symbol newval operation where)
+  ;;   "Watch for changes to efs--git-gutter-overlays and refresh font-lock."
+  ;;   (when (eq symbol 'efs--git-gutter-overlays)
+  ;;     (font-lock-flush)
+  ;;     (efs--add-horizontal-rule-font-lock)))
+  ;;
+  ;; (add-variable-watcher 'efs--git-gutter-overlays 'efs--git-gutter-overlay-watcher)
+
   ;; Define transient state for git-gutter
   (transient-define-prefix efs--git-gutter-transient ()
     "Git-gutter transient state"
@@ -1983,23 +2052,28 @@ If the error list is visible, hide it.  Otherwise, show it."
     )
   )
 
-(use-package casual-bookmarks
-  :ensure (:host github :repo "kickingvegas/casual-bookmarks")
-  :bind (:map bookmark-bmenu-mode-map
-              ("C-o" . casual-bookmarks-tmenu)
-              ("S" . casual-bookmarks-sortby-tmenu)
-              ("J" . bookmark-jump))
-  :after (bookmark))
+;(use-package casual-bookmarks
+;  :ensure (:host github :repo "kickingvegas/casual-bookmarks")
+;  :bind (:map bookmark-bmenu-mode-map
+;              ("C-o" . casual-bookmarks-tmenu)
+;              ("S" . casual-bookmarks-sortby-tmenu)
+;              ("J" . bookmark-jump))
+;  :after (bookmark))
 
-(use-package casual-calc
-  :ensure (:host github :repo "kickingvegas/casual-calc")
-  :bind (:map
-         calc-mode-map
-         ("C-o" . casual-calc-tmenu)
-         :map
-         calc-alg-map
-         ("C-o" . casual-calc-tmenu))
-  :after (calc))
+;(use-package casual-calc
+;  :ensure (:host github :repo "kickingvegas/casual-calc")
+;  :bind (:map
+;         calc-mode-map
+;         ("C-o" . casual-calc-tmenu)
+;         :map
+;         calc-alg-map
+;         ("C-o" . casual-calc-tmenu))
+;  :after (calc))
+
+;; Use copilot for Emacs
+(use-package copilot
+  :ensure (:host github :repo "copilot-emacs/copilot.el")
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
@@ -2065,6 +2139,7 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
+;; TODO: Move lsp-deferred hook(s) to here from use-package lsp-mode
 (use-package vhdl-mode
   :ensure nil ;; vhdl-mode is a native package
   :defer t
@@ -2108,6 +2183,10 @@ If the error list is visible, hide it.  Otherwise, show it."
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'hdl-checker))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package claude-code-ide
+  :ensure (:host github :repo "manzaltu/claude-code-ide.el"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
