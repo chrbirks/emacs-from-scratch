@@ -938,7 +938,6 @@ Plays nice with special buffers like treemacs."
 (use-package org
   :after general
   :defer nil
-  :elpaca nil
   :ensure t
   :commands (org-capture org-agenda org-roam-capture deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
@@ -1015,20 +1014,7 @@ Plays nice with special buffers like treemacs."
            (file "~/org/projects/weibel/TODOs.org")
            (file "~/.config/emacs-from-scratch/org-templates/weibel-todo.org")
            :empty-lines-before 1
-           :unnarrowed nil)))
-  (efs-leader
-   "a o" '(:ignore t :wk "org")
-   "a o r" '(:ignore t :wk "roam")
-   "a o r f" '(org-roam-node-find :wk "node-find")
-   "a o r c" '(org-roam-capture :wk "capture")
-   "a o r d" '(:ignore t :wk "dailies")
-   "a o r d t" '(org-roam-dailies-goto-today :wk "goto today")
-   "a o r d d" '(org-roam-dailies-goto-date :wk "goto date")
-   "o S A" '(org-archive-subtree-default :wk "archive subtree")
-   "o S S" '(org-sort :wk "org sort")
-   "o T T" '(org-todo :wk "org todo")
-   "o T t" '(org-show-todo-tree :wk "org todo tree")
-   ))
+           :unnarrowed nil))))
 
 (use-package org-roam-ui
   :ensure t
@@ -1160,6 +1146,23 @@ Plays nice with special buffers like treemacs."
 (use-package org-download
   :after org
   )
+
+;; Org keybindings - defined after org loads to ensure efs-leader exists
+(with-eval-after-load 'org
+  (efs-leader
+   "a o" '(:ignore t :wk "org")
+   "a o r" '(:ignore t :wk "roam")
+   "a o r f" '(org-roam-node-find :wk "node-find")
+   "a o r c" '(org-roam-capture :wk "capture")
+   "a o r d" '(:ignore t :wk "dailies")
+   "a o r d t" '(org-roam-dailies-goto-today :wk "goto today")
+   "a o r d d" '(org-roam-dailies-goto-date :wk "goto date")
+   "o S A" '(org-archive-subtree-default :wk "archive subtree")
+   "o S S" '(org-sort :wk "org sort")
+   "o T T" '(org-todo :wk "org todo")
+   "o T t" '(org-show-todo-tree :wk "org todo tree")
+   "a o a" '(org-agenda :wk "agenda")
+   "a o c" '(org-capture :wk "capture")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
