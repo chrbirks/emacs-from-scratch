@@ -620,6 +620,11 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; Consult for enhanced completion commands
 (use-package consult
   :ensure t
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
   :init
   ;; Configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
