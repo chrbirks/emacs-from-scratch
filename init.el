@@ -912,7 +912,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package org
   :after general
   :defer nil
-  ;; :elpaca nil ;; FIXME 11-10-2023: The native org package is used since the newest from MELPA(?) has compile errors for Emacs 27.1
+  :elpaca nil
   :ensure t
   :commands (org-capture org-agenda org-roam-capture deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
@@ -1011,7 +1011,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (efs-leader
    "a o r u" '(org-roam-ui-open :wk "org-roam-ui-open")))
 
-(unless (version<= emacs-version "28") ;; FIXME 11-10-2023: Don't use org-projectile on Emacs 27.1 as it doesn't compile
+(unless (version<= emacs-version "28") ;; 11-10-2023: Don't use org-projectile on Emacs 27.1 as it doesn't compile
   (use-package org-projectile
     :after org
     :ensure t
@@ -1140,7 +1140,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package lsp-mode
   :defer t
   :commands (lsp lsp-deferred lsp-mode)
-  :hook ((vhdl-mode . lsp-deferred) ;; FIXME: Or just "lsp"?
+  :hook ((vhdl-mode . lsp-deferred)
          (verilog-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :init
@@ -1350,14 +1350,14 @@ COUNT defaults to 1, and KILL defaults to nil."
         (setq window-config (current-window-configuration))
         (puthash persp-last-persp-name window-config efs--magit-status-prev-window-config-table))
       window-config))
-  ;; FIXME 11-10.2023: Need to define this instead of using display-buffer-full-frame that is only introduced in Emacs 29
+  ;; NOTE 11-10-2023: Need to define this instead of using display-buffer-full-frame that is only introduced in Emacs 29
   (defun efs--display-buffer-full-window (buffer alist)
     "Display BUFFER in a full window. ALIST is the display-buffer's ALIST."
     (let ((window (display-buffer-use-some-window buffer alist)))
       (when window
         (delete-other-windows window)
         window)))
-  ;; FIXME 11-10-2023: Need to define this expected function that is only introduced in Emacs 29 (https://github.com/magit/magit/issues/5011)
+  ;; NOTE 11-10-2023: Need to define this expected function that is only introduced in Emacs 29 (https://github.com/magit/magit/issues/5011)
   (defun seq-keep (function sequence)
     "Apply FUNCTION to SEQUENCE and return the list of all the non-nil results."
     (delq nil (seq-map function sequence)))
@@ -1979,7 +1979,7 @@ COUNT defaults to 1, and KILL defaults to nil."
   (setq treemacs-git-mode 'simple)
   (setq treemacs-hide-gitignored-files-mode nil)
   ;; (setq treemacs-show-cursor t)
-  (treemacs-fringe-indicator-mode 'only-when-focused) ;; FIXME: Must run this for indicator to show up:(with-selected-window (treemacs-get-local-window)
+  (treemacs-fringe-indicator-mode 'only-when-focused)
   ;   ----------------------------------------------------------------------------------------------     (set-window-fringes nil 100))
   ;; ???
   (pcase (cons (not (null (executable-find "git")))
@@ -2025,7 +2025,6 @@ COUNT defaults to 1, and KILL defaults to nil."
   :ensure t
   :diminish flycheck-mode
   ;; :config
-  ;; ; FIXME: Try removing these since they are part of lsp-mode
   ;; (add-to-list 'flycheck-global-modes 'verilog-mode)
   ;; (add-to-list 'flycheck-global-modes 'vhdl-mode)
   ;; ;; (setq 'flycheck-global-modes t)
@@ -2136,7 +2135,6 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;; (tree-sitter-require 'verilog)
 ;; (add-hook 'verilog-mode #'tree-sitter-mode)
 ;; (add-hook 'verilog-mode #'tree-sitter-hl-mode)
-;; ;; (add-to-list 'tree-sitter-major-mode-language-alist #'(verilog-mode . verilog)) ;; FIXME (11-04-2022): Necessary until verilog-mode is added to the list in the tree-sitter-langs package: https://github.com/emacs-tree-sitter/tree-sitter-langs/pull/93
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
