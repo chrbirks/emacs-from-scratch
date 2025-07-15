@@ -620,6 +620,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;; Consult for enhanced completion commands
 (use-package consult
   :ensure t
+  :demand t
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
