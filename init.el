@@ -510,18 +510,31 @@ COUNT defaults to 1, and KILL defaults to nil."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Define minor-mode to indicate when window is maximized
-;; TODO: Disable window split functions when in maximized mode
 (define-minor-mode efs-maximized-mode
-  "Minor mode to indicate when window is maximized."
+  "Minor mode to indicate when window is maximized.
+When active, disables window split functions to prevent changes to window configuration."
   :init-value nil
-  )
+  :lighter nil
+  (if efs-maximized-mode
+      ;; Enable mode: disable split functions
+      (progn
+        (advice-add 'split-window-below :before-while #'efs--check-not-maximized)
+        (advice-add 'split-window-right :before-while #'efs--check-not-maximized)
+        (advice-add 'split-root-window-below :before-while #'efs--check-not-maximized)
+        (advice-add 'split-root-window-right :before-while #'efs--check-not-maximized))
+    ;; Disable mode: re-enable split functions
+    (progn
+      (advice-remove 'split-window-below #'efs--check-not-maximized)
+      (advice-remove 'split-window-right #'efs--check-not-maximized)
+      (advice-remove 'split-root-window-below #'efs--check-not-maximized)
+      (advice-remove 'split-root-window-right #'efs--check-not-maximized))))
 
-(defun efs--restore-original-border-colors ()
-  "Restore original window divider colors."
-  (when efs--original-window-divider-colors
-    (set-face-foreground 'window-divider (nth 0 efs--original-window-divider-colors))
-    (set-face-foreground 'window-divider-first-pixel (nth 1 efs--original-window-divider-colors))
-    (set-face-foreground 'window-divider-last-pixel (nth 2 efs--original-window-divider-colors))))
+(defun efs--check-not-maximized (&rest _args)
+  "Return nil if efs-maximized-mode is active, preventing the advised function from running."
+  (when efs-maximized-mode
+    (message "Window splits disabled while in maximized mode")
+    nil)
+  (not efs-maximized-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Unified Window Management System
