@@ -93,7 +93,7 @@
    "b" '(:ignore t :wk "buffers")
    "b p" '(switch-to-prev-buffer :wk "previous buffer")
    "b n" '(switch-to-next-buffer :wk "next buffer")
-   "b d" 'kill-this-buffer
+   "b d" 'kill-current-buffer
 
    "c" '(:ignore t :wk "comments")
 
