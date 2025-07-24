@@ -89,6 +89,9 @@
    "a b" 'general-describe-keybindings
    "a o a" 'org-agenda
    "a o c" 'org-capture
+   "a t" '(:ignore t :wk "tree-sitter")
+   "a t i" '(efs-install-tree-sitter-grammars :wk "install grammars")
+   "a t l" '(efs-list-tree-sitter-grammars :wk "list grammars")
 
    "b" '(:ignore t :wk "buffers")
    "b p" '(switch-to-prev-buffer :wk "previous buffer")
@@ -2219,12 +2222,24 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; tree-sitter for Verilog
-;; ;; Requires 'tree-sitter-langs-install-grammars' to be executed first. tree-sitter-verilog is now part of that package.
-
-;; (tree-sitter-require 'verilog)
-;; (add-hook 'verilog-mode #'tree-sitter-mode)
-;; (add-hook 'verilog-mode #'tree-sitter-hl-mode)
+;; tree-sitter for Verilog
+;; Configure tree-sitter for enhanced syntax highlighting while keeping LSP for intelligence
+(use-package verilog-mode
+  :hook
+  ;; Enable tree-sitter for better syntax highlighting
+  ((verilog-mode . (lambda ()
+                     (when (and (fboundp 'treesit-available-p)
+                               (treesit-available-p)
+                               (treesit-language-available-p 'verilog))
+                       ;; Use tree-sitter for font-lock (syntax highlighting)
+                       (treesit-parser-create 'verilog)
+                       (setq-local treesit-font-lock-feature-list
+                                   '((comment definition)
+                                     (keyword string type)
+                                     (assignment attribute constant number)
+                                     (bracket delimiter error operator)))
+                       (setq-local treesit-font-lock-level 3)
+                       (treesit-major-mode-setup))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
@@ -2274,6 +2289,97 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; VHDL Tree-Sitter Mode
+;; Provides enhanced syntax highlighting and parsing for VHDL files
+;; Choose one of the three configuration options below:
+
+;; OPTION 1: Theme-based (Recommended) - Uses your color theme's defaults
+;; Uncomment this for consistent colors with your theme
+;; (use-package vhdl-ts-mode
+;;   :config
+;;   (setq vhdl-ts-indent-level 2))
+
+;; OPTION 2: Minimal custom faces - Only highlights key structural elements
+;; Uncomment this block and comment out Option 1 if you want subtle enhancements
+;; (use-package vhdl-ts-mode
+;;   :custom-face
+;;   (vhdl-ts-font-lock-entity-face           ((t (:inherit font-lock-type-face :weight bold))))
+;;   (vhdl-ts-font-lock-instance-face         ((t (:inherit font-lock-variable-name-face :weight bold))))
+;;   (vhdl-ts-font-lock-port-connection-face  ((t (:inherit font-lock-constant-face))))
+;;   (vhdl-ts-font-lock-translate-off-face    ((t (:inherit shadow :background unspecified))))
+;;   :config
+;;   (setq vhdl-ts-indent-level 2))
+
+;; OPTION 3: Full custom faces - Maximum visual distinction (original configuration)
+;; Uncomment this block and comment out Option 1 if you want all custom colors
+(use-package vhdl-ts-mode
+  :custom-face
+  (vhdl-ts-font-lock-then-face             ((t (:foreground "#4c8dc8"))))
+  (vhdl-ts-font-lock-punctuation-face      ((t (:foreground "burlywood"))))
+  (vhdl-ts-font-lock-operator-face         ((t (:inherit 'vhdl-ts-font-lock-punctuation-face))))
+  (vhdl-ts-font-lock-parenthesis-face      ((t (:foreground "dark goldenrod"))))
+  (vhdl-ts-font-lock-brackets-content-face ((t (:foreground "yellow green"))))
+  (vhdl-ts-font-lock-port-connection-face  ((t (:foreground "bisque2"))))
+  (vhdl-ts-font-lock-entity-face           ((t (:foreground "green1"))))
+  (vhdl-ts-font-lock-instance-face         ((t (:foreground "medium spring green"))))
+  (vhdl-ts-font-lock-instance-lib-face     ((t (:foreground "gray70"))))
+  (vhdl-ts-font-lock-translate-off-face    ((t (:background "gray20"))))
+  :config
+  (setq vhdl-ts-indent-level 2))
+
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; tree-sitter setup
+(when (>= emacs-major-version 29)
+  (setq treesit-language-source-alist
+        '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
+          (elisp      "https://github.com/Wilfred/tree-sitter-elisp")
+          (go         "https://github.com/tree-sitter/tree-sitter-go")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+          (json       "https://github.com/tree-sitter/tree-sitter-json")
+          (make       "https://github.com/alemuller/tree-sitter-make")
+          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
+          (python     "https://github.com/tree-sitter/tree-sitter-python")
+          (rust       "https://github.com/tree-sitter/tree-sitter-rust")
+          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
+          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
+          (verilog    "https://github.com/tree-sitter/tree-sitter-verilog")
+          (vhdl       "https://github.com/alemuller/tree-sitter-vhdl")
+          (yaml       "https://github.com/ikatyang/tree-sitter-yaml")))
+  ;; Enable tree-sitter modes selectively for better control
+  ;; We'll configure HDL modes separately to work alongside LSP
+  (setq major-mode-remap-alist
+        '((bash-mode . bash-ts-mode)
+          (typescript-mode . typescript-ts-mode)
+          (json-mode . json-ts-mode)
+          (python-mode . python-ts-mode)
+          (yaml-mode . yaml-ts-mode)
+          (vhdl-mode . vhdl-ts-mode)
+          ))
+  
+  ;; Helper function to install tree-sitter grammars
+  (defun efs-install-tree-sitter-grammars ()
+    "Install all configured tree-sitter grammars."
+    (interactive)
+    (mapc #'treesit-install-language-grammar
+          '(bash elisp go javascript json make markdown python rust toml typescript verilog vhdl yaml))
+    (message "Tree-sitter grammars installation initiated. Check *Messages* for details."))
+  
+  ;; Check which grammars are available
+  (defun efs-list-tree-sitter-grammars ()
+    "List available and missing tree-sitter grammars."
+    (interactive)
+    (let ((languages '(bash elisp go javascript json make markdown python rust toml typescript verilog vhdl yaml))
+          (available '())
+          (missing '()))
+      (dolist (lang languages)
+        (if (treesit-language-available-p lang)
+            (push lang available)
+          (push lang missing)))
+      (message "Available grammars: %s\nMissing grammars: %s"
+               (mapconcat #'symbol-name (nreverse available) ", ")
+               (mapconcat #'symbol-name (nreverse missing) ", "))))
+  )
 (use-package claude-code-ide
   :ensure (:host github :repo "manzaltu/claude-code-ide.el"))
 
