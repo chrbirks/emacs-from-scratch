@@ -460,12 +460,68 @@ COUNT defaults to 1, and KILL defaults to nil."
 (use-package spaceline
   :config
   (require 'spaceline-config)
-  (spaceline-spacemacs-theme) ; Set the theme
+  
+  ;; Define custom spaceline segment for maximized window indicator
+  (spaceline-define-segment efs-maximized-indicator
+    "Show maximized indicator when window is maximized"
+    (when (and (boundp 'efs-maximized-mode) efs-maximized-mode)
+      (propertize " Maximized " 'face '(:foreground "yellow" :weight bold))))
+  
+  ;; First load the standard spacemacs theme
+  (spaceline-spacemacs-theme)
+  
+  ;; Manually compile a modeline that includes the custom segment
+  (spaceline-compile
+    ;; Modeline ID
+    'main
+    ;; Left side segments
+    '(
+      (persp-name workspace-number window-number)  ; Window/workspace numbers at the beginning
+      (buffer-modified buffer-size)
+      (buffer-id remote-host)
+      (major-mode :when active)
+      ((flycheck-error flycheck-warning flycheck-info) :when active)
+      efs-maximized-indicator
+      (minor-modes :when active)
+      (treesit-inspect :when active)
+      (process :when active)
+      (version-control :when active))
+    ;; Right side segments  
+    '((selection-info :when active)
+      ((buffer-encoding-abbrev
+        point-position
+        line-column)
+       :separator " | "
+       :priority 96)
+      (global :when active)
+      hud))
+  
+  ;; Force the modeline to use our compiled version
+  (setq-default mode-line-format '("%e" (:eval (spaceline-ml-main))))
+  
   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) ; Color according to evil state
   (setq powerline-default-separator 'arrow)
   (setq spaceline-workspace-numbers-unicode t) ; Get unicode numbers when using window-numbering-mode
   (setq spaceline-window-numbers-unicode t) ; Get unicode numbers when using eyebrowse-mode
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Maximized Window Mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Define minor-mode to indicate when window is maximized
+;; TODO: Disable window split functions when in maximized mode
+(define-minor-mode efs-maximized-mode
+  "Minor mode to indicate when window is maximized."
+  :init-value nil
+  )
+
+(defun efs--restore-original-border-colors ()
+  "Restore original window divider colors."
+  (when efs--original-window-divider-colors
+    (set-face-foreground 'window-divider (nth 0 efs--original-window-divider-colors))
+    (set-face-foreground 'window-divider-first-pixel (nth 1 efs--original-window-divider-colors))
+    (set-face-foreground 'window-divider-last-pixel (nth 2 efs--original-window-divider-colors))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Unified Window Management System
@@ -517,10 +573,12 @@ Plays nice with special buffers like treemacs."
       ;; If in maximized state, restore
       (progn
         (efs--restore-window-config 'maximize t)
+        (efs-maximized-mode -1)  ; Disable maximized mode
         (message "Window restored"))
     ;; If not in maximized state, maximize
     (progn
       (efs--maximize-window 'maximize)
+      (efs-maximized-mode 1)   ; Enable maximized mode
       (message "Window maximized"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
