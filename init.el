@@ -148,6 +148,8 @@
 
 (use-package diminish
   :ensure t
+  :defer t
+  :commands (diminish)
   :config
   ;; Diminish some common minor modes
   (diminish 'visual-line-mode)
@@ -159,7 +161,8 @@
   (diminish 'vhdl-hs-minor-mode)
 )
 
-(use-package delight)
+(use-package delight
+  :defer t)
 
 (elpaca-wait)
 
@@ -452,6 +455,7 @@ COUNT defaults to 1, and KILL defaults to nil."
 
 (use-package indent-guide
   :diminish indent-guide-mode
+  :commands (indent-guide-mode)
   :config
   (setq indent-guide-char "▒")
   (efs-leader
@@ -608,9 +612,11 @@ Plays nice with special buffers like treemacs."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package wgrep)
+(use-package wgrep
+  :defer t)
 
 (use-package deadgrep
+  :commands (deadgrep)
   :config
   (setq deadgrep-extra-arguments '("!*~" "--glob" "--no-config"))) ;; Exclude *~ files. NOTE: The words must be written in reverse order
 
@@ -918,7 +924,8 @@ Plays nice with special buffers like treemacs."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package all-the-icons
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; Get file and buffer icons in minibuffer
 (use-package all-the-icons-completion
@@ -1103,14 +1110,7 @@ Plays nice with special buffers like treemacs."
   (set-face-background 'fringe (face-attribute 'default :background))
 
   ;; Set faces for TOD0 keywords
-  ;; TODO: Is this still used? If so, move .config/emacs/packages/ to .config/emacs-from-scratch/
-  (if nil
-      ;; If true
-      (progn ;; If true
-        (use-package svg-tag-mode-config :load-path "~/.config/emacs/packages/")
-        (add-hook 'org-mode-hook 'svg-tag-mode))
-    ;; If false/nil
-    (setq org-modern-todo-faces
+  (setq org-modern-todo-faces
           '(
             ("TODO"     :foreground "#b7742f" :background "#292b2e" :weight bold)
             ("DOING"    :foreground "yellow"  :background "#292b2e" :weight bold)
@@ -1118,7 +1118,6 @@ Plays nice with special buffers like treemacs."
             ("CANCELED" :foreground "#686868" :background "#292b2e" :weight bold)
             ("DONE"     :foreground "#686868" :background "#292b2e" :weight bold)
             ))
-    )
   ;; Enable org-modern globally
   (global-org-modern-mode)
   (add-hook 'org-mode-hook 'org-modern-mode)
@@ -1193,8 +1192,7 @@ Plays nice with special buffers like treemacs."
 (use-package lsp-mode
   :defer t
   :commands (lsp lsp-deferred lsp-mode)
-  :hook ((vhdl-mode . lsp-deferred)
-         (verilog-mode . lsp-deferred)
+  :hook ((verilog-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
@@ -1760,8 +1758,13 @@ Plays nice with special buffers like treemacs."
       ("r" symbol-overlay-query-replace :transient t :description "query-replace")
       ("R" symbol-overlay-rename :transient t :description "rename")
       ("s" symbol-overlay-isearch-literally :transient t :description "isearch")
-      ("q" transient-quit-all :description "quit")]
-     ;; TODO: Bind navigation keys h/j/k/l to quit but do not show them in transient
+      ("q" transient-quit-all :description "quit")
+      ;; Quit transient when using evil navigation keys (hidden from transient display)
+      ;; FIXME: Does not override evil keys as expected
+      ("h" transient-quit-all :transient nil :if-nil t)
+      ("j" transient-quit-all :transient nil :if-nil t)
+      ("k" transient-quit-all :transient nil :if-nil t)
+      ("l" transient-quit-all :transient nil :if-nil t)]
      ])
 
   ;; Override symbol-overlay-map that will normally interfer with evil keys
@@ -2080,7 +2083,8 @@ If the error list is visible, hide it.  Otherwise, show it."
 
   ;; Use 'verilator_bin' instead of 'verilator' which throws errors
   (setq
-   ;; TODO: (flycheck-verilator-include-path ...)
+   ;; Include paths for project-specific headers (customize as needed)
+   ;; flycheck-verilator-include-path '("./include" "../common/include")
    flycheck-verilog-verilator-executable "verilator_bin")
 
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
@@ -2109,10 +2113,10 @@ If the error list is visible, hide it.  Otherwise, show it."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
-;; TODO: Move lsp-deferred hook(s) to here from use-package lsp-mode
 (use-package vhdl-mode
   :ensure nil ;; vhdl-mode is a native package
   :defer t
+  :hook (vhdl-mode . lsp-deferred)
   :config
   (setq vhdl-array-index-record-field-in-sensitivity-list t
         vhdl-compiler "GHDL"
@@ -2131,7 +2135,7 @@ If the error list is visible, hide it.  Otherwise, show it."
         flycheck-vhdl-ghdl-executable "/usr/bin/ghdl"
         flycheck-ghdl-ieee-library "synopsys" ;;"standard"
         flycheck-ghdl-language-standard "08"
-        ;; TODO: flycheck-ghdl-workdir "/home/chrbirks/github/dev_env/example_code/vhdl"
+        ;; flycheck-ghdl-workdir "~/projects/vhdl"  ; Set project-specific work directory if needed
         )
   :hook
   ;; Consider underscores as part of word in vhdl-mode
