@@ -1504,8 +1504,10 @@ Plays nice with special buffers like treemacs."
       (((background light)) :strike-through "gray70")
       (t :strike-through "gray30"))
     "Face used for horizontal ruler.")
+
   ;; Define functions for toggling visibility of unmodified lines
   (setq efs--git-gutter-overlays nil)
+
   (defun efs--line-modified-p ()
     "Is the current line modified?"
     (let ((current-line (line-number-at-pos))
@@ -1517,60 +1519,30 @@ Plays nice with special buffers like treemacs."
                   (<= (car range) current-line (cdr range)))
                 ranges)))
 
-  ;; (defun efs--toggle-modified-lines-visibility ()
-  ;;   "Toggle hiding/showing git-gutter unmodified lines and replace them with [...]"
-  ;;   (interactive)
-  ;;   ;; overlays exist, remove them
-  ;;   (if efs--git-gutter-overlays
-  ;;       (progn
-  ;;         (mapc 'delete-overlay efs--git-gutter-overlays)
-  ;;         (setq efs--git-gutter-overlays nil))
-  ;;     ;; no overlays, create them
-  ;;     (save-excursion
-  ;;       (goto-char (point-min))
-  ;;       (let ((in-unmod-seq nil)
-  ;;             (start-unmod-seq nil))
-  ;;         (while (not (eobp))
-  ;;           (if (not (efs--line-modified-p))
-  ;;               (unless in-unmod-seq
-  ;;                 (setq in-unmod-seq t)
-  ;;                 (setq start-unmod-seq (line-beginning-position)))
-  ;;             ;; (when in-unmod-seq
-  ;;             ;;   (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
-  ;;             ;;     ;; (overlay-put overlay 'display "[...]")
-  ;;             (when in-unmod-seq
-  ;;               (let ((overlay (make-overlay start-unmod-seq (line-end-position 0))))
-  ;;                 (overlay-put overlay 'display "                                             ")
-  ;;                 (overlay-put overlay 'face 'efs--horizontal-rule)
-  ;;                 (push overlay efs--git-gutter-overlays)
-  ;;                 (setq in-unmod-seq nil))))
-  ;;           (forward-line 2))))))
-
-
-(defun efs--toggle-modified-lines-visibility ()
-  "Toggle hiding/showing git-gutter unmodified lines with extra context lines."
-  (interactive)
-  (if efs--git-gutter-overlays
-      (progn
-        (mapc 'delete-overlay efs--git-gutter-overlays)
-        (setq efs--git-gutter-overlays nil))
-    (save-excursion
-      (goto-char (point-min))
-      (let ((in-mod-seq nil)
-            (start-mod-seq nil))
-        (while (not (eobp))
-          (if (efs--line-modified-p)
-              (if (not in-mod-seq)
-                  (setq in-mod-seq t
-                        start-mod-seq (line-beginning-position -1))
-                (let ((end-mod-seq (line-end-position)))
-                  (forward-line 1) ; Move to the next line for context
-                  (let ((overlay (make-overlay start-mod-seq end-mod-seq)))
-                    (overlay-put overlay 'display "                                             ")
-                    (overlay-put overlay 'face 'efs--horizontal-rule)
-                    (push overlay efs--git-gutter-overlays)
-                    (setq in-mod-seq nil))))
-          (forward-line 1)))))))  ; Move to the next line to continue checking for modifications
+  (defun efs--toggle-modified-lines-visibility ()
+    "Toggle hiding/showing git-gutter unmodified lines with extra context lines."
+    (interactive)
+    (if efs--git-gutter-overlays
+        (progn
+          (mapc 'delete-overlay efs--git-gutter-overlays)
+          (setq efs--git-gutter-overlays nil))
+      (save-excursion
+        (goto-char (point-min))
+        (let ((in-mod-seq nil)
+              (start-mod-seq nil))
+          (while (not (eobp))
+            (if (efs--line-modified-p)
+                (if (not in-mod-seq)
+                    (setq in-mod-seq t
+                          start-mod-seq (line-beginning-position -1))
+                  (let ((end-mod-seq (line-end-position)))
+                    (forward-line 1) ; Move to the next line for context
+                    (let ((overlay (make-overlay start-mod-seq end-mod-seq)))
+                      (overlay-put overlay 'display "                                             ")
+                      (overlay-put overlay 'face 'efs--horizontal-rule)
+                      (push overlay efs--git-gutter-overlays)
+                      (setq in-mod-seq nil))))
+              (forward-line 1)))))))  ; Move to the next line to continue checking for modifications
 
 
   (defun efs--revert-hidden-lines ()
@@ -1579,37 +1551,6 @@ Plays nice with special buffers like treemacs."
       (efs--toggle-modified-lines-visibility)))
   ;; Run efs--revert-hidden-lines when transient-quit-all is called
   (advice-add 'transient-quit-all :after #'efs--revert-hidden-lines)
-
-  ;; ;; Configuration for horizontal rulers
-  ;; (defcustom efs--horizontal-rule t
-  ;;   "Prettify horizontal rulers.
-  ;; The value can either be a boolean to enable/disable style or display
-  ;; replacement expression, e.g., a string."
-  ;;   :type '(choice boolean sexp))
-  ;;
-  ;; (defun efs--add-horizontal-rule-font-lock ()
-  ;;   "Add font lock keyword for horizontal ruler."
-  ;;   (when efs--git-gutter-overlays
-  ;;   (font-lock-add-keywords
-  ;;    nil
-  ;;    '(("^-\\{5,\\}$" (0 (progn (put-text-property 
-  ;;    ;; '(("^\\[...\\]$" (0 (progn (put-text-property 
-  ;;                                (match-beginning 0) 
-  ;;                                (match-end 0) 
-  ;;                                'display 
-  ;;                                `(space :width (text-properties-at 0 (window-end)) :align-to (+ right-margin -1)))
-  ;;                              'efs--horizontal-rule)))
-  ;;    t))))
-  ;;
-  ;; (add-hook 'after-change-major-mode-hook 'efs--add-horizontal-rule-font-lock)
-  ;;
-  ;; (defun efs--git-gutter-overlay-watcher (symbol newval operation where)
-  ;;   "Watch for changes to efs--git-gutter-overlays and refresh font-lock."
-  ;;   (when (eq symbol 'efs--git-gutter-overlays)
-  ;;     (font-lock-flush)
-  ;;     (efs--add-horizontal-rule-font-lock)))
-  ;;
-  ;; (add-variable-watcher 'efs--git-gutter-overlays 'efs--git-gutter-overlay-watcher)
 
   ;; Define transient state for git-gutter
   (transient-define-prefix efs--git-gutter-transient ()
