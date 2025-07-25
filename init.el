@@ -2361,6 +2361,25 @@ If the error list is visible, hide it.  Otherwise, show it."
    "zm" 'treesit-fold-close-all)
   )
 
+;; treesit-auto: Automatic mode management and grammar installation
+(use-package treesit-auto
+  :ensure (:type git :host github :repo "renzmann/treesit-auto")
+  :config
+  ;; Enable global treesit-auto mode
+  (global-treesit-auto-mode +1)
+  
+  ;; Set fallback behavior when tree-sitter fails
+  (setq treesit-auto-install 'prompt)  ;; Prompt to install missing grammars
+  
+  ;; Configure additional language mappings
+  (setq treesit-auto-langs 
+        '(bash c cpp css go html javascript json python rust typescript yaml))
+  
+  ;; Add custom language recipes if needed
+  (with-eval-after-load 'treesit-auto
+    ;; Custom configuration for any additional languages
+    (treesit-auto-add-to-auto-mode-alist 'all)))
+
 ;; ;; evil-textobj-tree-sitter: Tree-sitter powered text objects for Evil mode
 ;; (use-package evil-textobj-tree-sitter
 ;;   :ensure (:type git :host github :repo "meain/evil-textobj-tree-sitter"
