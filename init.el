@@ -154,7 +154,6 @@
   (diminish 'auto-revert-mode)
   (diminish 'eldoc-mode)
   (diminish 'undo-tree-mode)
-  (diminish 'visual-line-mode)
   (diminish 'buffer-face-mode)
   (diminish 'hs-minor-mode)
   (diminish 'vhdl-hs-minor-mode)
@@ -874,27 +873,6 @@ Plays nice with special buffers like treemacs."
     )
 )
 
-;; Cape - Completion At Point Extensions
-(defun efs--cape-capf-setup-verilog ()
-  "Create completions backends for verilog-mode"
-  ;; (let ((result))
-  ;;   (dolist (element '(verilog-completion-at-point cape-symbol cape-dabbrev) result)
-  ;;     (add-to-list 'completion-at-point-functions element))))
-  (let (result)
-    (dolist (element (list
-                      (cape-super-capf #'verilog-completion-at-point #'cape-symbol #'cape-dabbrev))
-                     result)
-      (add-to-list 'completion-at-point-functions element))))
-
-;; (defun efs--cape-capf-setup-lsp ()
-;;   "Replace the default `lsp-completion-at-point' with its
-;; `cape-capf-buster' version. Also add `cape-file' and
-;; `company-yasnippet' backends."
-;;   (setf (elt (cl-member 'lsp-completion-at-point completion-at-point-functions) 0)
-;;         (cape-capf-buster #'lsp-completion-at-point))
-;;   (add-to-list 'completion-at-point-functions (cape-company-to-capf #'company-yasnippet))
-;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
-
 (use-package cape
   ;; Bind dedicated completion commands
   :bind (("C-c o p" . completion-at-point) ;; capf
@@ -927,8 +905,6 @@ Plays nice with special buffers like treemacs."
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-  :hook
-  (verilog-mode . efs--cape-capf-setup-verilog)
 )
 
 ;; Icons for corfu completion buffer
@@ -938,27 +914,6 @@ Plays nice with special buffers like treemacs."
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter)
   )
-
-;; (use-package corfu-popupinfo
-;;   :ensure t
-;;   :after corfu
-;;   ;; :hook (corfu-mode . corfu-doc-mode)
-;; ;;  :general (:keymaps 'corfu-map
-;; ;;            ;; This is a manual toggle for the documentation popup.
-;; ;;            [remap corfu-show-documentation] #'corfu-doc-toggle ; Remap the default doc command
-;; ;;            ;; Scroll in the documentation window
-;; ;;            "M-n" #'corfu-doc-scroll-up
-;; ;;            "M-p" #'corfu-doc-scroll-down)
-;;   :config
-;;   (setq corfu-popupinfo-delay 0.5)
-;;   ;; (corfu-doc-max-width 70)
-;;   ;; (corfu-doc-max-height 20)
-;;   )
-
-;; (use-package corfu-history
-;;   :ensure t
-;;   :after corfu
-;;   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1016,12 +971,6 @@ Plays nice with special buffers like treemacs."
   :ensure t
   :commands (org-capture org-agenda org-roam-capture deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
-  ;; :general-config
-  ;; (:keymaps 'org-mode-map
-  ;;           "C-j" 'electric-newline-and-maybe-indent)
-  ;; :custom
-  ;; (with-eval-after-load "org"
-  ;;   (define-key org-mode-map (kbd "C-j") nil))
   :config
   (setq org-log-into-drawer '("LOOGBOOK")
         org-directory "~/org/"
@@ -1363,24 +1312,6 @@ Plays nice with special buffers like treemacs."
 (use-package xref) ;; On Emacs27 a newer version of xref is required for some lsp-mode functions to work
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (use-package python-mode
-;;   :defer t
-;;   ;; :hook (python-mode . lsp-deferred)
-;;   :custom
-;;   ;; NOTE: Set these if Python 3 is called "python3" on your system!
-;;   ;; (python-shell-interpreter "python3")
-;;   ;; (dap-python-executable "python3")
-;;   (dap-python-debugger 'debugpy)
-;;   :config
-;;   (require 'dap-python))
-
-;; (use-package pyvenv
-;;   :defer t
-;;   :after python-mode
-;;   :config
-;;   (pyvenv-mode 1))
-
 
 (use-package projectile
   :diminish projectile-mode
@@ -1772,13 +1703,6 @@ Plays nice with special buffers like treemacs."
                  (reusable-frames . visible)
                  (window-height . 0.3)))
   )
-
-;; ;; Force shells to open at the bottom
-;; (add-to-list 'display-buffer-alist
-;;              '("\\*e?shell\\*" display-buffer-in-direction
-;;                (direction . bottom)
-;;                (window . root)
-;;                (window-height . 0.3)))
 
 (defun efs--symbol-overlay-put ()
   "Do symbol overlay at cursor and start symbol-overlay transient state."
