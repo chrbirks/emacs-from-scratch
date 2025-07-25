@@ -1937,10 +1937,10 @@ Plays nice with special buffers like treemacs."
   :config
   (setq treemacs-git-mode 'simple)
   (setq treemacs-hide-gitignored-files-mode nil)
-  ;; (setq treemacs-show-cursor t)
   (treemacs-fringe-indicator-mode 'only-when-focused)
-  ;   ----------------------------------------------------------------------------------------------     (set-window-fringes nil 100))
-  ;; ???
+  ;; Conditional git mode setup
+  ;;  - If both are found: enables 'deferred' git mode (more advanced git integration)
+  ;;  - If only git is found: falls back to 'simple' git mode
   (pcase (cons (not (null (executable-find "git")))
                (not (null treemacs-python-executable)))
     (`(t . t)
