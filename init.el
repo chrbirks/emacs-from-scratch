@@ -2361,6 +2361,76 @@ If the error list is visible, hide it.  Otherwise, show it."
    "zm" 'treesit-fold-close-all)
   )
 
+;; ;; evil-textobj-tree-sitter: Tree-sitter powered text objects for Evil mode
+;; (use-package evil-textobj-tree-sitter
+;;   :ensure (:type git :host github :repo "meain/evil-textobj-tree-sitter"
+;;            :files (:defaults "queries" "treesit-queries"))
+;;   :after evil
+;;   :config
+;;   ;; Bind text objects for various code structures
+;;   (define-key evil-outer-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.outer"))
+;;   (define-key evil-inner-text-objects-map "f" (evil-textobj-tree-sitter-get-textobj "function.inner"))
+;;   (define-key evil-outer-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "class.outer"))
+;;   (define-key evil-inner-text-objects-map "c" (evil-textobj-tree-sitter-get-textobj "class.inner"))
+;;   (define-key evil-outer-text-objects-map "l" (evil-textobj-tree-sitter-get-textobj "loop.outer"))
+;;   (define-key evil-inner-text-objects-map "l" (evil-textobj-tree-sitter-get-textobj "loop.inner"))
+;;   (define-key evil-outer-text-objects-map "o" (evil-textobj-tree-sitter-get-textobj "conditional.outer"))
+;;   (define-key evil-inner-text-objects-map "o" (evil-textobj-tree-sitter-get-textobj "conditional.inner"))
+;;   (define-key evil-outer-text-objects-map "m" (evil-textobj-tree-sitter-get-textobj "comment.outer"))
+;;   (define-key evil-inner-text-objects-map "m" (evil-textobj-tree-sitter-get-textobj "comment.inner"))
+;;   (define-key evil-outer-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj "parameter.outer"))
+;;   (define-key evil-inner-text-objects-map "a" (evil-textobj-tree-sitter-get-textobj "parameter.inner"))
+  
+;;   ;; Navigation between functions/classes
+;;   (general-define-key
+;;    :states '(normal visual)
+;;    :keymaps 'prog-mode-map
+;;    "]f" (lambda () 
+;;           (interactive) 
+;;           (evil-textobj-tree-sitter-goto-textobj "function.outer"))
+;;    "[f" (lambda () 
+;;           (interactive) 
+;;           (evil-textobj-tree-sitter-goto-textobj "function.outer" t))
+;;    "]c" (lambda () 
+;;           (interactive) 
+;;           (evil-textobj-tree-sitter-goto-textobj "class.outer"))
+;;    "[c" (lambda () 
+;;           (interactive) 
+;;           (evil-textobj-tree-sitter-goto-textobj "class.outer" t)))
+  
+;;   ;; Add custom HDL text objects for Verilog/VHDL
+;;   (defun efs--setup-hdl-text-objects ()
+;;     "Set up HDL-specific text objects for Verilog and VHDL modes."
+;;     (when (or (derived-mode-p 'verilog-mode)
+;;               (derived-mode-p 'vhdl-mode)
+;;               (derived-mode-p 'vhdl-ts-mode))
+;;       ;; Custom text objects for HDL modules/entities
+;;       (define-key evil-outer-text-objects-map "M" 
+;;         (lambda () 
+;;           (interactive)
+;;           (evil-textobj-tree-sitter-get-textobj 
+;;            "class.outer"
+;;            '((verilog-mode . ((module_declaration) @class))
+;;              (vhdl-mode . ((entity_declaration) @class))
+;;              (vhdl-ts-mode . ((entity_declaration) @class))))))
+      
+;;       ;; Custom text objects for HDL processes/always blocks  
+;;       (define-key evil-outer-text-objects-map "P" 
+;;         (lambda ()
+;;           (interactive)
+;;           (evil-textobj-tree-sitter-get-textobj 
+;;            "function.outer"
+;;            '((verilog-mode . ((always_construct) @function))
+;;              (vhdl-mode . ((process_statement) @function))
+;;              (vhdl-ts-mode . ((process_statement) @function))))))))
+  
+;;   ;; Enable HDL text objects in relevant modes
+;;   (add-hook 'verilog-mode-hook #'efs--setup-hdl-text-objects)
+;;   (add-hook 'vhdl-mode-hook #'efs--setup-hdl-text-objects)
+;;   (add-hook 'vhdl-ts-mode-hook #'efs--setup-hdl-text-objects))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package claude-code-ide
   :ensure (:host github :repo "manzaltu/claude-code-ide.el"))
 
