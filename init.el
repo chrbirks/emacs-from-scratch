@@ -254,6 +254,7 @@
 (menu-bar-mode -1)   ; Disable the menu bar
 (column-number-mode)
 (global-display-line-numbers-mode t)
+(fringe-mode nil)    ; When nil or default use 8 pixel fringe
 
 ;; Disable line numbers for some modes
 (dolist (mode '(term-mode-hook
