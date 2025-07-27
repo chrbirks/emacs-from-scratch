@@ -1436,42 +1436,100 @@ Plays nice with special buffers like treemacs."
 
   ;; Define functions for toggling visibility of unmodified lines
   (setq efs--git-gutter-overlays nil)
+  (defvar efs--git-gutter-context-lines 2
+    "Number of context lines to show before and after modified hunks.")
 
-  (defun efs--line-modified-p ()
-    "Is the current line modified?"
-    (let ((current-line (line-number-at-pos))
-          (ranges (mapcar (lambda (hunk) 
-                            (cons (git-gutter-hunk-start-line hunk) 
-                                  (git-gutter-hunk-end-line hunk)))
-                          git-gutter:diffinfos)))
-      (seq-find (lambda (range)
-                  (<= (car range) current-line (cdr range)))
-                ranges)))
+  (defun efs--get-modified-ranges-with-context ()
+    "Get all modified line ranges with context lines added."
+    (when git-gutter:diffinfos
+      (let ((ranges (mapcar (lambda (hunk)
+                              (cons (max 1 (- (git-gutter-hunk-start-line hunk) 
+                                             efs--git-gutter-context-lines))
+                                    (+ (git-gutter-hunk-end-line hunk) 
+                                       efs--git-gutter-context-lines)))
+                            git-gutter:diffinfos)))
+        ;; Merge overlapping ranges
+        (let ((sorted-ranges (sort ranges (lambda (a b) (< (car a) (car b)))))
+              (merged-ranges nil))
+          (dolist (range sorted-ranges)
+            (if (and merged-ranges
+                     (<= (car range) (1+ (cdar merged-ranges))))
+                ;; Merge with previous range
+                (setcdr (car merged-ranges) (max (cdr range) (cdar merged-ranges)))
+              ;; Add as new range
+              (push range merged-ranges)))
+          (nreverse merged-ranges)))))
+
+  (defun efs--create-invisible-overlay (start end)
+    "Create an overlay that makes the region between START and END invisible."
+    (let ((overlay (make-overlay start end)))
+      (overlay-put overlay 'invisible t)
+      (overlay-put overlay 'evaporate t)
+      overlay))
+
+  (defun efs--create-horizontal-bar-overlay (start end line-count)
+    "Create an overlay that displays a horizontal bar between START and END.
+LINE-COUNT is the number of lines being hidden."
+    (let* ((overlay (make-overlay start end))
+           (window-width (window-width))
+           (bar-string (concat " " (make-string (- window-width 2) ?─) " \n")))
+      (overlay-put overlay 'display bar-string)
+      (overlay-put overlay 'face 'efs--horizontal-rule)
+      (overlay-put overlay 'evaporate t)
+      overlay))
 
   (defun efs--toggle-modified-lines-visibility ()
     "Toggle hiding/showing git-gutter unmodified lines with extra context lines."
     (interactive)
     (if efs--git-gutter-overlays
+        ;; Remove all overlays
         (progn
           (mapc 'delete-overlay efs--git-gutter-overlays)
-          (setq efs--git-gutter-overlays nil))
-      (save-excursion
-        (goto-char (point-min))
-        (let ((in-mod-seq nil)
-              (start-mod-seq nil))
-          (while (not (eobp))
-            (if (efs--line-modified-p)
-                (if (not in-mod-seq)
-                    (setq in-mod-seq t
-                          start-mod-seq (line-beginning-position -1))
-                  (let ((end-mod-seq (line-end-position)))
-                    (forward-line 1) ; Move to the next line for context
-                    (let ((overlay (make-overlay start-mod-seq end-mod-seq)))
-                      (overlay-put overlay 'display "                                             ")
-                      (overlay-put overlay 'face 'efs--horizontal-rule)
-                      (push overlay efs--git-gutter-overlays)
-                      (setq in-mod-seq nil))))
-              (forward-line 1)))))))  ; Move to the next line to continue checking for modifications
+          (setq efs--git-gutter-overlays nil)
+          (message "Showing all lines"))
+      ;; Create overlays for unmodified regions
+      (if (not git-gutter:diffinfos)
+          (message "No git modifications in this buffer")
+        (let ((modified-ranges (efs--get-modified-ranges-with-context))
+              (overlays nil)
+              (last-end 1))
+          (save-excursion
+            ;; Create overlays for gaps between modified regions
+            (dolist (range modified-ranges)
+              (let ((range-start (car range))
+                    (range-end (cdr range)))
+                ;; Create overlay for unmodified region before this range
+                (when (< last-end range-start)
+                  (goto-char (point-min))
+                  (forward-line (1- last-end))
+                  (let ((start-pos (point))
+                        (hidden-lines (- range-start last-end)))
+                    (forward-line hidden-lines)
+                    (when (> (point) start-pos)
+                      (if (= hidden-lines 1)
+                          ;; Single line - just make it invisible
+                          (push (efs--create-invisible-overlay start-pos (point))
+                                overlays)
+                        ;; Multiple lines - show horizontal bar
+                        (push (efs--create-horizontal-bar-overlay start-pos (point) hidden-lines)
+                              overlays)))))
+                (setq last-end (1+ range-end))))
+            ;; Handle remaining lines after last modified range
+            (goto-char (point-min))
+            (forward-line (1- last-end))
+            (when (< (point) (point-max))
+              (let ((start-pos (point))
+                    (hidden-lines (count-lines (point) (point-max))))
+                (if (= hidden-lines 1)
+                    ;; Single line - just make it invisible
+                    (push (efs--create-invisible-overlay start-pos (point-max))
+                          overlays)
+                  ;; Multiple lines - show horizontal bar
+                  (push (efs--create-horizontal-bar-overlay start-pos (point-max) hidden-lines)
+                        overlays))))
+          (setq efs--git-gutter-overlays overlays)
+          (message "Hiding unmodified lines (showing %d modified regions with %d context lines)"
+                   (length modified-ranges) efs--git-gutter-context-lines))))))
 
 
   (defun efs--revert-hidden-lines ()
@@ -1497,7 +1555,8 @@ Plays nice with special buffers like treemacs."
   ;; Global keys
   (efs-leader
     "g g" '(efs--git-gutter-transient :wk "git-gutter transient")
-    ))
+    )
+  ) ;; End of use-package git-gutter
 
 ;; Highlight version control differences in gutter
 (use-package diff-hl)
