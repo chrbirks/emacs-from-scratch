@@ -47,6 +47,16 @@ Replace `"my-config"` with the name for this profile, `"~/path/to/init.el"` with
 
 Start Emacs with this configuration by running `emacs --with-profile my-config` in your terminal.
 
-## Contributing
+## Directory Structure
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+```
+.
+├── init.el              # Main configuration file (~3000+ lines)
+├── early-init.el        # Early initialization settings
+├── custom.el            # Emacs customization variables
+├── elpaca/              # Package manager cache and builds
+├── snippets/            # Yasnippet templates (especially Verilog)
+├── org-roam-templates/  # Org-roam capture templates
+├── org-templates/       # Standard org capture templates
+└── var/                 # Variable data (bookmarks, recent files)
+```
