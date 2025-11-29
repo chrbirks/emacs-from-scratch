@@ -1684,7 +1684,7 @@ LINE-COUNT is the number of lines being hidden."
     (interactive)
     (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
       (persp-save-state-to-file persp-auto-save-fname)))
-  (run-with-timer 0 (* 5 60) 'efs--save-persp-state) ;; Save perspective every 5 minutes
+  (run-with-timer 0 (* 10 60) 'efs--save-persp-state) ;; Save perspective every 10 minutes
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
         persp-set-last-persp-for-new-frames nil
