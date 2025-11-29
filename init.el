@@ -1409,6 +1409,13 @@ Plays nice with special buffers like treemacs."
       (apply orig-fun args)))
   (advice-add 'magit-mode-quit-window :around #'efs--restore-magit-windows)
 
+  (defun efs--magit-status-active-p ()
+    "Check if a magit-status buffer is currently visible in any window."
+    (seq-some (lambda (window)
+                (with-current-buffer (window-buffer window)
+                  (derived-mode-p 'magit-status-mode)))
+              (window-list)))
+
   ;; Set global key bindings
   (efs-leader
    "g s" '(efs--magit-status :wk "magit status")
@@ -1682,8 +1689,9 @@ LINE-COUNT is the number of lines being hidden."
     (persp-kill (efs--current-layout-name)))
   (defun efs--save-persp-state ()
     (interactive)
-    (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
-      (persp-save-state-to-file persp-auto-save-fname)))
+    (unless (efs--magit-status-active-p)
+      (let ((inhibit-message t)) ;; Suppress printing save-message to minibuffer
+        (persp-save-state-to-file persp-auto-save-fname))))
   (run-with-timer 0 (* 10 60) 'efs--save-persp-state) ;; Save perspective every 10 minutes
   (setq persp-auto-resume-time -1 ;; No autoload buffers
         ;; persp-save-dir ""
