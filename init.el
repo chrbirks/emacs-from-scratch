@@ -2092,9 +2092,9 @@ If the error list is visible, hide it.  Otherwise, show it."
 ;  :after (calc))
 
 ;; Use copilot for Emacs
-(use-package copilot
-  :ensure (:host github :repo "copilot-emacs/copilot.el")
-  )
+;(use-package copilot
+;  :ensure (:host github :repo "copilot-emacs/copilot.el")
+;  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
@@ -2105,22 +2105,22 @@ If the error list is visible, hide it.  Otherwise, show it."
   ;; LSP setup for verilog-mode
   ;; Disable use of hdl_checker first
   (lsp-clients-verilog-executable nil)
-  ;; Configure svlangserver globally (Requires Verilator and Verible).
-  ;; Can also be configured on a project basis in a .dir-locals.el
-  (lsp-clients-svlangserver-launchConfiguration "verilator -sv --lint-only -Wall -Wno-fatal --assert --cdc")
-  (lsp-clients-svlangserver-formatCommand "~/etc/verible/bin/verible-verilog-format")
-  (lsp-clients-svlangserver-includeIndexing '["does-not-exist.sv"])
-  (lsp-clients-svlangserver-excludeIndexing '["bbs/simulation/**/*.{v,vh,sv,svh}"
-                                              "bbs/work*/**/*.{v,vh,sv,svh}"
-                                              "bbs/design/afu/stratix10/pac_lc/axi_protocol_afu/**/*"
-                                              "bbs/design/afu/stratix10/pac_lc/dummy_afu/**/*"
-                                              "bbs/design/afu/stratix10/pac_lc/eth_afu/**/*"
-                                              "bbs/design/afu/stratix10/pac_lc/hello_afu/**/*"
-                                              "bbs/design/afu/stratix10/pac_lc/hello_afu_interrupt/**/*"
-                                              "bbs/design/afu/stratix10/pac_lc/nlb_afu/**/*"
-                                              "bbs/**/ip/**/*.{v,vh,sv,svh}"])
+  ;; ;; Configure svlangserver globally (Requires Verilator and Verible).
+  ;; ;; Can also be configured on a project basis in a .dir-locals.el
+  ;; (lsp-clients-svlangserver-launchConfiguration "verilator -sv --lint-only -Wall -Wno-fatal --assert --cdc")
+  ;; (lsp-clients-svlangserver-formatCommand "~/etc/verible/bin/verible-verilog-format")
+  ;; (lsp-clients-svlangserver-includeIndexing '["does-not-exist.sv"])
+  ;; (lsp-clients-svlangserver-excludeIndexing '["bbs/simulation/**/*.{v,vh,sv,svh}"
+  ;;                                             "bbs/work*/**/*.{v,vh,sv,svh}"
+  ;;                                             "bbs/design/afu/stratix10/pac_lc/axi_protocol_afu/**/*"
+  ;;                                             "bbs/design/afu/stratix10/pac_lc/dummy_afu/**/*"
+  ;;                                             "bbs/design/afu/stratix10/pac_lc/eth_afu/**/*"
+  ;;                                             "bbs/design/afu/stratix10/pac_lc/hello_afu/**/*"
+  ;;                                             "bbs/design/afu/stratix10/pac_lc/hello_afu_interrupt/**/*"
+  ;;                                             "bbs/design/afu/stratix10/pac_lc/nlb_afu/**/*"
+  ;;                                             "bbs/**/ip/**/*.{v,vh,sv,svh}"])
   ;; '(lsp-clients-svlangserver-workspace-additional-dirs '["/mnt/storage/projects/intel/ofs-platform-afu-bbb/"])
-  (lsp-clients-svlangserver-lintOnUnsaved t)
+  ;; (lsp-clients-svlangserver-lintOnUnsaved t)
   :config
   (setq verilog-auto-delete-trailing-whitespace t
         verilog-highlight-grouping-keywords nil
@@ -2136,10 +2136,9 @@ If the error list is visible, hide it.  Otherwise, show it."
         verilog-auto-lineup (quote all)
         verilog-auto-endcomments t
         verilog-auto-newline nil ;; Disable auto-newline on semicolon in Verilog
-        verilog-linter "verilator -sv --lint-only -Wall --cdc --default-language 1800-2012"
+        ;; verilog-linter "verilator -sv --lint-only -Wall --cdc --default-language 1800-2012"
         ;; verilog-linter "verilator -sv --lint-only -Wall --cdc +1800-2012ext+sv"
         )
-
   ;; Use 'verilator_bin' instead of 'verilator' which throws errors
   (setq
    ;; Include paths for project-specific headers (customize as needed)
@@ -2147,28 +2146,50 @@ If the error list is visible, hide it.  Otherwise, show it."
    flycheck-verilog-verilator-executable "verilator_bin")
 
   ;; Any files that end in .v, .dv, .pv or .sv should be in verilog mode
-  (add-to-list 'auto-mode-alist '("\\.[dsp]?va?h\\'" . verilog-mode)))
+  (add-to-list 'auto-mode-alist '("\\.[dsp]?va?h\\'" . verilog-mode))
+  ;; Set up svls LSP server
+  ;; (require 'lsp)
+  ;; (lsp-register-client
+  ;;  (make-lsp-client :new-connection (lsp-stdio-connection '("svls"))
+  ;;                   :major-modes '(verilog-mode)
+  ;;                   :priority -1
+  ;;                   ))
+  ;; :hook (verilog-mode . (lambda()
+  ;;                         (lsp)
+  ;;                         (flycheck-mode t)
+  ;;                         (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog"))))
 
+  ;; Set up verible-verilog-ls LSP server
+  (require 'lsp-mode)
+  (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection "verible-verilog-ls")
+                    :major-modes '(verilog-mode)
+                    :server-id 'verible-ls))
+
+  (add-hook 'verilog-mode-hook 'lsp)
+
+  )
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; tree-sitter for Verilog
 ;; Configure tree-sitter for enhanced syntax highlighting while keeping LSP for intelligence
-(use-package verilog-mode
-  :hook
-  ;; Enable tree-sitter for better syntax highlighting
-  ((verilog-mode . (lambda ()
-                     (when (and (fboundp 'treesit-available-p)
-                               (treesit-available-p)
-                               (treesit-language-available-p 'verilog))
-                       ;; Use tree-sitter for font-lock (syntax highlighting)
-                       (treesit-parser-create 'verilog)
-                       (setq-local treesit-font-lock-feature-list
-                                   '((comment definition)
-                                     (keyword string type)
-                                     (assignment attribute constant number)
-                                     (bracket delimiter error operator)))
-                       (setq-local treesit-font-lock-level 3)
-                       (treesit-major-mode-setup))))))
+;; (use-package verilog-mode
+;;   :hook
+;;   ;; Enable tree-sitter for better syntax highlighting
+;;   ((verilog-mode . (lambda ()
+;;                      (when (and (fboundp 'treesit-available-p)
+;;                                (treesit-available-p)
+;;                                (treesit-language-available-p 'verilog))
+;;                        ;; Use tree-sitter for font-lock (syntax highlighting)
+;;                        (treesit-parser-create 'verilog)
+;;                        (setq-local treesit-font-lock-feature-list
+;;                                    '((comment definition)
+;;                                      (keyword string type)
+;;                                      (assignment attribute constant number)
+;;                                      (bracket delimiter error operator)))
+;;                        (setq-local treesit-font-lock-level 3)
+;;                        (treesit-major-mode-setup))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom vhdl-mode settings
