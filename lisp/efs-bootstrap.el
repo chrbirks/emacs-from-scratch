@@ -73,7 +73,6 @@
   (diminish 'visual-line-mode)
   (diminish 'auto-revert-mode)
   (diminish 'eldoc-mode)
-  (diminish 'undo-tree-mode)
   (diminish 'buffer-face-mode)
   (diminish 'hs-minor-mode)
   (diminish 'vhdl-hs-minor-mode)

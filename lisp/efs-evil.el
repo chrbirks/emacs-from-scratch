@@ -94,7 +94,7 @@
   (setq evil-want-fine-undo nil)
   :config
   (evil-mode 1)
-  (evil-set-undo-system 'undo-tree)
+  (evil-set-undo-system 'undo-redo) ;; Emacs 28+ built-in linear undo with redo; vundo provides the tree visualizer
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
   (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
 
@@ -175,27 +175,13 @@ COUNT defaults to 1, and KILL defaults to nil."
   (require 'evil-org-agenda)
   (evil-org-agenda-set-keys))
 
-(use-package undo-tree
+(use-package vundo
   :ensure t
-  :diminish undo-tree-mode
+  :commands (vundo)
   :config
-  (global-undo-tree-mode)
-  (setq undo-tree-visualizer-diff t) ;; Show diff in separate buffer by default
+  (setq vundo-glyph-alist vundo-unicode-symbols)
   (efs-leader
-    "a u" '(undo-tree-visualize :wk "undo-tree-visualize"))
-  ;; Redefine evil-mode keys while in undo-tree-mode
-  (evil-make-overriding-map undo-tree-visualizer-mode-map 'motion)
-  (evil-define-key 'motion undo-tree-visualizer-mode-map
-    "h" 'undo-tree-visualize-switch-branch-left
-    "j" 'undo-tree-visualize-redo
-    "k" 'undo-tree-visualize-undo
-    "l" 'undo-tree-visualize-switch-branch-right
-    "d" 'undo-tree-visualizer-toggle-diff)
-  ;; Do not save undo-tree files named .~undo-tree~ everywhere.
-  (setq undo-tree-auto-save-history nil)
-  ;; Or make place the files in /.emacs.d/undo instead
-  ;; (setq undo-tree-history-directory-alist '(("." . "/.emacs.d/undo")))
-  )
+    "a u" '(vundo :wk "vundo")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
