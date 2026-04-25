@@ -204,8 +204,8 @@
         apheleia-formatters)
   (push '(vhdl-mode    . vhdl-lang-format) apheleia-mode-alist)
   (push '(vhdl-ts-mode . vhdl-lang-format) apheleia-mode-alist)
-  ;; Enable globally (per-buffer opt-out via `apheleia-inhibit')
-  (apheleia-global-mode 1)
+  ;; NOTE: apheleia-global-mode is intentionally NOT enabled — formatting must
+  ;; only happen on explicit user invocation (`SPC = =`), never on save.
 
   (defun efs-format-buffer ()
     "Format buffer.
