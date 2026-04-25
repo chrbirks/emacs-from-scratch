@@ -16,6 +16,9 @@
           (toml       "https://github.com/tree-sitter/tree-sitter-toml")
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")
           (verilog    "https://github.com/tree-sitter/tree-sitter-verilog")
+          ;; verilog-ts-mode (gmlarumbe) uses the SystemVerilog grammar, not the
+          ;; plain Verilog one. Install both with `SPC a t i'.
+          (systemverilog "https://github.com/gmlarumbe/tree-sitter-systemverilog")
           (vhdl       "https://github.com/alemuller/tree-sitter-vhdl")
           (yaml       "https://github.com/ikatyang/tree-sitter-yaml")))
   ;; Enable tree-sitter modes selectively for better control
@@ -34,14 +37,14 @@
     "Install all configured tree-sitter grammars."
     (interactive)
     (mapc #'treesit-install-language-grammar
-          '(bash elisp go javascript json make markdown python rust toml typescript verilog vhdl yaml))
+          '(bash elisp go javascript json make markdown python rust toml typescript verilog systemverilog vhdl yaml))
     (message "Tree-sitter grammars installation initiated. Check *Messages* for details."))
 
   ;; Check which grammars are available
   (defun efs-list-tree-sitter-grammars ()
     "List available and missing tree-sitter grammars."
     (interactive)
-    (let ((languages '(bash elisp go javascript json make markdown python rust toml typescript verilog vhdl yaml))
+    (let ((languages '(bash elisp go javascript json make markdown python rust toml typescript verilog systemverilog vhdl yaml))
           (available '())
           (missing '()))
       (dolist (lang languages)

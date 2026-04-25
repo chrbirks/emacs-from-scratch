@@ -1,10 +1,19 @@
 ;;; efs-hdl.el --- HDL: Verilog, VHDL, vhdl-ts, TCL helpers -*- lexical-binding: t; -*-
 
 ;; Any .do .qsf .qpf and .sdc file should be in tcl-mode
-(add-to-list 'auto-mode-alist '("\\.do\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.do\\'"  . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.sdc\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.qpf\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.qsf\\'" . tcl-mode))
+;; Vivado constraints, low-power format, and generic TCL
+(add-to-list 'auto-mode-alist '("\\.xdc\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.upf\\'" . tcl-mode))
+(add-to-list 'auto-mode-alist '("\\.tcl\\'" . tcl-mode))
+;; Verilog filelist formats — plain text, conf-unix-mode is closest fit
+(add-to-list 'auto-mode-alist '("\\.f\\'"   . conf-unix-mode))
+(add-to-list 'auto-mode-alist '("\\.scr\\'" . conf-unix-mode))
+;; SystemVerilog Assertions
+(add-to-list 'auto-mode-alist '("\\.sva\\'" . verilog-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Verilog settings
@@ -69,17 +78,73 @@
   ;;                         (flycheck-mode t)
   ;;                         (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog"))))
 
-  ;; Set up verible-verilog-ls LSP server
+  ;; Set up verible-verilog-ls LSP server. Serves both verilog-mode and
+  ;; verilog-ts-mode (the latter is registered further down in this file).
   (require 'lsp-mode)
-  (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog"))
+  (add-to-list 'lsp-language-id-configuration '(verilog-mode    . "verilog"))
+  (add-to-list 'lsp-language-id-configuration '(verilog-ts-mode . "verilog"))
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection "verible-verilog-ls")
-                    :major-modes '(verilog-mode)
+                    :major-modes '(verilog-mode verilog-ts-mode)
                     :server-id 'verible-ls))
 
-  (add-hook 'verilog-mode-hook 'lsp)
-
+  ;; lsp-mode's :hook in efs-lsp.el already declares (verilog-mode . lsp-deferred);
+  ;; do not also add (add-hook 'verilog-mode-hook 'lsp) here — that would start
+  ;; LSP twice for every Verilog buffer.
   )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; verilog-ts-mode + verilog-ext (gmlarumbe)
+;; verilog-ts-mode is a tree-sitter-based Verilog/SystemVerilog major mode.
+;; verilog-ext layers hierarchy navigation, capf, formatter wrappers, better
+;; imenu, and HDL-aware compilation regexes on top of either verilog-mode or
+;; verilog-ts-mode.
+;;
+;; Both packages REQUIRE the `systemverilog' tree-sitter grammar
+;; (gmlarumbe/tree-sitter-systemverilog). Without it, `verilog-ts-mode'
+;; activates without a parser, and `verilog-ext-mode' errors in its hooks
+;; (`verilog-ext-scan-buffer-modules' → `treesit-buffer-root-node').
+;;
+;; To install:  M-x efs-install-tree-sitter-grammars   (or `SPC a t i')
+;; then restart Emacs. Until that's done, the guards below keep `.sv'/`.v'
+;; files in plain `verilog-mode' and skip `verilog-ext-mode' activation.
+
+(defun efs--systemverilog-grammar-available-p ()
+  "Non-nil if the `systemverilog' tree-sitter grammar is loadable."
+  (and (fboundp 'treesit-language-available-p)
+       (treesit-language-available-p 'systemverilog)))
+
+(use-package verilog-ts-mode
+  :ensure t
+  :init
+  ;; Only auto-route .v/.sv/.vh/.svh through verilog-ts-mode when the
+  ;; systemverilog grammar is installed. Otherwise the existing
+  ;; verilog-mode auto-mode-alist entries win and tree-sitter is skipped.
+  (when (efs--systemverilog-grammar-available-p)
+    (add-to-list 'auto-mode-alist '("\\.s?v\\(?:h\\)?\\'" . verilog-ts-mode))))
+
+(defun efs--maybe-enable-verilog-ext ()
+  "Enable `verilog-ext-mode' only if its tree-sitter dep is present."
+  (when (efs--systemverilog-grammar-available-p)
+    (verilog-ext-mode 1)))
+
+(use-package verilog-ext
+  :ensure t
+  :hook ((verilog-ts-mode . efs--maybe-enable-verilog-ext)
+         (verilog-mode    . efs--maybe-enable-verilog-ext))
+  :init
+  ;; Pick which verilog-ext features to enable. `lsp' is omitted because
+  ;; we already register `verible-verilog-ls' manually above. `time-stamp'
+  ;; is omitted because verilog-mode's built-in `verilog-modify-date-on-saving'
+  ;; already handles header timestamps and the two conflict.
+  (setq verilog-ext-feature-list
+        '(font-lock xref capf hierarchy navigation template
+          formatter compilation imenu which-func hideshow
+          ports flycheck beautify))
+  :config
+  ;; verilog-ext-mode-setup also touches tree-sitter; only run when ready.
+  (when (efs--systemverilog-grammar-available-p)
+    (verilog-ext-mode-setup)))
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; tree-sitter for Verilog
@@ -188,6 +253,35 @@
   (setq vhdl-ts-indent-level 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; vhdl-ext (gmlarumbe) — VHDL counterpart of verilog-ext.
+;; Hierarchy navigation, entity/architecture jump, capf, project commands.
+
+(use-package vhdl-ext
+  :ensure t
+  :after vhdl-ts-mode
+  :hook ((vhdl-ts-mode . vhdl-ext-mode)
+         (vhdl-mode    . vhdl-ext-mode))
+  :init
+  ;; `time-stamp' omitted: conflicts with vhdl-mode's built-in
+  ;; `vhdl-modify-date-on-saving' (warning: "vhdl-ext-time-stamp
+  ;; incompatible with 'vhdl-modify-date-on-saving'.  Disable one of both.").
+  (setq vhdl-ext-feature-list
+        '(font-lock xref capf hierarchy navigation template
+          formatter compilation imenu which-func hideshow
+          ports flycheck beautify))
+  :config
+  (vhdl-ext-mode-setup))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fpga (gmlarumbe) — Vivado/Quartus project parsing, batch synthesis runners,
+;; and other FPGA-vendor utilities. Loaded lazily on first command.
+
+(use-package fpga
+  :ensure t
+  :defer t
+  :commands (fpga-vivado-mode fpga-quartus-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Async autoformat-on-save (decoupled from LSP to avoid cursor jump)
 
 (use-package apheleia
@@ -197,7 +291,8 @@
   ;; verible-verilog-format for SystemVerilog (read stdin, write stdout)
   (push '(verible-verilog-format . ("verible-verilog-format" "-"))
         apheleia-formatters)
-  (push '(verilog-mode . verible-verilog-format) apheleia-mode-alist)
+  (push '(verilog-mode    . verible-verilog-format) apheleia-mode-alist)
+  (push '(verilog-ts-mode . verible-verilog-format) apheleia-mode-alist)
   ;; rust_hdl provides formatting via `vhdl_lang --format <FILE>` (writes to stdout).
   ;; NOTE: marked experimental upstream; output style may change.
   (push '(vhdl-lang-format . ("vhdl_lang" "--format" file))

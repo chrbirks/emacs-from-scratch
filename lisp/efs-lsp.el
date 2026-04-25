@@ -3,7 +3,8 @@
 (use-package lsp-mode
   :defer t
   :commands (lsp lsp-deferred lsp-mode)
-  :hook ((verilog-mode . lsp-deferred)
+  :hook ((verilog-mode    . lsp-deferred)
+         (verilog-ts-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
