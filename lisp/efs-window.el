@@ -92,6 +92,7 @@ Plays nice with special buffers like treemacs."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package which-key
+  :ensure nil ;; built-in since Emacs 30.1
   :defer 0
   :diminish which-key-mode
   :config
@@ -280,7 +281,7 @@ Plays nice with special buffers like treemacs."
   )
 
 (use-package transient
-  :ensure t
+  :ensure t ;; magit/claude-code-ide need >= 0.13; the version bundled with Emacs 30.2 is too old
   :config
   ;; ;; NOTE: Example how to set up transient:
   ;; (transient-define-suffix pmx-show-prefix ()

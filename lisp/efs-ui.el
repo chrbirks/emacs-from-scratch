@@ -29,23 +29,20 @@
   (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
 
 ;; Set `gc-cons-threshold' to a high value during startup,
-;; and restore it to a more reasonable default value after startup.
+;; and restore it to a more reasonable post-startup default. gcmh (below)
+;; takes over from there with adaptive idle/active GC.
 (setq gc-cons-threshold most-positive-fixnum)
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 2 1000 1000))))
+            (setq gc-cons-threshold (* 16 1024 1024))))
 
-;; Increase `gc-cons-threshold' when Emacs is idle,
-;; and decrease it back to its original value when Emacs becomes busy.
-(defvar my-normal-gc-cons-threshold (* 2 1000 1000))
-(defvar my-idle-gc-cons-threshold (* 100 1000 1000))
-(defun my-gc-cons-threshold ()
-  (if (not (eq this-command 'minibuffer-complete))
-      (setq gc-cons-threshold
-            (if (or (minibufferp) current-prefix-arg)
-                my-normal-gc-cons-threshold
-              my-idle-gc-cons-threshold))))
-(add-hook 'pre-command-hook #'my-gc-cons-threshold)
+;; Adaptive GC: low threshold during interaction, high while idle.
+(use-package gcmh
+  :ensure t
+  :diminish gcmh-mode
+  :init (gcmh-mode 1)
+  :config
+  (setq gcmh-high-cons-threshold (* 128 1024 1024)))
 
 ;; Prevent warning buffer from stealing focus on every new warning
 (setq warning-minimum-level :warning)
@@ -118,6 +115,10 @@
       hscroll-margin    15             ;; Set horizontal scroll margin in number of characters
       hscroll-step      1
       auto-hscroll-mode 'current-line) ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
+
+;; Smooth pixel-precise scrolling (built-in, Emacs 29+)
+(when (fboundp 'pixel-scroll-precision-mode)
+  (pixel-scroll-precision-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
