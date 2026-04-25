@@ -176,6 +176,7 @@ Plays nice with special buffers like treemacs."
                '("find-file-other-window" find-file-other-window)))
 
 (use-package vterm-toggle
+  :after vterm ;; vterm-mode-map lives in `vterm'; without :after, :bind below errors with void-variable
   :bind (:map vterm-mode-map
               (("<C-return>" . vterm-toggle-insert-cd)
                ("C-M-n" . vterm-toggle-forward)
