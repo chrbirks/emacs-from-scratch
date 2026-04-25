@@ -187,5 +187,41 @@
   :config
   (setq vhdl-ts-indent-level 2))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Async autoformat-on-save (decoupled from LSP to avoid cursor jump)
+
+(use-package apheleia
+  :ensure t
+  :diminish apheleia-mode
+  :config
+  ;; verible-verilog-format for SystemVerilog (read stdin, write stdout)
+  (push '(verible-verilog-format . ("verible-verilog-format" "-"))
+        apheleia-formatters)
+  (push '(verilog-mode . verible-verilog-format) apheleia-mode-alist)
+  ;; rust_hdl provides formatting via `vhdl_lang --format <FILE>` (writes to stdout).
+  ;; NOTE: marked experimental upstream; output style may change.
+  (push '(vhdl-lang-format . ("vhdl_lang" "--format" file))
+        apheleia-formatters)
+  (push '(vhdl-mode    . vhdl-lang-format) apheleia-mode-alist)
+  (push '(vhdl-ts-mode . vhdl-lang-format) apheleia-mode-alist)
+  ;; Enable globally (per-buffer opt-out via `apheleia-inhibit')
+  (apheleia-global-mode 1)
+
+  (defun efs-format-buffer ()
+    "Format buffer.
+Uses apheleia if a formatter is configured for the current major mode,
+otherwise falls back to `lsp-format-buffer'."
+    (interactive)
+    (let ((formatter (alist-get major-mode apheleia-mode-alist)))
+      (cond
+       (formatter
+        (apheleia-format-buffer (if (listp formatter) formatter (list formatter))))
+       ((bound-and-true-p lsp-mode)
+        (lsp-format-buffer))
+       (t (message "No formatter available for %s" major-mode)))))
+
+  (efs-leader
+    "= =" '(efs-format-buffer :wk "format buffer (apheleia/lsp)")))
+
 (provide 'efs-hdl)
 ;;; efs-hdl.el ends here
