@@ -223,5 +223,31 @@ otherwise falls back to `lsp-format-buffer'."
   (efs-leader
     "= =" '(efs-format-buffer :wk "format buffer (apheleia/lsp)")))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Compilation-mode error regexes for HDL toolchains.
+;; Lets `M-x compile' / `next-error' / `previous-error' jump to the right
+;; line for output from Verilator, Verible-lint, GHDL, Vivado, and Quartus.
+;; verilog-ext / vhdl-ext (Step 4) ship their own variants — once those are
+;; in place this list can be slimmed to the tools they don't already cover.
+
+(with-eval-after-load 'compile
+  (dolist (entry
+           '((efs-verilator-error
+              "%Error\\(?:-[A-Z0-9]+\\)?: \\([^:]+\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?" 1 2 3 2)
+             (efs-verilator-warning
+              "%Warning\\(?:-[A-Z0-9]+\\)?: \\([^:]+\\):\\([0-9]+\\):\\(?:\\([0-9]+\\):\\)?" 1 2 3 1)
+             (efs-verible-lint
+              "^\\([^:]+\\):\\([0-9]+\\):\\([0-9]+\\): " 1 2 3)
+             (efs-ghdl
+              "^\\([^:]+\\):\\([0-9]+\\):\\([0-9]+\\):\\(?:[a-z]+:\\)? " 1 2 3)
+             (efs-vivado-error
+              "^ERROR: \\[[^]]+\\] \\([^:]+\\):\\([0-9]+\\)" 1 2 nil 2)
+             (efs-vivado-warning
+              "^WARNING: \\[[^]]+\\] \\([^:]+\\):\\([0-9]+\\)" 1 2 nil 1)
+             (efs-quartus-error
+              "^Error[^:]*: \\(?:.*: \\)?\\([^(]+\\)(\\([0-9]+\\))" 1 2 nil 2)))
+    (add-to-list 'compilation-error-regexp-alist (car entry))
+    (add-to-list 'compilation-error-regexp-alist-alist entry)))
+
 (provide 'efs-hdl)
 ;;; efs-hdl.el ends here
