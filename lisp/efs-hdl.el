@@ -273,8 +273,14 @@
   (vhdl-ext-mode-setup))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fpga (gmlarumbe) — Vivado/Quartus project parsing, batch synthesis runners,
-;; and other FPGA-vendor utilities. Loaded lazily on first command.
+;; fpga (gmlarumbe) — Vivado/Quartus/Yosys/Cadence project utilities and
+;; vendor-specific major modes for .qsf, .xdc, .sdc, .ys, .gn, .vsif files.
+;; The package's own autoloads register the file-extension mode mappings,
+;; so `:defer t' is enough — opening a matching file or running a real
+;; `fpga-*' command (e.g. `M-x fpga-altera-quartus-shell') triggers load.
+
+(with-eval-after-load 'fpga-altera
+    (setq fpga-altera-quartus-bin "/mnt/storage/opt/quartus_25.3.1.100/quartus/linux64/quartus_sh"))
 
 (use-package fpga
   :ensure t
