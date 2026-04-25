@@ -9,7 +9,7 @@ This is a sophisticated Emacs configuration built from scratch, optimized for ha
 ## Key Architecture Components
 
 ### Package Management
-- **Elpaca v0.11**: Modern package manager replacing package.el
+- **Elpaca v0.12**: Modern package manager replacing package.el
 - **use-package**: Declarative package configuration with `:ensure t` by default
 - **Performance optimizations**: GC tuning, native compilation cache setup
 
