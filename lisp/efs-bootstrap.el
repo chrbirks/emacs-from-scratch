@@ -81,6 +81,43 @@
 (use-package delight
   :defer t)
 
+(use-package emacs
+  :ensure nil
+  :demand t
+  :init
+  (defun prot/keyboard-quit-dwim ()
+    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
+  :bind
+  ("C-g" . prot/keyboard-quit-dwim)
+  :config
+  ;; Do not jump to the current line in `*occur*' buffers.  The reason
+  ;; is that you are already on that line: you want to do `occur' to
+  ;; get more than that (and, presumably, to do something with the
+  ;; results such as to edit them with `occur-edit-mode').
+  (setq list-matching-lines-jump-to-current-line nil)
+  (setq completion-category-defaults nil))
+
 (elpaca-wait)
 
 (provide 'efs-bootstrap)
