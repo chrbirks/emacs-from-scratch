@@ -41,6 +41,12 @@
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
+;; Override built-in compat (Emacs 30 ships 30.x; some packages require >= 31)
+;; Remove from package--builtin-versions so elpaca installs the ELPA version (31.x).
+(setq package--builtin-versions
+      (assq-delete-all 'compat package--builtin-versions))
+(elpaca compat)
+
 ;; Install use-package support
 (elpaca elpaca-use-package
   ;; Enable use-package :ensure support for Elpaca.
