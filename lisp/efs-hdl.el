@@ -9,7 +9,7 @@
 (add-to-list 'auto-mode-alist '("\\.xdc\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.upf\\'" . tcl-mode))
 (add-to-list 'auto-mode-alist '("\\.tcl\\'" . tcl-mode))
-;; Verilog filelist formats — plain text, conf-unix-mode is closest fit
+;; Verilog filelist formats - plain text, conf-unix-mode is closest fit
 (add-to-list 'auto-mode-alist '("\\.f\\'"   . conf-unix-mode))
 (add-to-list 'auto-mode-alist '("\\.scr\\'" . conf-unix-mode))
 ;; SystemVerilog Assertions
@@ -89,7 +89,7 @@
                     :server-id 'verible-ls))
 
   ;; lsp-mode's :hook in efs-lsp.el already declares (verilog-mode . lsp-deferred);
-  ;; do not also add (add-hook 'verilog-mode-hook 'lsp) here — that would start
+  ;; do not also add (add-hook 'verilog-mode-hook 'lsp) here - that would start
   ;; LSP twice for every Verilog buffer.
   )
 
@@ -253,7 +253,7 @@
   (setq vhdl-ts-indent-level 2))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; vhdl-ext (gmlarumbe) — VHDL counterpart of verilog-ext.
+;; vhdl-ext (gmlarumbe) - VHDL counterpart of verilog-ext.
 ;; Hierarchy navigation, entity/architecture jump, capf, project commands.
 
 (use-package vhdl-ext
@@ -276,7 +276,7 @@
 ;; fpga (gmlarumbe) — Vivado/Quartus/Yosys/Cadence project utilities and
 ;; vendor-specific major modes for .qsf, .xdc, .sdc, .ys, .gn, .vsif files.
 ;; The package's own autoloads register the file-extension mode mappings,
-;; so `:defer t' is enough — opening a matching file or running a real
+;; so `:defer t' is enough - opening a matching file or running a real
 ;; `fpga-*' command (e.g. `M-x fpga-altera-quartus-shell') triggers load.
 
 (with-eval-after-load 'fpga-altera
@@ -305,7 +305,7 @@
         apheleia-formatters)
   (push '(vhdl-mode    . vhdl-lang-format) apheleia-mode-alist)
   (push '(vhdl-ts-mode . vhdl-lang-format) apheleia-mode-alist)
-  ;; NOTE: apheleia-global-mode is intentionally NOT enabled — formatting must
+  ;; NOTE: apheleia-global-mode is intentionally NOT enabled - formatting must
   ;; only happen on explicit user invocation (`SPC = =`), never on save.
 
   (defun efs-format-buffer ()
@@ -328,7 +328,7 @@ otherwise falls back to `lsp-format-buffer'."
 ;; Compilation-mode error regexes for HDL toolchains.
 ;; Lets `M-x compile' / `next-error' / `previous-error' jump to the right
 ;; line for output from Verilator, Verible-lint, GHDL, Vivado, and Quartus.
-;; verilog-ext / vhdl-ext (Step 4) ship their own variants — once those are
+;; verilog-ext / vhdl-ext (Step 4) ship their own variants - once those are
 ;; in place this list can be slimmed to the tools they don't already cover.
 
 (with-eval-after-load 'compile

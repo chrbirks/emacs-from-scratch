@@ -185,13 +185,13 @@
 ;  :ensure (:host github :repo "copilot-emacs/copilot.el")
 ;  )
 
-;; (use-package todo-explorer
-;;   :ensure (:host nil :repo "https://github.com/chrbirks/emacs-todo-explorer" :branch "main")
-;;   :bind ("C-c t" . todo-explorer))
+(use-package todo-explorer
+  :ensure (:host nil :repo "https://github.com/chrbirks/emacs-todo-explorer" :branch "main")
+  :bind ("C-c t" . todo-explorer))
 
-(add-to-list 'load-path "/home/cbs/github/emacs-todo-explorer")
-(require 'todo-explorer)
-(global-set-key (kbd "C-c t") #'todo-explorer)
+;; (add-to-list 'load-path "/home/cbs/github/emacs-todo-explorer")
+;; (require 'todo-explorer)
+;; (global-set-key (kbd "C-c t") #'todo-explorer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
