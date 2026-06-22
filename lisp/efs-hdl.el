@@ -288,6 +288,12 @@
   :commands (fpga-vivado-mode fpga-quartus-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SystemRDL mode for .rdl files
+(add-to-list 'load-path "~/.config/emacs-from-scratch/lisp/external")
+(require 'systemrdl-mode)
+(setq auto-mode-alist (cons '("\\.rdl$" . systemrdl-mode) auto-mode-alist))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Async autoformat-on-save (decoupled from LSP to avoid cursor jump)
 
 (use-package apheleia
