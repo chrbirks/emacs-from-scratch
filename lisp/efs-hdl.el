@@ -273,7 +273,18 @@
   (vhdl-ext-mode-setup))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; fpga (gmlarumbe) — Vivado/Quartus/Yosys/Cadence project utilities and
+;; psl-ts-mode - Major mode for PSL
+;; Only for VHDL variant and in separate .psl files
+
+(use-package psl-ts-mode
+  ;; :load-path "/home/cbs/github/psl-ts-mode"
+  :ensure (:host github :repo "chrbirks/psl-ts-mode" :branch "develop")
+  :commands (psl-ts-mode-install-grammar)
+  :mode "\\.psl\\'")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; fpga (gmlarumbe) - Vivado/Quartus/Yosys/Cadence project utilities and
 ;; vendor-specific major modes for .qsf, .xdc, .sdc, .ys, .gn, .vsif files.
 ;; The package's own autoloads register the file-extension mode mappings,
 ;; so `:defer t' is enough - opening a matching file or running a real
