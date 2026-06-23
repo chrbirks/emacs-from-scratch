@@ -280,6 +280,7 @@
   ;; :load-path "/home/cbs/github/psl-ts-mode"
   :ensure (:host github :repo "chrbirks/psl-ts-mode" :branch "develop")
   :commands (psl-ts-mode-install-grammar)
+  :hook (psl-ts-mode . flycheck-mode)
   :mode "\\.psl\\'")
 
 
