@@ -15,10 +15,6 @@
       (when window
         (delete-other-windows window)
         window)))
-  ;; NOTE 11-10-2023: Need to define this expected function that is only introduced in Emacs 29 (https://github.com/magit/magit/issues/5011)
-  (defun seq-keep (function sequence)
-    "Apply FUNCTION to SEQUENCE and return the list of all the non-nil results."
-    (delq nil (seq-map function sequence)))
   (defun efs--magit-status ()
     "Version of magit-status that opens in full frame and restores previous window config on quit."
     (interactive)

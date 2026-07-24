@@ -130,8 +130,9 @@
 
 (use-package verilog-ext
   :ensure t
-  :hook ((verilog-ts-mode . efs--maybe-enable-verilog-ext)
-         (verilog-mode    . efs--maybe-enable-verilog-ext))
+  ;; verilog-ts-mode derives from verilog-mode, so this one hook covers both
+  ;; (and the guard inside no-ops when the grammar is missing).
+  :hook ((verilog-mode . efs--maybe-enable-verilog-ext))
   :init
   ;; Pick which verilog-ext features to enable. `lsp' is omitted because
   ;; we already register `verible-verilog-ls' manually above. `time-stamp'
@@ -259,8 +260,8 @@
 (use-package vhdl-ext
   :ensure t
   :after vhdl-ts-mode
-  :hook ((vhdl-ts-mode . vhdl-ext-mode)
-         (vhdl-mode    . vhdl-ext-mode))
+  ;; vhdl-ts-mode derives from vhdl-mode, so this one hook covers both.
+  :hook ((vhdl-mode . vhdl-ext-mode))
   :init
   ;; `time-stamp' omitted: conflicts with vhdl-mode's built-in
   ;; `vhdl-modify-date-on-saving' (warning: "vhdl-ext-time-stamp

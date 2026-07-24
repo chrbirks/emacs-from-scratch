@@ -3,8 +3,11 @@
 (use-package lsp-mode
   :defer t
   :commands (lsp lsp-deferred lsp-mode)
-  :hook ((verilog-mode    . lsp-deferred)
-         (verilog-ts-mode . lsp-deferred)
+  ;; verilog-ts-mode is a derived child of verilog-mode, so this single
+  ;; verilog-mode hook fires in both - and in the no-grammar fallback where
+  ;; files stay in plain verilog-mode. Listing verilog-ts-mode too would start
+  ;; LSP twice.
+  :hook ((verilog-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration))
   :init
   (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'

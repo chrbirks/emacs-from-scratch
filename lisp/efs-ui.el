@@ -55,10 +55,6 @@
    native-comp-async-report-warnings-errors 'silent
    ;; Do not wrap lines
    truncate-lines t
-   ;; Disable highlight line mode
-   global-hl-line-mode t
-   ;; Disable tildes in fringe
-   global-vi-tilde-fringe-mode nil
    ;; Increase max number of flycheck errors
    flycheck-checker-error-threshold 1000
    ;; Compress files when access them via TRAMP
@@ -79,7 +75,6 @@
 (scroll-bar-mode -1) ; Disable visible scrollbar
 (tool-bar-mode -1)   ; Disable the toolbar
 (tooltip-mode -1)    ; Disable tooltips
-(set-fringe-mode 5)  ; Give some breathing room
 (menu-bar-mode -1)   ; Disable the menu bar
 (column-number-mode)
 (global-display-line-numbers-mode t)

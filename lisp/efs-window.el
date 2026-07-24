@@ -217,7 +217,6 @@ Plays nice with special buffers like treemacs."
   (symbol-overlay-face-1 ((t (:background "#689d6a"       :foreground "black"))))
   (symbol-overlay-face-2 ((t (:background "#b08588"       :foreground "black"))))
   (symbol-overlay-face-3 ((t (:background "#7c6f64"       :foreground "black"))))
-  (symbol-overlay-face-3 ((t (:background "#5c6f64"       :foreground "black"))))
   (symbol-overlay-face-4 ((t (:background "#98971a"       :foreground "black"))))
   (symbol-overlay-face-5 ((t (:background "#016286"       :foreground "black"))))
   (symbol-overlay-face-6 ((t (:background "#d79921"       :foreground "black"))))

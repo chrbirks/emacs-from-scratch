@@ -13,7 +13,7 @@
   :commands (org-capture org-agenda org-roam-capture deadgrep-org) ;; Make available before org is loaded
   :hook (org-mode . efs--org-mode-setup)
   :config
-  (setq org-log-into-drawer '("LOOGBOOK")
+  (setq org-log-into-drawer t ;; log notes/state changes into the standard "LOGBOOK" drawer
         org-directory "~/org/"
         org-default-notes-file "~/org/notes.org" ;; Default file for templates that does not specify a file
         ;; Org Projectile

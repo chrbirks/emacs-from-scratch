@@ -81,12 +81,9 @@
               (when (treesit-language-available-p 'elisp)
                 (treesit-parser-create 'elisp))))
 
-  ;; Ensure VHDL files use vhdl-ts-mode and have parser
-  (add-hook 'vhdl-mode-hook
-            (lambda ()
-              (when (and (treesit-language-available-p 'vhdl)
-                         (not (eq major-mode 'vhdl-ts-mode)))
-                (vhdl-ts-mode))))
+  ;; NOTE: VHDL is routed to vhdl-ts-mode by `major-mode-remap-alist' above -
+  ;; that single mechanism covers .vhd/.vhdl. The former vhdl-mode-hook and
+  ;; auto-mode-alist entries here were redundant extra routes and were removed.
 
   ;; Create parser for vhdl-ts-mode if needed
   (add-hook 'vhdl-ts-mode-hook
@@ -94,10 +91,6 @@
               (unless (treesit-parser-list)
                 (when (treesit-language-available-p 'vhdl)
                   (treesit-parser-create 'vhdl)))))
-
-  ;; Add file associations for VHDL to use ts-mode directly
-  (add-to-list 'auto-mode-alist '("\\.vhd\\'" . vhdl-ts-mode))
-  (add-to-list 'auto-mode-alist '("\\.vhdl\\'" . vhdl-ts-mode))
 
   ;; Debug function to check treesit-fold status
   (defun efs--debug-treesit-fold ()

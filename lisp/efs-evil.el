@@ -140,7 +140,8 @@ COUNT defaults to 1, and KILL defaults to nil."
   :diminish evil-collection-unimpaired-mode
   :config
   (evil-collection-init) ;; Register evil binding for all modes at once instead of calling individual *-setup functions
-  (setq evil-want-keybinding t)
+  ;; NOTE: `evil-want-keybinding' must stay nil (set in `evil :init'); do NOT
+  ;; set it to t here - evil-collection replaces the default per-mode bindings.
   ;; Set Avy to use actual words instead of sequences of letters (requires Avy 0.5.0)
   (setq avy-style 'words)
   (efs-leader
