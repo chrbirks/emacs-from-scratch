@@ -3,8 +3,12 @@
 (use-package projectile
   :diminish projectile-mode
   :init
-  (setq projectile-generic-command "fd . -0 --type f --color=never") ;; NOTE: Needs override when fd version < 8.3.0 (https://github.com/bbatsov/projectile/pull/1798/files)
-  (setq projectile-git-fd-args "-H -0 -E .git -tf") ;; NOTE: Needs override when fd version < 8.3.0 (https://github.com/bbatsov/projectile/pull/1798/files)
+  ;; NOTE: projectile-generic-command / projectile-git-fd-args are left at
+  ;; their built-in defaults. Projectile detects its own fd recipes via the
+  ;; `--strip-cwd-prefix' flag (see projectile--fd-command-p); overriding
+  ;; these without that flag makes newer Projectile mistake fd for a plain
+  ;; `git ls-files' command and append git pathspec excludes to it, which fd
+  ;; rejects as invalid search paths.
   ;; NOTE: Set this to the folder where you keep your Git repos
   (when (file-directory-p "~/github")
     (setq projectile-project-search-path '("~/github")))
