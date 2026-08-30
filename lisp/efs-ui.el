@@ -105,11 +105,14 @@
 (setq switch-to-buffer-in-dedicated-window 'pop) ; Opening buffer in dedicated window causes it to pop up somewhere else instead of an error
 
 ;; Settings for horizontal/vertical scrolling
-(setq scroll-margin     5              ;; Set top/bottom scroll margin in number of lines
-      scroll-conservatively 101        ;; Set lines to top/bottom scroll
-      hscroll-margin    15             ;; Set horizontal scroll margin in number of characters
-      hscroll-step      1
-      auto-hscroll-mode 'current-line) ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
+(setq scroll-margin                   5             ;; Set top/bottom scroll margin in number of lines
+      scroll-conservatively           101           ;; Set lines to top/bottom scroll
+      hscroll-margin                  15            ;; Set horizontal scroll margin in number of characters
+      hscroll-step                    1
+      auto-hscroll-mode               'current-line ;; Scroll horizontally on the selected line only (Emacs version 26.1 or larger)
+      scroll-preserve-screen-position t             ;; Preserve points vertical screen position when scrolling
+      auto-window-vscroll             nil           ;; Do not automatically adjust vertical scrolling through tall display rows
+      fast-but-imprecise-scrolling    t)            ;; Avoid fontifying unfontified text while scrolling rapidly
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
