@@ -213,6 +213,24 @@
   ;; (custom-set-variables
   ;;  '(lsp-vhdl-server 'hdl-checker))
 
+;; vhdl_ls (>= 0.87) sends hover/doc fragments as pseudo-VHDL such as
+;; "port clk : in std_logic;".  That is not a legal standalone construct, so
+;; the tree-sitter parser yields an ERROR node and vhdl-ts-mode only paints
+;; its red error underline.  lsp-mode prefers the buffer's own major mode
+;; (vhdl-ts-mode) when fontifying such fragments - use the regexp-based
+;; vhdl-mode instead, which highlights fragments fine.
+(with-eval-after-load 'lsp-mode
+  (define-advice lsp--fontlock-with-mode (:filter-args (args) efs--vhdl-doc-use-vhdl-mode)
+    "Fontify VHDL doc fragments with `vhdl-mode' instead of `vhdl-ts-mode'."
+    (if (eq (cadr args) 'vhdl-ts-mode)
+        (list (car args) 'vhdl-mode)
+      args)))
+
+;; Same for ```vhdl fenced blocks (completion docs): markdown-mode would
+;; otherwise pick vhdl-ts-mode via `major-mode-remap-alist'.
+(with-eval-after-load 'markdown-mode
+  (add-to-list 'markdown-code-lang-modes '("vhdl" . vhdl-mode)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; VHDL Tree-Sitter Mode
