@@ -105,9 +105,7 @@
 
 (use-package lsp-ui
   :commands lsp-ui-mode
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
+  :hook (lsp-mode . lsp-ui-mode))
 
 (use-package lsp-treemacs
   :after lsp)
