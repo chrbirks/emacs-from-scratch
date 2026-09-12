@@ -112,6 +112,14 @@
   :init
   (persp-mode)
   :config
+  ;; persp-mode >= 8d8aae0 defers lighter updates by 1s; the *persp-temp-frame*
+  ;; used by persp-save-state-to-file is deleted before the timer fires, which
+  ;; makes it call set-frame-parameter on a dead frame.
+  (define-advice persp-update-frame-lighter
+      (:around (fn &optional f) efs--skip-temp-frame)
+    (unless (equal "*persp-temp-frame*"
+                   (frame-parameter (or f (selected-frame)) 'name))
+      (funcall fn f)))
   ;; Only show open buffers and not recent files
   (with-eval-after-load 'marginalia
     (add-to-list 'marginalia-command-categories '(persp-switch-to-buffer* . buffer)))
