@@ -443,10 +443,66 @@ Plays nice with special buffers like treemacs."
    )
   )
 
+(defun efs--treemacs-purge-png-icons ()
+  "Drop PNG file and directory icons from treemacs' \"all-the-icons\" theme.
+
+`treemacs-create-theme' ends by calling `treemacs--propagate-new-icons', which
+copies icons between every registered theme for extensions they do not define
+themselves.  `lsp-treemacs' registers Eclipse, Netbeans and Idea with
+`:extends \"Default\"', so the ~490 22x22 PNG images of the PNG-based Default
+theme are pulled into those themes and from there pushed into the
+all-the-icons theme.  The result is a theme that is mostly font glyphs but
+renders ~90 extensions - and, more visibly, the special directory names
+handled by `treemacs-icon-for-dir' (src, test, docs, bin, build, git, ...) -
+as oversized images.
+
+Only string keys are purged.  Symbol keys are left alone: they carry the
+theme's own folder and root glyphs plus the LSP symbol-kind icons that
+`lsp-treemacs' needs for its symbol and error trees.
+
+Extensions left without an icon fall back to the theme's own octicon, so every
+node ends up the same size."
+  (let ((theme (treemacs--find-theme "all-the-icons")))
+    (when theme
+      (let ((icons (treemacs-theme->gui-icons theme))
+            (stale nil))
+        (maphash (lambda (key icon)
+                   (when (and (stringp key)
+                              (string-match-p "image :type png" (format "%S" icon)))
+                     (push key stale)))
+                 icons)
+        (dolist (key stale)
+          (remhash key icons))
+        ;; Re-select the icon set so open treemacs buffers pick up the change.
+        (when (and stale
+                   (string= "all-the-icons"
+                            (treemacs-theme->name (treemacs-current-theme))))
+          (treemacs-load-theme "all-the-icons"))
+        (length stale)))))
+
 (use-package treemacs-all-the-icons
   :ensure t
   :after treemacs
-  )
+  :config
+  ;; Merely loading this package is not enough - it only *registers* the
+  ;; "all-the-icons" theme. Worse, `treemacs-create-theme' ends by calling
+  ;; `treemacs--propagate-new-icons', which copies every icon the new theme
+  ;; defines into all other themes for extensions they lack. Without the
+  ;; explicit load below the active "Default" theme ends up a mix of 22x22
+  ;; PNG images (e.g. .toml) and all-the-icons font glyphs (e.g. .vhd), so
+  ;; icon sizes differ from file type to file type. Loading the theme makes
+  ;; every icon a font glyph of uniform size.
+  (treemacs-load-theme "all-the-icons")
+  ;; If icons jump around horizontally when directories are opened/closed,
+  ;; replace the call above with
+  ;;   (treemacs-load-all-the-icons-with-workaround-font "Hermit")
+  ;; note that it overrides `treemacs-indentation' and
+  ;; `treemacs-indentation-string'.
+  (efs--treemacs-purge-png-icons)
+  ;; `lsp-treemacs' registers its themes lazily, so re-run the purge once its
+  ;; Eclipse/Netbeans/Idea themes have leaked their images in.
+  (with-eval-after-load 'lsp-treemacs-themes
+    (efs--treemacs-purge-png-icons)))
 
 (use-package treemacs-projectile
   :ensure t
