@@ -281,7 +281,7 @@ Plays nice with special buffers like treemacs."
   )
 
 (use-package transient
-  :ensure t ;; magit/claude-code-ide need >= 0.13; the version bundled with Emacs 30.2 is too old
+  ;; :ensure t ;; magit/claude-code-ide need >= 0.13; the version bundled with Emacs 30.2 is too old
   :config
   ;; ;; NOTE: Example how to set up transient:
   ;; (transient-define-suffix pmx-show-prefix ()

@@ -1,4 +1,4 @@
-;;; systemrdl-mode.el --- sample major mode for editing SystemRDL.
+;;; systemrdl-mode.el --- sample major mode for editing SystemRDL.  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2019, by Paul Donahue
 
