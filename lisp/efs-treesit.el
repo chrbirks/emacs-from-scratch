@@ -21,6 +21,16 @@
           (systemverilog "https://github.com/gmlarumbe/tree-sitter-systemverilog")
           (vhdl       "https://github.com/alemuller/tree-sitter-vhdl")
           (yaml       "https://github.com/ikatyang/tree-sitter-yaml")))
+  ;; Prefer the grammars built from the sources above over the Guix system
+  ;; profile. guix-emacs.el adds $TREE_SITTER_GRAMMAR_PATH to
+  ;; `treesit-extra-load-path' after treesit loads, and that list is searched
+  ;; before <user-emacs-directory>/tree-sitter/. Guix's tree-sitter-vhdl 2.0.0
+  ;; is the jpt13653903 grammar, which breaks vhdl-ts-mode's font-lock queries.
+  ;; This hook is registered after Guix's, so it runs later and wins.
+  (with-eval-after-load 'treesit
+    (let ((dir (expand-file-name "tree-sitter/" user-emacs-directory)))
+      (setq treesit-extra-load-path
+            (cons dir (delete dir treesit-extra-load-path)))))
   ;; Enable tree-sitter modes selectively for better control
   ;; We'll configure HDL modes separately to work alongside LSP
   (setq major-mode-remap-alist
